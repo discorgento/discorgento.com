@@ -1,4 +1,156 @@
-Hi there
-Discord community (also js, php, mysql, react, vue, etc)
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discorgento</title>
+    <style>
+        html,
+        body {
+        background-color: #333;
+        color: #fff;
+        cursor: none;
+        font-family: sans-serif;
+        height: 100%;
+        text-align: center;
+        text-shadow: 2px 2px 2px #222;
+        width: 100%;
+        }
+        body {
+        background-image: url("https://cdn.discordapp.com/attachments/895366148621754440/1020679095845142538/podcast-coming-fhd.png");
+        background-size: cover;
+        background-repeat: no-repeat;
+        }
+        body.initial-state {
+        opacity: 0.5;
+        }
+        body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        }
+        .top-bar,
+        .bottom-bar {
+        transition-duration: 1000ms;
+        }
+        .top-bar:not(.show),
+        .bottom-bar:not(.show) {
+        opacity: 0;
+        }
+        .top-bar {
+        position: fixed;
+        top: 20px;
+        }
+        .top-bar img {
+        height: 50px;
+        }
+        .logo {
+        align-items: center;
+        display: flex;
+        gap: 5px;
+        }
+        .logo .icon {
+        height: 100px;
+        transition-duration: 500ms;
+        }
+        .logo .icon:not(.show) {
+        transform: scale(0);
+        }
+        .logo .text-wrapper {
+        overflow: hidden;
+        height: 100px;
+        margin-bottom: -25px;
+        }
+        .logo .text {
+        display: inline-block;
+        font-size: 85px;
+        font-family: TypoGraphica, sans-serif;
+        letter-spacing: 3px;
+        transition-duration: 1000ms;
+        white-space: nowrap;
+        width: 416px;
+        }
+        .logo .text:not(.show) {
+        opacity: 0;
+        width: 0;
+        }
+        .header-wrapper {
+        overflow: hidden;
+        }
+        .header-wrapper .header {
+        border-top: 3px solid #fff;
+        display: block;
+        font-size: 30px;
+        height: 93px;
+        margin-top: 20px;
+        padding-top: 20px;
+        transition-duration: 1000ms;
+        }
+        .header-wrapper .header:not(.show) {
+        opacity: 0;
+        height: 0;
+        width: 0;
+        }
+        .bottom-bar {
+        bottom: 20px;
+        display: flex;
+        gap: 20px;
+        font-size: 18px;
+        position: fixed;
+        }
+        .bottom-bar a {
+        align-items: center;
+        color: #fff;
+        display: flex;
+        gap: 5px;
+        text-decoration: none;
+        }
+        .bottom-bar a img {
+        height: 1em;
+        }
+        .bottom-bar a span {
+        display: inline-block;
+        }
 
-we want YOU for our community! https://discord.io/Discorgento
+    </style>
+</head>
+<body>
+<div class="top-bar">
+    <img class="mic" src="https://cdn.discordapp.com/attachments/843896840058699807/1020706950847152148/mic-icon.png"/>
+</div>
+<div class="container">
+  <div class="logo">
+    <img class="icon" src="https://cdn.discordapp.com/attachments/843896840058699807/1020687150745927781/logo.svg"/>
+    <div class="text-wrapper"><span class="text">iscorgento</span></div>
+  </div>
+  <div class="header-wrapper">
+    <h1 class="header">#01 - A jornada até aqui</h1>
+  </div>
+</div>
+<div class="bottom-bar">
+    <a href="https://discord.io/Discorgento" target="_blank">
+        <img src="https://cdn.discordapp.com/attachments/843896840058699807/1020700615573254164/discord-icon.png"/>
+        <span>discord.io/Discorgento</span>
+    </a>
+        <a href="https://github.com/discorgento" target="_blank">
+        <img src="https://pluspng.com/img-png/github-logo-png-white-github-11-icon-free-white-social-icons-512x512.png"/>
+        <span>github.com/Discorgento</span>
+    </a>
+</div>
+
+<script>
+    (() => {
+        const $get = (selector) => document.querySelector(selector);
+        const showEl = (selector) => $get(selector).classList.add("show");
+
+        setTimeout(() => showEl(".logo .icon"), 1000);
+        setTimeout(() => showEl(".logo .text"), 2000);
+        setTimeout(() => showEl(".header"), 3000);
+        setTimeout(() => showEl(".top-bar"), 4000);
+        setTimeout(() => showEl(".bottom-bar"), 4000);
+    })();
+
+</script>
+</body>
+</html>
