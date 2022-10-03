@@ -1,179 +1,209 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Discorgento</title>
-    <link rel="shortcut icon" href="https://cdn.discordapp.com/icons/768653248902332428/09d9274a5c18f7b6be52a99bd94df821.webp?size=240">
-    <link rel="icon" href="https://cdn.discordapp.com/icons/768653248902332428/09d9274a5c18f7b6be52a99bd94df821.webp?size=240" sizes="240x240">
+    <link rel="shortcut icon"
+        href="https://cdn.discordapp.com/icons/768653248902332428/09d9274a5c18f7b6be52a99bd94df821.webp?size=240">
+    <link rel="icon"
+        href="https://cdn.discordapp.com/icons/768653248902332428/09d9274a5c18f7b6be52a99bd94df821.webp?size=240"
+        sizes="240x240">
     <style>
         html,
         body {
-        color: #fff;
-        cursor: crosshair;
-        font-family: sans-serif;
-        height: 100%;
-        text-align: center;
-        text-shadow: 2px 2px 2px #222;
-        width: 100%;
-        margin: 0;
-        padding: 5px;
-        box-sizing: border-box;
+            color: #fff;
+            cursor: crosshair;
+            font-family: sans-serif;
+            height: 100%;
+            text-align: center;
+            text-shadow: 2px 2px 2px #222;
+            width: 100%;
+            margin: 0;
+            padding: 5px;
+            box-sizing: border-box;
         }
+
         body {
-        background-image: url("https://cdn.discordapp.com/attachments/895366148621754440/1020679095845142538/podcast-coming-fhd.png");
-        background-size: cover;
-        background-repeat: no-repeat;
-        overflow: hidden;
+            background-image: url("https://cdn.discordapp.com/attachments/895366148621754440/1020679095845142538/podcast-coming-fhd.png");
+            background-size: cover;
+            background-repeat: no-repeat;
+            overflow: hidden;
         }
+
         body.initial-state {
-        opacity: 0.5;
+            opacity: 0.5;
         }
+
         body {
-        display: flex;
-        align-items: center;
-        justify-content: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
+
         .top-bar,
         .bottom-bar {
-        transition-duration: 1000ms;
+            transition-duration: 1000ms;
         }
+
         .top-bar:not(.show),
         .bottom-bar:not(.show) {
-        opacity: 0;
-        }
-        .top-bar {
-        position: fixed;
-        top: 20px;
-        }
-        .top-bar img {
-        height: 50px;
-        }
-        .logo {
-        align-items: center;
-        display: flex;
-        gap: 5px;
-        flex-wrap: wrap;
-        align-content: center;
-        justify-content: center;
-        }
-        .logo .icon {
-        height: 100px;
-        transition-duration: 500ms;
-        }
-        .logo .icon:not(.show) {
-        transform: scale(0);
-        }
-        .logo .text-wrapper {
-        overflow: hidden;
-        height: 100px;
-        margin-bottom: -25px;
-        }
-        .logo .text {
-        display: inline-block;
-        font-size: 85px;
-        font-family: TypoGraphica, sans-serif;
-        letter-spacing: 3px;
-        transition-duration: 1000ms;
-        white-space: nowrap;
-        width: 416px;
-        }
-        .logo .text:not(.show) {
-        opacity: 0;
-        width: 0;
-        }
-        .header-wrapper {
-        overflow: hidden;
-        }
-        .header-wrapper .header {
-        border-top: 3px solid #fff;
-        display: block;
-        font-size: 30px;
-        height: 131px;
-        margin-top: 20px;
-        padding-top: 20px;
-        transition-duration: 1000ms;
-        color: #fff;
-        text-decoration: none;
-        cursor: pointer;
-        }
-        .header-wrapper .header:not(.show) {
-        opacity: 0;
-        height: 0;
-        width: 0;
-        }
-        .bottom-bar {
-        bottom: 20px;
-        display: flex;
-        gap: 20px;
-        font-size: 18px;
-        position: fixed;
-        flex-direction: row;
-        flex-wrap: wrap;
-        align-items: center;
-        justify-content: center;
-        }
-        .bottom-bar a {
-        align-items: center;
-        color: #fff;
-        display: flex;
-        gap: 5px;
-        text-decoration: none;
-        }
-        .bottom-bar a img {
-        height: 1em;
-        }
-        .bottom-bar a span {
-        display: inline-block;
+            opacity: 0;
         }
 
+        .top-bar {
+            position: fixed;
+            top: 20px;
+        }
+
+        .top-bar img {
+            height: 50px;
+        }
+
+        .logo {
+            align-items: center;
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+            align-content: center;
+            justify-content: center;
+        }
+
+        .logo .icon {
+            height: 100px;
+            transition-duration: 500ms;
+        }
+
+        .logo .icon:not(.show) {
+            transform: scale(0);
+        }
+
+        .logo .text-wrapper {
+            overflow: hidden;
+            height: 100px;
+            margin-bottom: -25px;
+        }
+
+        .logo .text {
+            display: inline-block;
+            font-size: 85px;
+            font-family: TypoGraphica, sans-serif;
+            letter-spacing: 3px;
+            transition-duration: 1000ms;
+            white-space: nowrap;
+            background-image: url('https://media.discordapp.net/attachments/783095299525574657/1026570214525128834/logotype.png');
+            background-size: contain;
+            background-position: 100% 0%;
+            width: 280px;
+            height: 100px;
+        }
+
+        .logo .text:not(.show) {
+            opacity: 0;
+            width: 0;
+        }
+
+        .header-wrapper {
+            overflow: hidden;
+        }
+
+        .header-wrapper .header {
+            border-top: 3px solid #fff;
+            display: block;
+            font-size: 30px;
+            height: 131px;
+            margin-top: 20px;
+            padding-top: 20px;
+            transition-duration: 1000ms;
+            color: #fff;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .header-wrapper .header:not(.show) {
+            opacity: 0;
+            height: 0;
+            width: 0;
+        }
+
+        .bottom-bar {
+            bottom: 20px;
+            display: flex;
+            gap: 20px;
+            font-size: 18px;
+            position: fixed;
+            flex-direction: row;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .bottom-bar a {
+            align-items: center;
+            color: #fff;
+            display: flex;
+            gap: 5px;
+            text-decoration: none;
+        }
+
+        .bottom-bar a img {
+            height: 1em;
+        }
+
+        .bottom-bar a span {
+            display: inline-block;
+        }
     </style>
 </head>
+
 <body>
-<div class="top-bar">
-    <img class="mic" src="https://cdn.discordapp.com/attachments/843896840058699807/1020706950847152148/mic-icon.png"/>
-</div>
-<div class="container">
-  <div class="logo">
-    <img class="icon" src="https://cdn.discordapp.com/attachments/843896840058699807/1020687150745927781/logo.svg"/>
-    <div class="text-wrapper"><span class="text" style="
-    background-image: url('https://media.discordapp.net/attachments/783095299525574657/1026570214525128834/logotype.png');
-    background-size: contain;
-    background-position: 100% 0%;
-    width: 280px;
-    height: 100px;
-"></span></div>
-  </div>
-  <div class="header-wrapper">
-    <h1 class="header">
-        <!-- <a class="header" href="https://youtu.be/797tYBDBxzs" target="_blank">#01 - A jornada até aqui</a></h1> -->
-        <iframe style="border-radius:12px" src="https://open.spotify.com/embed/show/5h3gKepBezY4Iz5LM79nUn?utm_source=generator&theme=0&t=0" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>    </h1>  
-</div>
-</div>
-<div class="bottom-bar">
-    <a href="https://discord.io/Discorgento" target="_blank">
-        <img src="https://cdn.discordapp.com/attachments/843896840058699807/1020700615573254164/discord-icon.png"/>
-        <span>discord.io/Discorgento</span>
-    </a>
+    <div class="top-bar">
+        <img class="mic"
+            src="https://cdn.discordapp.com/attachments/843896840058699807/1020706950847152148/mic-icon.png" />
+    </div>
+    <div class="container">
+        <div class="logo">
+            <img class="icon"
+                src="https://cdn.discordapp.com/attachments/843896840058699807/1020687150745927781/logo.svg" />
+            <div class="text-wrapper"><span class="text" style=""></span></div>
+        </div>
+        <div class="header-wrapper">
+            <h1 class="header">
+                <iframe style="border-radius:12px"
+                    src="https://open.spotify.com/embed/show/5h3gKepBezY4Iz5LM79nUn?utm_source=generator&theme=0&t=0"
+                    width="100%" height="152" frameBorder="0" allowfullscreen=""
+                    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                    loading="lazy"></iframe>
+            </h1>
+        </div>
+    </div>
+
+    <div class="bottom-bar">
+        <a href="https://discord.io/Discorgento" target="_blank">
+            <img src="https://cdn.discordapp.com/attachments/843896840058699807/1020700615573254164/discord-icon.png" />
+            <span>discord.io/Discorgento</span>
+        </a>
         <a href="https://github.com/discorgento" target="_blank">
-        <img src="https://pluspng.com/img-png/github-logo-png-white-github-11-icon-free-white-social-icons-512x512.png"/>
-        <span>github.com/Discorgento</span>
-    </a>
-</div>
+            <img
+                src="https://pluspng.com/img-png/github-logo-png-white-github-11-icon-free-white-social-icons-512x512.png" />
+            <span>github.com/Discorgento</span>
+        </a>
+    </div>
 
-<script>
-    (() => {
-        const $get = (selector) => document.querySelector(selector);
-        const showEl = (selector) => $get(selector).classList.add("show");
+    <script>
+        (() => {
+            const $get = (selector) => document.querySelector(selector);
+            const showEl = (selector) => $get(selector).classList.add("show");
 
-        setTimeout(() => showEl(".logo .icon"), 1000);
-        setTimeout(() => showEl(".logo .text"), 2000);
-        setTimeout(() => showEl(".header"), 3000);
-        setTimeout(() => showEl(".top-bar"), 4000);
-        setTimeout(() => showEl(".bottom-bar"), 4000);
-    })();
-
-</script>
+            setTimeout(() => showEl(".logo .icon"), 1000);
+            setTimeout(() => showEl(".logo .text"), 2000);
+            setTimeout(() => showEl(".header"), 3000);
+            setTimeout(() => showEl(".top-bar"), 4000);
+            setTimeout(() => showEl(".bottom-bar"), 4000);
+        })();
+    </script>
 </body>
+
 </html>
