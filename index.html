@@ -6,20 +6,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Discorgento | Podcast</title>
+    <meta name="description" content="Podcast - Tech Community on Discord (Magento, JS, PHP, MySQL, React, Vue) we want YOU for our community!">
     <link rel="shortcut icon"
         href="./imgs/logo-discorgento.svg">
     <link rel="icon"
         href="./imgs/logo-discorgento.svg"
         sizes="240x240">
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZZCPZLMW8G"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-
-        gtag('config', 'G-ZZCPZLMW8G');
-    </script>
 
     <style>
         html,
@@ -110,7 +102,7 @@
             white-space: nowrap;
             background-image: url('./imgs/logotype-discorgento.png');
             background-size: contain;
-            background-position: 100% 0%;
+            background-position: 100% 0;
             background-repeat: no-repeat;
             width: 280px;
             height: 100px;
@@ -126,7 +118,7 @@
         }
 
         .header-wrapper .header {
-            border-top: 3px solid #fff;
+            border-top: 5px solid #fff;
             display: block;
             font-size: 30px;
             height: 131px;
@@ -138,7 +130,6 @@
             cursor: pointer;
             border-image-source: linear-gradient(to left, #743ad5, #EC6737);
             border-image-slice: 1;
-            border-width: 5px;
         }
 
         .header-wrapper .header:not(.show) {
@@ -210,32 +201,37 @@
     </div>
 
     <div class="bottom-bar">
-        <a href="https://discord.io/Discorgento" target="_blank" title="discord">
-            <img src="./imgs/social/discord-icon.png"  alt="Discorgento no Discord"/>
+        <a href="https://discord.io/Discorgento" target="_blank" title="Discord">
+            <img src="./imgs/social/discord-icon.png" alt="Discorgento no Discord"/>
         </a>
-        <a href="https://github.com/discorgento" target="_blank" title="github">
+        <a href="https://github.com/discorgento" target="_blank" title="Github">
             <img
                 src="./imgs/social/github-logo.png" alt="Discorgento no Github"/>
         </a>
-        <a href="https://www.instagram.com/discorgento/" target="_blank" title="instagram">
+        <a href="https://www.instagram.com/discorgento/" target="_blank" title="Instagram">
             <img
                 src="./imgs/social/instagram-icon.png" alt="Discorgento no Instagram"/>
         </a>
-        <a href="https://open.spotify.com/show/5h3gKepBezY4Iz5LM79nUn" target="_blank" title="spotify">
+        <a href="https://open.spotify.com/show/5h3gKepBezY4Iz5LM79nUn" target="_blank" title="Spotify">
             <img
                 src="./imgs/social/spotify-icon.png" alt="Discorgento no Spotify"/>
         </a>
-        <a href="https://www.youtube.com/channel/UChJitnyFtNOoCe6cu-rHcow" target="_blank" title="youtube">
+        <a href="https://www.youtube.com/channel/UChJitnyFtNOoCe6cu-rHcow" target="_blank" title="Youtube">
             <img
                 src="./imgs/social/youtube-icon.png" alt="Discorgento no Youtube"/>
         </a>
-        <a href="https://twitter.com/discorgento" target="_blank" title="twitter">
+        <a href="https://twitter.com/discorgento" target="_blank" title="Twitter">
             <img
                 src="./imgs/social/twitter-logo.png" alt="Discorgento no Twitter"/>
         </a>
     </div>
-
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZZCPZLMW8G"></script>
     <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-ZZCPZLMW8G');
         (() => {
             const $get = (selector) => document.querySelector(selector);
             const showEl = (selector) => $get(selector).classList.add("show");
