@@ -38,3 +38,8 @@ main = production
                 src="./imgs/social/twitter-logo.png" width="40" height="40"/>
         </a>
     </div>
+
+
+<a href="https://github.com/discorgento/discorgento.com/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=discorgento/discorgento.com" />
+</a>
