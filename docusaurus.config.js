@@ -106,7 +106,7 @@ const config = {
             items: [
               {
                 label: 'Discord',
-                href: 'https://discord.io/Discorgento',
+                href: 'https://discord.gg/amfwybm3yj',
               },
               {
                 label: 'Twitter',
