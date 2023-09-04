@@ -9,7 +9,6 @@
 
 Everything uploaded to branch will be published on the production server
 
-
 # Website
 
 This website is built using [Docusaurus 2](https://docusaurus.io/), a modern static website generator.
@@ -63,7 +62,6 @@ This command generates static content into the `build` directory and can be serv
             src="static/img/social/twitter-icon.png" width="40" height="40"/>
     </a>
 </div>
-
 
 <a href="https://github.com/discorgento/discorgento.com/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=discorgento/discorgento.com" />
