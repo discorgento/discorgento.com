@@ -44,7 +44,7 @@ This command generates static content into the `build` directory and can be serv
         </a>
         <a href="https://github.com/discorgento" target="_blank" title="Github">
             <img
-                src="./imgs/social/github-logo.png" width="40" height="40"/>
+                src="./imgs/social/github-icon.png" width="40" height="40"/>
         </a>
         <a href="https://www.instagram.com/discorgento/" target="_blank" title="Instagram">
             <img
@@ -60,7 +60,7 @@ This command generates static content into the `build` directory and can be serv
         </a>
         <a href="https://twitter.com/discorgento" target="_blank" title="Twitter">
             <img
-                src="./imgs/social/twitter-logo.png" width="40" height="40"/>
+                src="./imgs/social/twitter-icon.png" width="40" height="40"/>
         </a>
     </div>
 
