@@ -12,7 +12,7 @@ function HomepageHeader() {
   const { siteConfig } = useDocusaurusContext();
   const [isHovered, setIsHovered] = useState(false);
 
-  const myStyle = {
+  const buttonComunity = {
     background: isHovered
       ? 'linear-gradient(to left, #EC6737, #743ad5)'
       : 'linear-gradient(to left, #743ad5, #EC6737)',
@@ -38,11 +38,11 @@ function HomepageHeader() {
         </h1>
 
         <p className="hero__subtitle">{siteConfig.tagline}</p>
-        <div className={styles.myStyle}>
+        <div className={styles.buttonComunity}>
           <a
             href="https://discord.gg/amfwybm3yj"
             className="button button--secondary button--lg"
-            style={myStyle}
+            style={buttonComunity}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
           >
