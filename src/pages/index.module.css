@@ -17,12 +17,11 @@
   boxShadow: 6px 6px 26px -6px rgba(0,0,0,0.75);
   transition: background 0.5s, color 0.5s, transform 0.5s;
   transform: scale(1);
+}
 
-  &:hover {
-    background: linear-gradient(to left, #EC6737, #743ad5);
-    transform: scale(1.1);
-  }
-
+.linkButtonCommunity:hover{
+  background: linear-gradient(to left, #EC6737, #743ad5);
+  transform: scale(1.1);
 }
 
 @media screen and (max-width: 996px) {
@@ -34,10 +33,10 @@
     font-size: 1rem;
     padding: 8px 16px;
     width: 100%;
-
-    &:hover {
-      transform: none;
-    }
+  }
+  
+  .linkButtonCommunity:hover{
+    transform: none;
   }
 
 }
