@@ -38,7 +38,7 @@ This command generates static content into the `build` directory and can be serv
 ## Follow us
 
 <div class="bottom-bar">
-    <a href="https://discord.io/Discorgento" target="_blank" title="Discord">
+    <a href="https://discorgento.com/discord" target="_blank" title="Discord">
         <img src="static/img/social/discord-icon.png" width="40" height="40" />
     </a>
     <a href="https://github.com/discorgento" target="_blank" title="Github">
