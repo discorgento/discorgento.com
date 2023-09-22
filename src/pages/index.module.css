@@ -30,7 +30,7 @@
   }
 
   .linkButtonCommunity {
-    font-size: 1rem;
+    font-size: 0.8rem;
     padding: 8px 16px;
     width: 100%;
   }
@@ -38,7 +38,6 @@
   .linkButtonCommunity:hover{
     transform: none;
   }
-
 }
 
 .buttons {
