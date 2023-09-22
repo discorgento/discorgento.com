@@ -1,27 +1,13 @@
 import React from 'react';
 import clsx from 'clsx';
-import Link from '@docusaurus/Link';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Layout from '@theme/Layout';
 import HomepageFeatures from '@site/src/components/HomepageFeatures';
-import { useState } from 'react';
 
 import styles from './index.module.css';
 
 function HomepageHeader() {
   const { siteConfig } = useDocusaurusContext();
-  const [isHovered, setIsHovered] = useState(false);
-
-  const buttonComunity = {
-    background: isHovered
-      ? 'linear-gradient(to left, #EC6737, #743ad5)'
-      : 'linear-gradient(to left, #743ad5, #EC6737)',
-    color: '#fff',
-    border: 0,
-    boxShadow: '6px 6px 26px -6px rgba(0,0,0,0.75)',
-    transition: 'background 0.5s, color 0.5s, transform 0.5s',
-    transform: isHovered ? 'scale(1.1)' : 'scale(1)',
-  };
 
   return (
     <header style={{ background: 'url("img/bg-website-fhd.png")' }} className={clsx('hero hero--primary', styles.heroBanner)}>
@@ -38,13 +24,11 @@ function HomepageHeader() {
         </h1>
 
         <p className="hero__subtitle">{siteConfig.tagline}</p>
-        <div className={styles.buttonComunity}>
+        <div className="buttonCommunity">
           <a
             href="https://discord.gg/amfwybm3yj"
-            className="button button--secondary button--lg"
-            style={buttonComunity}
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
+            target="_blank"
+            className={clsx("button button--primary button--lg", styles.linkButtonCommunity)}
           >
             we want YOU for our community!
           </a>
