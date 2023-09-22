@@ -27,7 +27,6 @@
   --ifm-color-primary-lightest: #FCA79F; /* Lightest shade possible in dark mode */
   --docusaurus-highlighted-code-line-bg: rgba(236, 103, 55, 0.3); /* Background color for highlighted code lines in dark mode */
 }
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
