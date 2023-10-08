@@ -17,7 +17,7 @@ const FeatureList = [
     Svg: require('@site/static/img/mic_discord.svg').default,
     description: (
       <>
-        Junte-se a nós para obter respostas às suas perguntas e colaborar com outros apaixonados por conhecimento. Nossa comunidade está aqui para aprendermos juntos e compartilhar nossas experiências. Não hesite, faça parte!
+        Junte-se a nós para obter respostas às suas perguntas e colaborar com outros apaixonados por conhecimento. Nossa comunidade está aqui para que todos possam aprender e compartilhar suas experiências. Não hesite, faça parte!
       </>
     ),
   },
@@ -26,7 +26,7 @@ const FeatureList = [
     Svg: require('@site/static/img/mic_megaphone.svg').default,
     description: (
       <>
-        Fique atualizado, desenvolvedores! Junte-se a nós para se manter informado e conectar-se com outros entusiastas da área.
+        Fique atualizado, dev! Junte-se a nós para se manter sempre atualizado com as mais recentes notícias de tecnologia.
       </>
     ),
   },
