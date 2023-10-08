@@ -28,8 +28,16 @@ const config = {
   // metadata like html lang. For example, if your site is Chinese, you may want
   // to replace "en" with "zh-Hans".
   i18n: {
-    defaultLocale: 'br',
-    locales: ['br'],
+    defaultLocale: 'pt',
+    locales: ['pt', 'en'],
+    localeConfigs: {
+      en: {
+        htmlLang: 'en-US'
+      },
+      pt: {
+        htmlLang: 'pt-BR'
+      }
+    }
   },
 
   presets: [
@@ -81,6 +89,10 @@ const config = {
             href: 'https://github.com/discorgento',
             label: 'GitHub',
             position: 'right',
+          },
+          {
+            type: 'localeDropdown',
+            position: 'left',
           },
         ],
       },
