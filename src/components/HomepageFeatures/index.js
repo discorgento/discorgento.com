@@ -1,33 +1,44 @@
+import Translate, { translate } from '@docusaurus/Translate';
 import React from 'react';
 import clsx from 'clsx';
+
 import styles from './styles.module.css';
 
 const FeatureList = [
   {
-    title: 'Podcast',
+    title: translate({ 
+      id: 'theme.podcast.title'
+     }),
     Svg: require('@site/static/img/mic_icon.svg').default,
     description: (
-      <>
-        Apresentamos um podcast  que aborda temas essenciais do mundo da tecnologia, sempre com convidados especiais.
-      </>
+      <Translate
+        id="theme.podcast.label"
+        description="The label for the podcast section"
+      />
     ),
   },
   {
-    title: 'Comunidade',
+    title: translate({ 
+      id: 'theme.community.title'
+     }),
     Svg: require('@site/static/img/mic_discord.svg').default,
     description: (
-      <>
-        Junte-se a nós para obter respostas às suas perguntas e colaborar com outros apaixonados por conhecimento. Nossa comunidade está aqui para aprendermos juntos e compartilhar nossas experiências. Não hesite, faça parte!
-      </>
+      <Translate
+        id="theme.community.label"
+        description="The label for the community section"
+      />
     ),
   },
   {
-    title: 'Notícias',
+    title: translate({ 
+      id: 'theme.news.title'
+     }),
     Svg: require('@site/static/img/mic_megaphone.svg').default,
     description: (
-      <>
-        Fique atualizado, desenvolvedores! Junte-se a nós para se manter informado e conectar-se com outros entusiastas da área.
-      </>
+      <Translate
+        id="theme.news.label"
+        description="The label for the news section"
+      />
     ),
   },
 ];
