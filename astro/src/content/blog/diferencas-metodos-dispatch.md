@@ -5,6 +5,7 @@ description: 'About magento 2 plugin methods'
 authors: ['mary']
 pubDate: 'Sep 03 2023'
 tags: ['magento', 'dispatch']
+heroImage: '/blog-placeholder-about.jpg'
 ---
 
 Ao comparar o método aroundDispatch() com os métodos beforeDispatch() e afterDispatch() em termos de desempenho, o método aroundDispatch() é geralmente o que pode ter um impacto ligeiramente maior no desempenho, principalmente por causa da chamada adicional ao $proceed(). No entanto, é importante notar que a diferença no desempenho entre eles também é geralmente insignificante e provavelmente não será perceptível na maioria dos casos.
