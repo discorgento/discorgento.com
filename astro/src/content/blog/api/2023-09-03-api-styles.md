@@ -1,6 +1,5 @@
 ---
-slug: api/api-styles
-title: 'API Styles'
+title: '1 API Styles'
 description: 'About different types of API'
 authors: ['machado']
 pubDate: 'Sep 03 2023'

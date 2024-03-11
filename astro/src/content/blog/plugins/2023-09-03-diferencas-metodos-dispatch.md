@@ -1,6 +1,5 @@
 ---
-slug: plugins/diferencas-metodos-dispatch
-title: 'Diferenças metodos Dispatch() around, before, after'
+title: '2 Diferenças metodos Dispatch() around, before, after'
 description: 'About magento 2 plugin methods'
 authors: ['mary']
 pubDate: 'Sep 03 2023'
