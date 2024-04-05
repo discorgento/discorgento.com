@@ -5,7 +5,11 @@ export default {
     './node_modules/flowbite/**/*.js',
   ],
   theme: {
-    extend: {},
+    extend: {
+      backgroundImage: {
+        'home-bg': "url('/images/bg-website-fhd.png')",
+      },
+    },
   },
   plugins: [require('flowbite/plugin')],
 }
