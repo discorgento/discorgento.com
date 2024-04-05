@@ -1,0 +1,30 @@
+---
+import { capitalize } from '../utils'
+
+interface Props {
+  tags: string[]
+  isMostRecent?: boolean
+}
+
+const { tags, isMostRecent } = Astro.props
+---
+
+<div class='flex flex-wrap gap-2'>
+  {
+    !isMostRecent &&
+      tags.map((tag) => (
+        <span class='px-2 py-1 odd:bg-orange-400 even:bg-neutral-950 text-white rounded-full text-xs hover:opacity-90'>
+          <a href={`/articles/tag/${tag}`}>#{capitalize(tag)}</a>
+        </span>
+      ))
+  }
+
+  {
+    isMostRecent &&
+      tags.map((tag) => (
+        <span class='px-2 py-1 border text-white rounded-full text-xs mr-2'>
+          #{capitalize(tag)}
+        </span>
+      ))
+  }
+</div>

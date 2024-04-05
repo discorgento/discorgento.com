@@ -1,0 +1,41 @@
+---
+import { SITE_TITLE, SITE_DESCRIPTION } from '../constants'
+import Navbar from '../components/Navbar.astro'
+import Footer from '../components/Footer.astro'
+
+interface Props {
+  title?: string
+}
+
+const { title = 'Tech People' } = Astro.props
+---
+
+<!doctype html>
+<html lang='en'>
+  <head>
+    <meta charset='UTF-8' />
+    <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+    <meta name='description' content={SITE_DESCRIPTION} />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
+
+    <!-- Font preloads -->
+    <link rel="preload" href="/fonts/atkinson-regular.woff" as="font" type="font/woff" crossorigin />
+    <link rel="preload" href="/fonts/atkinson-bold.woff" as="font" type="font/woff" crossorigin />
+
+    <script
+      is:inline='true'
+      src='https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.js'
+      integrity='sha512-bUju8VkXhCQgW7zCHSdiIDpECo/lqzChkKrKoc1v2PL2XqO/0Q2Y8dhu07+q6Rk+1c1xr6cfE0VZnumgwy93Ig=='
+      crossorigin='anonymous'
+      referrerpolicy='no-referrer'></script>
+    <title>{SITE_TITLE} - {title}</title>
+  </head>
+  <body>
+    <Navbar />
+    <section class='bg-slate-700 container mx-auto max-w-full p-8'>
+      <slot />
+    </section>
+    <Footer />
+  </body>
+</html>

@@ -1,0 +1,47 @@
+---
+import {  getEntry } from 'astro:content'
+import type { CollectionEntry } from 'astro:content'
+
+import MainLayout from '../../layouts/MainLayout.astro'
+import Tags from '../../components/Tags.astro'
+import { formatDate } from '../../utils'
+
+const { slug } = Astro.params
+
+if(!slug) {
+  throw new Error("Slug is not defined");
+}
+
+const article: CollectionEntry<'blog'> | undefined = await getEntry('blog', slug)
+
+if(!article) {
+  return Astro.redirect('/404')
+}
+
+const { Content } = await article.render()
+---
+
+<MainLayout title={article.data.title}>
+  <a href="/articles" class="inline-block bg-gray-100 p-2 mb-6 hover:bg-indigo-500 hover:text-white">Back To Articles</a>
+    <article>
+      <h1 class="text-4xl font-bold mb-2">{article.data.title}</h1>
+      <h3 class="text-lg mb-2">Written by {article.data.author} on {formatDate(article.data.pubDate)}</h3>
+      <div class="flex flex-wrap gap-2 mb-6">
+        <Tags tags={article.data.tags} />
+      </div>
+      <img src={`/images/${article.data.image}`} alt="Article Image" class="w-full h-auto rounded-xl mb-6" />
+      <Content />
+    </article>
+</MainLayout>
+
+<style is:global>
+  p {
+    margin: 20px 0;
+  }
+
+  h2 {
+    margin: 20px 0;
+    font-size: 1.8rem;
+  }
+</style>
+

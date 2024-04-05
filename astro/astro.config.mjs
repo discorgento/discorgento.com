@@ -1,16 +1,13 @@
-import { defineConfig } from 'astro/config'
-import mdx from '@astrojs/mdx'
-import sitemap from '@astrojs/sitemap'
-import tailwind from '@astrojs/tailwind'
+import { defineConfig } from 'astro/config';
+import tailwind from "@astrojs/tailwind";
+
+import node from "@astrojs/node";
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://discorgento.com',
-  integrations: [
-    mdx(),
-    sitemap(),
-    tailwind({
-      nesting: true,
-    }),
-  ],
-})
+  integrations: [tailwind()],
+  output: 'server',
+  adapter: node({
+    mode: "standalone"
+  })
+});

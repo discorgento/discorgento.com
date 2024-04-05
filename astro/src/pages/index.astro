@@ -1,20 +1,49 @@
 ---
-import BaseHead from '../components/BaseHead.astro';
-import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro';
-import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
+import MainLayout from '../layouts/MainLayout.astro'
+// import { getCollection } from 'astro:content'
+// import type { CollectionEntry } from 'astro:content'
+
+import {HOMEPAGE_ARTICLE_LIMIT, SITE_DESCRIPTION, SITE_TITLE} from '../constants'
+// import ArticleCard from '../components/ArticleCard.astro'
+// import SearchForm from '../components/SearchForm.astro'
+// import MostRecentArticle from '../components/MostRecentArticle.astro'
+
+// const allBlogArticles: CollectionEntry<'blog'>[] = (await getCollection('blog')).sort((a: CollectionEntry<'blog'>, b: CollectionEntry<'blog'>) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+
+// const mostRecentArticle: CollectionEntry<'blog'> = allBlogArticles[0]
+
+// const otherArticles: CollectionEntry<'blog'>[] = allBlogArticles.slice(1)
 ---
 
-<!doctype html>
-<html lang="en">
-	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
-	</head>
-	<body>
-		<Header />
-		<main>
-			<h1 class="flex justify-center w-full">🟠 Discorgento 🟠</h1>
-		</main>
-		<Footer />
-	</body>
-</html>
+<MainLayout title='Home'>
+  <main class="flex flex-col items-center max-w-screen-xl mx-auto">
+    <!-- Top Grid -->
+    <!-- <div class="grid grid-cols-1 gap-5 mb-5">
+      <h1 class='text-5xl font-bold  xl:text-6xl'>
+        {SITE_DESCRIPTION}
+      </h1>
+    </div> -->
+    <!-- <SearchForm /> -->
+    <div class='grid grid-cols-1 lg:grid-cols-2 gap-5'>
+      <div>
+        <iframe src="https://discord.com/widget?id=768653248902332428&theme=dark" width="100%" height="500" allowtransparency="true" frameborder="0" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
+      </div>
+  
+      <div>
+        <iframe style="border-radius:12px" src="https://open.spotify.com/embed/show/5h3gKepBezY4Iz5LM79nUn/video?utm_source=generator&theme=0" width="624" height="100%" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+    
+        <!-- <iframe src="https://open.spotify.com/embed/playlist/4pU2Abae7J8vdY4yqPCXRc?utm_source=generator&theme=0&t=0" allowfullscreen height="400" width="100%"></iframe> -->
+      </div>
+      <!-- Most Recent Article -->
+      <!-- <MostRecentArticle article={mostRecentArticle} /> -->
+    </div>
+  </main>
+
+  <!-- Main Grid -->
+  <!-- <div class='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3'> -->
+    <!-- Article Card -->
+    <!-- {otherArticles.slice(0,HOMEPAGE_ARTICLE_LIMIT).map((article) => (
+      <ArticleCard article={article} />
+    ))}
+  </div> -->
+</MainLayout>

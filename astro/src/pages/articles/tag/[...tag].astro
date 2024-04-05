@@ -1,0 +1,29 @@
+---
+import type { CollectionEntry } from 'astro:content'
+import { getCollection } from 'astro:content'
+
+import MainLayout from '../../../layouts/MainLayout.astro'
+import ArticleCard from '../../../components/ArticleCard.astro'
+import { capitalize } from '../../../utils'
+
+const { tag } = Astro.params
+
+if(!tag) {
+  throw new Error("Tag is not defined");
+}
+
+const tagArticles: CollectionEntry<'blog'>[] = (await getCollection('blog'))
+  .filter((article: CollectionEntry<'blog'>) => article.data.tags.includes(tag))
+  .sort((a: CollectionEntry<'blog'>, b: CollectionEntry<'blog'>) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+---
+
+<MainLayout title={capitalize(tag)}>
+  <h1 class='text-2xl pb-3'>#{capitalize(tag)}</h1>
+  <!-- Main Grid -->
+  <div class='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3'>
+    <!-- Article Card -->
+    {tagArticles.map((article) => (
+      <ArticleCard article={article} />
+    ))}
+  </div>
+</MainLayout>
