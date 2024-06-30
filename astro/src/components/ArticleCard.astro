@@ -13,22 +13,15 @@ const { article } = Astro.props;
 ---
 
 <!-- Article Card -->
-<div class='max-w-md mx-auto mt-10'>
-  <div class='bg-white rounded-lg overflow-hidden shadow-lg'>
-    <a href={`/articles/${article.slug}`}>
-      <img
-        src={`/images/${article.data.image}`}
-        alt='Article Image'
-        class='w-full h-48 object-cover hover:opacity-75 transition duration-300 ease-in-out'
-      />
-    </a>
+<div class='max-w-md mx-auto w-full'>
+  <div class='overflow-hidden shadow-lg h-full w-full bg-orange-400 rounded-md bg-clip-padding backdrop-filter backdrop-blur-md bg-opacity-10'>
     <div class='p-6'>
-      <h2 class='text-2xl font-semibold mb-2'>
+      <h2 class='text-2xl font-semibold mb-2 text-white'>
         <a href={`/articles/${article.slug}`}>
           {article.data.title}
         </a>
       </h2>
-      <p class='text-gray-600 text-sm mb-4'>{formatDate(article.data.pubDate)}</p>
+      <p class='text-neutral-900 text-sm mb-4'>{formatDate(article.data.pubDate)}</p>
       <Tags tags={article.data.tags} />
     </div>
   </div>

@@ -29,7 +29,6 @@ const { Content } = await article.render()
       <div class="flex flex-wrap gap-2 mb-6">
         <Tags tags={article.data.tags} />
       </div>
-      <img src={`/images/${article.data.image}`} alt="Article Image" class="w-full h-auto rounded-xl mb-6" />
       <Content />
     </article>
 </MainLayout>

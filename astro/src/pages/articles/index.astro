@@ -27,18 +27,20 @@ const articlesForPage: CollectionEntry<'blog'>[] = allBlogArticles.slice(
 ---
 
 <MainLayout title='All Articles'>
-  <h1 class='text-2xl pb-3'>All Articles</h1>
-
-  <SearchForm />
-
-  <!-- Main Grid -->
-  <div class='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3'>
-    <!-- Article Card -->
-    {
-      articlesForPage &&
-        articlesForPage.map((article) => <ArticleCard article={article} />)
-    }
-  </div>
+  <section class="flex flex-col h-full w-full relative gap-6 container">
+    <section class="flex flex-col items-center w-full">    
+      <SearchForm />
+    </section>
+  
+    <!-- Main Grid -->
+    <div class='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3'>
+      <!-- Article Card -->
+      {
+        articlesForPage &&
+          articlesForPage.map((article) => <ArticleCard article={article} />)
+      }
+    </div>
+    
 
   <!-- Pagination -->
   <Pagination
@@ -46,4 +48,5 @@ const articlesForPage: CollectionEntry<'blog'>[] = allBlogArticles.slice(
     disableNext={currentPage === totalPages}
     disablePrevious={currentPage === 1}
   />
+  </section>
 </MainLayout>

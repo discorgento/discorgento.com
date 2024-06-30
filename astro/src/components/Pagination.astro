@@ -8,7 +8,7 @@ interface Props {
 const { currentPage, disableNext, disablePrevious } = Astro.props
 ---
 
-<div class=`flex justify-between mt-10`>
+<div class=`flex justify-between absolute md:top-[50%] flex w-full`>
   {
     <a
       href={`/articles?page=${currentPage - 1}`}
