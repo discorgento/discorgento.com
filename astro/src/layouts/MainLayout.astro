@@ -31,9 +31,9 @@ const { title = 'Tech People' } = Astro.props
       referrerpolicy='no-referrer'></script>
     <title>{SITE_TITLE} - {title}</title>
   </head>
-  <body>
+  <body class='pattern-isometric pattern-orange-600 pattern-bg-transparent pattern-opacity-100 pattern-size-32'>
     <Navbar />
-    <section class='bg-orange-500 container mx-auto max-w-full p-8 min-h-screen w-full flex justify-center items-center h-screen'>
+    <section class='container mx-auto max-w-full p-8 min-h-screen w-full flex justify-center items-center h-screen'>
       <slot />
     </section>
     <Footer />

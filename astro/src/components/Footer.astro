@@ -8,7 +8,7 @@ const allBlogArticles: CollectionEntry<'blog'>[] = await getCollection('blog')
 const tags = [...new Set(allBlogArticles.flatMap((article) => article.data.tags))]
 ---
 
-<footer class='bg-gradient-to-t from-neutral-900 to-orange-500 text-white'>
+<footer class='bg-neutral-900 bg-clip-padding backdrop-filter backdrop-blur-md bg-opacity-40 text-white'>
   <div class='container mx-auto max-w-screen-xl px-8 container'>
     <div class='grid grid-cols-1 gap-12 sm:grid-cols-2 lg:grid-cols-4'>
       <div class='mt-10'>
