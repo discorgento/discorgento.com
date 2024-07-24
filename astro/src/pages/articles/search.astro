@@ -19,18 +19,20 @@ const searchResults = allBlogArticles.filter((article) => {
 
   return titleMatch || bodyMatch || slugMatch
 })
+
+
 ---
 
 <MainLayout title='Search Results'>
-  <a href="/articles" class="inline-block bg-gray-100 p-2 mb-6 hover:bg-indigo-500 hover:text-white">All Articles</a>
-
-  <SearchForm />
-
-  <h1 class='text-2xl pb-3 mt-6'>Results for <strong>{query}</strong></h1>
-
-  <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-    {searchResults && searchResults.map((article) => (
-      <ArticleCard article={article} />
-    ))}
-  </div>
+  <section class="flex flex-col h-screen w-full relative gap-6 container py-6 px-6 lg:px-8">
+    <a href="/articles" class="inline-block bg-gray-100 p-2 mb-6 hover:bg-indigo-500 hover:text-white">All Articles</a>
+  
+    <SearchForm />
+  
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {searchResults && searchResults.map((article) => (
+        <ArticleCard article={article} />
+      ))}
+    </div>
+  </section>
 </MainLayout>

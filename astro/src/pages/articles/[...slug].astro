@@ -22,11 +22,11 @@ const { Content } = await article.render()
 ---
 
 <MainLayout title={article.data.title}>
-  <section class="rounded-md bg-orange-400 bg-clip-padding backdrop-filter backdrop-blur-xl bg-opacity-70 p-6">
+  <section class="rounded-md bg-neutral-900 bg-clip-padding backdrop-filter backdrop-blur-xl bg-opacity-70 p-6">
     <a href="/articles" class="inline-block bg-gray-100 p-2 mb-6 hover:bg-indigo-500 hover:text-white">Back To Articles</a>
     <article>
       <h1 class="text-4xl font-bold mb-2 text-white">{article.data.title}</h1>
-      <h3 class="text-lg mb-2">Written by {article.data.authors.map(author => `${author.id}`)} on {formatDate(article.data.pubDate)}</h3>
+      <h3 class="text-lg mb-2 text-neutral-200">Written by {article.data.authors.map(author => `${author.id}`)} on {formatDate(article.data.pubDate)}</h3>
       <div class="flex flex-wrap gap-2 mb-6">
         <Tags tags={article.data.tags} />
       </div>
@@ -38,6 +38,7 @@ const { Content } = await article.render()
 <style is:global>
   p {
     margin: 20px 0;
+    color: #ffffff;
   }
 
   h2 {
