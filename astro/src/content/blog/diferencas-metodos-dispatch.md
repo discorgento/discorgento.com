@@ -1,7 +1,7 @@
 ---
 title: 'Diferenças metodos Dispatch() around, before, after'
 pubDate: 2023-09-03
-authors: [machado]
+author: mary
 tags: [magento, dispatch]
 slug: 'diferencas-metodos-dispatch'
 ---

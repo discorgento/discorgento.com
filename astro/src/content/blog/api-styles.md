@@ -1,7 +1,7 @@
 ---
 title: 'API Styles'
 pubDate: 2023-09-03
-authors: [machado]
+author: machado
 tags: ['api']
 slug: api-styles
 ---

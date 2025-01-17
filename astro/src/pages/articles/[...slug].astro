@@ -1,10 +1,12 @@
 ---
-import {  getEntry } from 'astro:content'
+import { getEntry } from 'astro:content'
 import type { CollectionEntry } from 'astro:content'
 
 import MainLayout from '../../layouts/MainLayout.astro'
 import Tags from '../../components/Tags.astro'
 import { formatDate } from '../../utils'
+import BackToArticles from '../../components/BackToArticles.astro'
+import Image from 'astro/components/Image.astro'
 
 const { slug } = Astro.params
 
@@ -19,14 +21,23 @@ if(!article) {
 }
 
 const { Content } = await article.render()
+const authorData = await getEntry(article.data.author.collection, article.data.author.id)
 ---
-
 <MainLayout title={article.data.title}>
   <section class="rounded-md bg-neutral-900 bg-clip-padding backdrop-filter backdrop-blur-xl bg-opacity-70 p-6">
-    <a href="/articles" class="inline-block bg-gray-100 p-2 mb-6 hover:bg-indigo-500 hover:text-white">Back To Articles</a>
+    <BackToArticles />
+
     <article>
-      <h1 class="text-4xl font-bold mb-2 text-white">{article.data.title}</h1>
-      <h3 class="text-lg mb-2 text-neutral-200">Written by {article.data.authors.map(author => `${author.id}`)} on {formatDate(article.data.pubDate)}</h3>
+      <h1 class="text-4xl font-bold mb-4 text-white">{article.data.title}</h1>
+      <div class="flex gap-2 items-center text-lg mb-4 text-neutral-200 max-w-40 w-full">
+        <a target="_blank" href={authorData.data.portfolio}>
+          <Image class="rounded-full" src={authorData.data.avatar} alt={authorData.data.name} width={50} height={50} />
+          <div class="flex flex-col">
+            <span class="text-orange-400 hover:underline">{authorData.data.name}</span>
+            <a target="_blank" href={authorData.data.discordProfile} class="text-orange-400  hover:underline">Discord</a>
+          </div>
+        </a>
+      </div>
       <div class="flex flex-wrap gap-2 mb-6">
         <Tags tags={article.data.tags} />
       </div>

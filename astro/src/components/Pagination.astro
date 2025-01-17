@@ -9,20 +9,24 @@ const { currentPage, disableNext, disablePrevious } = Astro.props
 ---
 
 <div class=`flex justify-between flex w-full`>
-  {
-    <a
-      href={`/articles?page=${currentPage - 1}`}
-      class={`inline-block bg-slate-700 px-3 py-2 hover:bg-slate-900 text-white rounded-lg ${disablePrevious ? '': ''}`}
-    >
-      Anterior
-    </a>
-  }
-  {
-    <a
-      href={`/articles?page=${currentPage + 1}`}
-      class={`inline-block bg-slate-700 px-3 py-2 hover:bg-slate-900 text-white rounded-lg ${disableNext ? '' : ''}`}
-    >
-      Próxima
-    </a>
-  }
+  <div>
+    {
+      !disablePrevious && (<a
+        href={`/articles?page=${currentPage - 1}`}
+        class={`inline-block bg-orange-400 px-3 py-2 hover:opacity-90 text-white rounded-lg`}
+      >
+        Previous
+      </a>)
+    }
+  </div>
+  <div>
+    {
+      !disableNext && (<a
+        href={`/articles?page=${currentPage + 1}`}
+        class={`inline-block bg-orange-400 px-3 py-2 hover:opacity-90 text-white rounded-lg`}
+      >
+        Next
+      </a>)
+    }
+  </div>
 </div>

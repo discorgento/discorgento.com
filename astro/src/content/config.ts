@@ -5,7 +5,7 @@ const blogContent = defineCollection({
   schema: z.object({
     title: z.string(),
     pubDate: z.date(),
-    authors: z.array(reference('authors')),
+    author: reference('authors'),
     tags: z.array(z.string()),
   }),
 })
@@ -16,6 +16,8 @@ const authors = defineCollection({
   schema: z.object({
     name: z.string(),
     portfolio: z.string().url(),
+    discordProfile: z.string().url(),
+    avatar: z.string().url(),
   })
 });
 

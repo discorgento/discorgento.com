@@ -16,12 +16,24 @@ const { title = 'Tech People' } = Astro.props
     <meta charset='UTF-8' />
     <meta name='viewport' content='width=device-width, initial-scale=1.0' />
     <meta name='description' content={SITE_DESCRIPTION} />
-    <meta name="generator" content={Astro.generator} />
-    <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
+    <meta name='generator' content={Astro.generator} />
+    <link rel='icon' type='image/svg+xml' href='/favicon.ico' />
 
     <!-- Font preloads -->
-    <link rel="preload" href="/fonts/atkinson-regular.woff" as="font" type="font/woff" crossorigin />
-    <link rel="preload" href="/fonts/atkinson-bold.woff" as="font" type="font/woff" crossorigin />
+    <link
+      rel='preload'
+      href='/fonts/atkinson-regular.woff'
+      as='font'
+      type='font/woff'
+      crossorigin
+    />
+    <link
+      rel='preload'
+      href='/fonts/atkinson-bold.woff'
+      as='font'
+      type='font/woff'
+      crossorigin
+    />
 
     <script
       is:inline='true'
@@ -31,9 +43,11 @@ const { title = 'Tech People' } = Astro.props
       referrerpolicy='no-referrer'></script>
     <title>{SITE_TITLE} - {title}</title>
   </head>
-  <body class='pattern-zigzag-3d pattern-neutral-900 pattern-bg-white pattern-opacity-100 pattern-size-32'>
+  <body class='bg-home-bg'>
     <Navbar />
-    <section class='container min-h-full w-full flex justify-center items-start h-full mx-auto'>
+    <section
+      class='container min-h-full w-full flex justify-center items-start h-full mx-auto py-6 px-6 lg:px-8'
+    >
       <slot />
     </section>
     <Footer />
