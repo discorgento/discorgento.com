@@ -64,7 +64,7 @@ const config = {
             'https://github.com/discorgento/discorgento.com/edit/main/blog/',
         },
         theme: {
-          customCss: require.resolve('./src/css/custom.css'),
+          customCss: require.resolve('./src/css/theme.css'),
         },
       }),
     ],
