@@ -1,0 +1,16 @@
+name: Notify Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Notify Discord via Worker
+        run: |
+          curl -X POST "https://discorgento-discord-notify.jonatanaxe.workers.dev" \
+            -H "Content-Type: application/json" \
+            -d '{"content":"✅ Cloudflare Pages deploy succeeded!"}'
