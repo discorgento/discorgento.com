@@ -1,8 +1,8 @@
 // @ts-check
 // Note: type annotations allow type checking and IDEs autocompletion
 
-const lightCodeTheme = require('prism-react-renderer/themes/github');
-const darkCodeTheme = require('prism-react-renderer/themes/dracula');
+const lightCodeTheme = require('prism-react-renderer').themes.github;
+const darkCodeTheme = require('prism-react-renderer').themes.dracula;
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
@@ -28,16 +28,16 @@ const config = {
   // metadata like html lang. For example, if your site is Chinese, you may want
   // to replace "en" with "zh-Hans".
   i18n: {
-    defaultLocale: 'pt',
-    locales: ['pt', 'en'],
-    localeConfigs: {
-      en: {
-        htmlLang: 'en-US'
-      },
-      pt: {
-        htmlLang: 'pt-BR'
-      }
-    }
+    defaultLocale: 'pt-BR',
+    locales: ['pt-BR'],
+    // localeConfigs: {
+    //   en: {
+    //     htmlLang: 'en-US'
+    //   },
+    //   pt: {
+    //     htmlLang: 'pt-BR'
+    //   }
+    // }
   },
 
   presets: [
@@ -64,7 +64,7 @@ const config = {
             'https://github.com/discorgento/discorgento.com/edit/main/blog/',
         },
         theme: {
-          customCss: require.resolve('./src/css/custom.css'),
+          customCss: require.resolve('./src/css/theme.css'),
         },
       }),
     ],
@@ -157,7 +157,7 @@ const config = {
         return {
           name: 'docusaurus-tailwindcss',
           configurePostCss(postcssOptions) {
-            postcssOptions.plugins.push(require('tailwindcss'));
+            postcssOptions.plugins.push(require('@tailwindcss/postcss'));
             postcssOptions.plugins.push(require('autoprefixer'));
             return postcssOptions;
           },

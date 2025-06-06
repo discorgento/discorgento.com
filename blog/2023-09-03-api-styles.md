@@ -4,7 +4,7 @@ title: API Styles
 authors: machado
 tags: [api]
 ---
-
+<!-- truncate -->
 
 ✅ SOAP (Simple Object Access Protocol): Um protocolo de comunicação baseado em XML usado para trocar informações estruturadas entre sistemas distribuídos. Ele define uma estrutura para mensagens e um conjunto de regras para comunicação entre aplicativos em uma rede. O SOAP é frequentemente usado em combinação com o protocolo HTTP para criar serviços web que permitem a interoperabilidade entre diferentes plataformas e linguagens de programação.
 

@@ -4,7 +4,7 @@ title: Configurar .gitignore Global no Git
 authors: machado
 tags: [git]
 ---
-
+<!-- truncate -->
 
 # Configurar .gitignore Global no Git
 
