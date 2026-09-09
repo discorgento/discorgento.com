@@ -1,0 +1,157 @@
+@import "@fontsource-variable/inter";
+@import "@fontsource-variable/jetbrains-mono";
+@import "@fontsource-variable/bricolage-grotesque";
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+/*
+  ============================================================
+  DISCORGENTO VISUAL IDENTITY — CHANGE EVERYTHING HERE
+  Source: discorgento.com (original site, extracted 2026-09-09)
+  ============================================================
+
+  Visual contract:
+  - Sharp corners: no pills, no large rounded corners
+  - WARM palette (black with orange bias), not zinc/cool gray-blue
+  - Bricolage Grotesque for headings (characterful display font),
+    Inter for body, JetBrains Mono for details/terminal
+  - Brand marker: the ORANGE CIRCLE (logo echo) — used in eyebrows,
+    timestamps, status and indexes. Never more than one marker
+    system per page
+  - Terminal (Charmbracelet): $ prompt, > output, ● status bar
+  - Orange glow used sparingly: CTAs, hover, hero corners
+  - No decorative gradients on headings, no bg-grid
+*/
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  /* ---- Brand palette (discorgento orange) ----
+     Original brand colors, taken from the original site:
+     primary #ec6737 | light #f4774f | lighter #f99072 | lightest #fca79f
+     dark #d25930 | darker #b84b29 | darkest #a03d21
+  */
+  --color-brand-100: #fde8e0;
+  --color-brand-200: #fca79f;
+  --color-brand-300: #f99072;
+  --color-brand-400: #f4774f;
+  --color-brand-500: #ec6737; /* official primary */
+  --color-brand-600: #d25930;
+  --color-brand-700: #b84b29;
+  --color-brand-800: #a03d21;
+  --color-brand-900: #7a2d18;
+
+  /* ---- Warm surfaces (dark theme with orange bias) ----
+     No zinc: warm black, like ink on dark paper
+  */
+  --color-background: #16130f;
+  --color-surface: #1f1b15;      /* card/container hover */
+  --color-surface-raised: #262019; /* footer, bars */
+
+  /* ---- Text (warm white) ----
+     Different from #f4f4f5 (zinc): paper instead of screen
+  */
+  --color-on-background: #f3efe9;
+  --color-on-surface: #e7e2da;
+  --color-muted: #a49c90;
+  --color-border: #2e2923;
+
+  /* ---- Fonts (self-hosted via Fontsource, no external request) ----
+     Bricolage Grotesque: headings (characterful display, no Inter/Geist)
+     Inter Variable: readable body
+     JetBrains Mono: terminal, metadata, eyebrows
+  */
+  --font-sans: "Inter Variable", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: "Bricolage Grotesque Variable", var(--font-sans);
+  --font-mono: "JetBrains Mono Variable", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* ---- Glow ("AI era" signature) ----
+     1 glow per viewport: CTAs, card hover, hero corners
+  */
+  --shadow-glow: 0 0 20px rgb(236 103 55 / 0.35), 0 0 60px rgb(236 103 55 / 0.15);
+  --shadow-glow-lg: 0 0 30px rgb(236 103 55 / 0.5), 0 0 90px rgb(236 103 55 / 0.25);
+  --shadow-glow-card: 0 0 0 1px rgb(236 103 55 / 0.4), 0 0 32px rgb(236 103 55 / 0.18);
+}
+
+/* ---- Base ---- */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-background text-on-background antialiased;
+}
+
+/* Headings always in the characterful display font */
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+}
+
+/* Ambient radial blur (warm background glow) */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(700px 320px at 15% -10%, rgb(236 103 55 / 0.1), transparent 60%),
+    radial-gradient(900px 420px at 95% 5%, rgb(236 103 55 / 0.06), transparent 60%);
+}
+
+::selection {
+  background-color: var(--color-brand-500);
+  color: var(--color-background);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-brand-500);
+  outline-offset: 2px;
+}
+
+/* ---- Monospaced eyebrow (system's typographic signature) ----
+   Usage: <p class="eyebrow"><span class="text-brand-500">●</span> SECTION</p>
+*/
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--color-muted);
+}
+
+/* ---- Primary button with orange glow ---- */
+.btn-primary {
+  display: inline-block;
+  background-color: var(--color-brand-500);
+  color: #fff;
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  transition: background-color 0.15s ease, box-shadow 0.15s ease;
+  box-shadow: var(--shadow-glow);
+}
+.btn-primary:hover {
+  background-color: var(--color-brand-600);
+  box-shadow: var(--shadow-glow-lg);
+}
+
+/* ---- Ticker (radio waves / editorial tape) ---- */
+@keyframes ticker {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+.ticker-track {
+  animation: ticker 36s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .ticker-track {
+    animation: none;
+  }
+}

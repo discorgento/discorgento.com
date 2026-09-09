@@ -1,0 +1,35 @@
+---
+import MainLayout from '~/layouts/MainLayout.astro';
+import { useTranslations } from '~/lib/i18n';
+
+const locale = Astro.currentLocale ?? 'pt-BR';
+const t = useTranslations(locale);
+---
+
+<MainLayout title={t('notFound.title')}>
+  <section class="py-20">
+    <div class="mx-auto max-w-xl font-mono text-sm">
+      <div class="flex items-center justify-between border border-b-0 border-border bg-surface px-4 py-2.5">
+        <span class="text-muted">// error</span>
+        <span class="font-bold text-brand-500">404</span>
+      </div>
+      <div class="border border-border bg-surface px-4 py-6">
+        <p class="text-muted">
+          <span class="text-brand-500">$</span> discorgento open --path {Astro.url.pathname}
+        </p>
+        <p class="mt-4 text-on-background">error_not_found:</p>
+        <p class="mt-1 pl-4 text-muted">{t('notFound.description')}</p>
+        <p class="mt-4 font-bold text-brand-500">exit code 404</p>
+      </div>
+      <div class="flex items-center justify-between border border-t-0 border-border bg-surface px-4 py-2 text-xs text-muted">
+        <span class="flex items-center gap-2">
+          <span class="h-2 w-2 rounded-full bg-brand-500"></span>
+          offline
+        </span>
+        <a href="/" class="text-brand-400 transition hover:text-brand-500">
+          [ {t('nav.home')} ]
+        </a>
+      </div>
+    </div>
+  </section>
+</MainLayout>

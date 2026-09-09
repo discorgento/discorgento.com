@@ -1,0 +1,28 @@
+---
+import { getCollection } from 'astro:content';
+import MainLayout from '~/layouts/MainLayout.astro';
+import ArticleCard from '~/components/ArticleCard.astro';
+import { useTranslations } from '~/lib/i18n';
+
+const locale = Astro.currentLocale ?? 'pt-BR';
+const t = useTranslations(locale);
+
+const posts = (await getCollection('posts', ({ data }) => data.locale === locale))
+  .filter((post) => !post.data.draft)
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+---
+
+<MainLayout title={t('nav.posts')}>
+  <section class="py-16">
+    <p class="eyebrow mb-4">
+      <span class="text-brand-500">●</span> {t('nav.posts')}
+    </p>
+    <h1 class="mb-10 text-3xl font-black tracking-tight text-on-background sm:text-5xl">
+      {t('nav.posts')}
+    </h1>
+    <div class="grid gap-5 md:grid-cols-2">
+      {posts.map((post, i) => <ArticleCard post={post} featured={i === 0} />)}
+    </div>
+    {posts.length === 0 && <p class="font-mono text-sm text-muted">{t('posts.empty')}</p>}
+  </section>
+</MainLayout>

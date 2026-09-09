@@ -1,0 +1,88 @@
+---
+import { useTranslations } from '~/lib/i18n';
+
+const locale = Astro.currentLocale ?? 'pt-BR';
+const t = useTranslations(locale);
+---
+
+<footer class="mt-16 border-t border-border bg-surface-raised">
+  <div class="mx-auto max-w-6xl px-4 py-14 sm:px-6">
+    <div class="flex flex-col gap-10 sm:flex-row sm:items-start sm:justify-between">
+      <div class="max-w-xs">
+        <a href="/" class="flex items-center gap-2">
+          <img src="/img/logo.svg" alt="discorgento logo" class="h-7 w-7" width={28} height={28} />
+          <span class="font-display text-lg font-bold tracking-tight text-on-background">discorgento</span>
+        </a>
+        <p class="mt-3 text-sm leading-relaxed text-muted">{t('footer.description')}</p>
+      </div>
+      <div class="font-mono text-sm">
+        <p class="eyebrow mb-4">
+          <span class="text-brand-500">●</span> {t('footer.social')}
+        </p>
+        <ul class="space-y-3">
+          <li>
+            <a
+              href="https://discorgento.com/discord"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-muted transition hover:text-brand-400"
+            >
+              discorgento.com/discord
+            </a>
+          </li>
+          <li>
+            <a
+              href="https://github.com/discorgento"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-muted transition hover:text-brand-400"
+            >
+              github.com/discorgento
+            </a>
+          </li>
+          <li>
+            <a
+              href="https://www.youtube.com/@discorgento"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-muted transition hover:text-brand-400"
+            >
+              youtube.com/@discorgento
+            </a>
+          </li>
+          <li>
+            <a
+              href="https://open.spotify.com/playlist/4pU2Abae7J8vdY4yqPCXRc"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-muted transition hover:text-brand-400"
+            >
+              open.spotify.com/discorgento
+            </a>
+          </li>
+          <li>
+            <a
+              href="https://twitter.com/discorgento"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-muted transition hover:text-brand-400"
+            >
+              twitter.com/discorgento
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div
+      class="pointer-events-none mt-14 select-none text-center font-display text-[clamp(4rem,16vw,11rem)] font-black leading-[0.85] tracking-tight text-white/[0.04]"
+      aria-hidden="true"
+    >
+      discorgento
+    </div>
+    <div class="mt-8 flex flex-wrap items-center justify-between gap-2 border-t border-white/10 pt-6">
+      <p class="font-mono text-xs text-muted/70">© {new Date().getFullYear()} discorgento</p>
+      <p class="font-mono text-xs text-muted/70">ed. 001 · astro</p>
+      <p class="font-mono text-xs text-muted/50">magento · vtex · shopify · bigcommerce · php · js · [+etc]</p>
+    </div>
+  </div>
+</footer>
