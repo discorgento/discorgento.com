@@ -1,20 +1,25 @@
 # Dependencies
-/node_modules
+node_modules/
 
-# Production
-/build
+# Build output
+dist/
 
-# Generated files
-.docusaurus
-.cache-loader
+# Astro generated types
+.astro/
+
+# Wrangler (Cloudflare)
+# wrangler.jsonc (production) and wrangler.staging.jsonc (staging) ARE versioned — no secrets inside.
+# .wrangler/ may contain sensitive state; a local wrangler.toml would conflict
+# with the versioned wrangler.jsonc — if one exists, delete it.
+.wrangler/
+wrangler.toml
+
+# Environment
+.env
+.env.production
 
 # Misc
 .DS_Store
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*

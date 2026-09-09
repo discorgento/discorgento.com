@@ -1,0 +1,56 @@
+---
+import { getRelativeLocaleUrl } from 'astro:i18n';
+import { useTranslations } from '~/lib/i18n';
+
+const locale = Astro.currentLocale ?? 'pt-BR';
+const t = useTranslations(locale);
+const otherLocale = locale === 'pt-BR' ? 'en' : 'pt-BR';
+const otherLabel = locale === 'pt-BR' ? 'EN' : 'PT';
+---
+
+<header class="sticky top-0 z-50 border-b border-border bg-background/95">
+  <div class="h-px bg-gradient-to-r from-transparent via-brand-500/70 to-transparent"></div>
+  <nav class="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6">
+    <a href={getRelativeLocaleUrl(locale, '/')} class="flex items-center gap-2.5">
+      <img
+        src="/img/logo.svg"
+        alt="discorgento logo"
+        class="h-8 w-8"
+        width={32}
+        height={32}
+      />
+      <span class="text-lg font-bold tracking-tight text-on-background">discorgento</span>
+    </a>
+    <div class="flex items-center gap-6 text-sm">
+      <a href={getRelativeLocaleUrl(locale, '/posts')} class="text-muted transition hover:text-brand-400">
+        {t('nav.posts')}
+      </a>
+      <a href={getRelativeLocaleUrl(locale, '/podcast')} class="text-muted transition hover:text-brand-400">
+        {t('nav.podcast')}
+      </a>
+      <a
+        href="https://github.com/discorgento"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="text-muted transition hover:text-brand-400"
+      >
+        GitHub
+      </a>
+      <a
+        href="https://discorgento.com/discord"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="border border-brand-500 px-3 py-1.5 font-semibold text-brand-400 transition hover:bg-brand-500 hover:text-white hover:shadow-[var(--shadow-glow)]"
+      >
+        {t('nav.discord')}
+      </a>
+      <a
+        href={getRelativeLocaleUrl(otherLocale, Astro.url.pathname.replace(/^\/en/, '') || '/')}
+        class="font-mono text-xs text-muted transition hover:text-brand-400"
+        aria-label={t('nav.switchLabel')}
+      >
+        {otherLabel}
+      </a>
+    </div>
+  </nav>
+</header>
