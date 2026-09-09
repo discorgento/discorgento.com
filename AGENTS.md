@@ -54,11 +54,11 @@ No lint, typecheck, or test commands exist. `npm run build` is the only meaningf
 
 - **Fully automated via GitHub Actions** — `.github/workflows/deploy.yml`:
   - `build` job runs on every push/PR (gate: `npm run build`).
-  - `deploy` job runs on push to `main` only, via `cloudflare/wrangler-action@v3` (`wrangler deploy`) — production Worker `discorgento`.
-  - `deploy-staging` job runs on push to `develop` only, via `wrangler deploy --config wrangler.staging.jsonc` — staging Worker `staging` (first deploy creates it).
-  - Requires two repo secrets: `CLOUDFLARE_API_TOKEN` (scoped: Workers Scripts Edit, Workers Routes Edit) and `CLOUDFLARE_ACCOUNT_ID` (same account for both Workers). Never use a full-account token. Trigger `workflow_dispatch` for manual deploys.
+  - `deploy` job runs on push to `main` only, via `cloudflare/wrangler-action@v3` (`wrangler deploy --config wrangler.jsonc`) — production Worker `discorgento` (first deploy creates it; then attach the `discorgento.com` custom domain).
+  - `deploy-staging` job runs on push to `develop` only, via `wrangler deploy --config wrangler.staging.jsonc` — staging Worker `staging`, served at `staging.jonatanaxe.workers.dev`.
+  - Requires two repo secrets: `CLOUDFLARE_API_TOKEN` (scoped: Workers Scripts Edit, Workers Routes Edit) and `CLOUDFLARE_ACCOUNT_ID`. Never use a full-account token. Trigger `workflow_dispatch` for manual deploys.
 - **`wrangler.jsonc` is versioned** (static assets pointing at `dist/client`, `not_found_handling: 404-page`, no `account_id` inside — the action injects it via the `accountId` secret). The Worker `name` must match the existing Worker in the dashboard; a mismatch creates a duplicate Worker.
+- **Cloudflare Git integration (Workers Builds) must stay disconnected** — it historically deployed alongside CI and conflicted with the GitHub Actions pipeline. CI owns the deploys now.
 - **Dependabot** (`.github/dependabot.yml`) opens weekly PRs for `npm` and `github-actions`; security updates are automatic.
-- If the repo is ever connected to Cloudflare's built-in Git integration (Workers Builds), disable it — two pipelines on the same Worker conflict.
 - Before a deploy, validate locally (no auth needed): `npm run build && npx wrangler deploy --dry-run`.
 - `public/robots.txt` already allows AI crawlers explicitly (GPTBot, ClaudeBot, PerplexityBot, etc.) — **Cloudflare blocks AI by default** ("AI Crawlers"); if you touch robots.txt, keep the `Allow` lines or the AI-ready work dies at the firewall.
