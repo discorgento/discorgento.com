@@ -8,9 +8,9 @@ dist/
 .astro/
 
 # Wrangler (Cloudflare)
-# wrangler.jsonc IS versioned (no secrets inside).
-# .wrangler/ may contain sensitive state; a local wrangler.toml would conflict
-# with the versioned wrangler.jsonc — if one exists, delete it.
+# .wrangler/ may contain sensitive local state; a local wrangler.toml would
+# override the deploy pipeline config — if one exists, delete it.
+# Deploy is Cloudflare Pages (no wrangler config file needed).
 .wrangler/
 wrangler.toml
 

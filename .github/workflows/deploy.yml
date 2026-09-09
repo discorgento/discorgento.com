@@ -23,7 +23,7 @@ jobs:
       - run: npm run build
 
   deploy:
-    name: Deploy to Cloudflare Workers
+    name: Deploy to Cloudflare Pages (production)
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: build
     runs-on: ubuntu-latest
@@ -39,10 +39,10 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: deploy
+          command: pages deploy dist/client --project-name=discorgento-com --branch main --commit-dirty=true
 
   deploy-staging:
-    name: Deploy to Cloudflare Workers (staging)
+    name: Deploy to Cloudflare Pages (staging)
     if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
     needs: build
     runs-on: ubuntu-latest
@@ -54,8 +54,13 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
+      - name: Create staging Pages project (idempotent)
+        run: npx wrangler pages project create staging --production-branch develop || true
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
       - uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: deploy --config wrangler.staging.jsonc
+          command: pages deploy dist/client --project-name=staging --branch develop --commit-dirty=true
