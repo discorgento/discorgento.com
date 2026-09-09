@@ -1,0 +1,6 @@
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
+  Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: i.ytimg.com https://avatars.githubusercontent.com; frame-src https://open.spotify.com https://www.youtube.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; connect-src 'self'; upgrade-insecure-requests

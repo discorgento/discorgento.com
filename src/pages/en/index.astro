@@ -1,0 +1,10 @@
+---
+import Home from '~/components/Home.astro';
+import MainLayout from '~/layouts/MainLayout.astro';
+
+const locale = Astro.currentLocale ?? 'pt-BR';
+---
+
+<MainLayout>
+  <Home locale={locale} />
+</MainLayout>

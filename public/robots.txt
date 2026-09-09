@@ -1,0 +1,29 @@
+# discorgento.com
+# IA crawlers liberados explicitamente — o padrão do Cloudflare é bloquear IA,
+# então manter os Allow abaixo é o que garante indexação pelos crawlers de IA.
+
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-SearchBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: *
+Allow: /
+
+Sitemap: https://discorgento.com/sitemap-index.xml

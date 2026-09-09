@@ -1,0 +1,67 @@
+---
+import type { Video } from '~/lib/youtube';
+import { episodeNum } from '~/lib/youtube';
+import { useTranslations } from '~/lib/i18n';
+
+interface Props {
+  locale: string;
+  videos: Video[];
+}
+
+const { locale, videos } = Astro.props;
+const t = useTranslations(locale);
+
+const dateFormatter = new Intl.DateTimeFormat(locale === 'pt-BR' ? 'pt-BR' : 'en-US', {
+  day: '2-digit',
+  month: 'short',
+  year: 'numeric',
+});
+
+function formatDate(published: string): string {
+  try {
+    return dateFormatter.format(new Date(published));
+  } catch {
+    return '';
+  }
+}
+---
+
+<div class="border-b border-border">
+  {videos.length === 0 ? (
+    <p class="py-10 text-center font-mono text-xs text-muted/60">
+      {t('podcast.empty')}
+    </p>
+  ) : (
+    videos.map((v) => {
+      const num = episodeNum(v.title);
+      const date = formatDate(v.published);
+      return (
+        <a
+          href={v.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="group grid gap-3 border-t border-border py-6 transition hover:bg-surface md:grid-cols-[4rem_8rem_1fr_auto] md:items-center md:gap-6"
+        >
+          <span class="font-mono text-sm text-brand-500">{num ? `#${num}` : '● ep'}</span>
+          <img
+            src={`https://i.ytimg.com/vi/${v.id}/hqdefault.jpg`}
+            alt={v.title}
+            loading="lazy"
+            class="aspect-video w-full border border-border object-cover md:w-32"
+          />
+          <span class="block">
+            <span class="block text-lg font-bold tracking-tight text-on-background transition group-hover:text-brand-400">
+              {v.title}
+            </span>
+            <span class="mt-1 block font-mono text-xs text-muted">
+              {date ? `${date} · ` : ''}youtube
+            </span>
+          </span>
+          <span class="hidden font-mono text-sm text-muted transition group-hover:text-brand-400 md:block">
+            →
+          </span>
+        </a>
+      );
+    })
+  )}
+</div>

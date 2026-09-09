@@ -1,0 +1,317 @@
+---
+import { getCollection } from 'astro:content';
+import ArticleCard from '~/components/ArticleCard.astro';
+import { getLatestVideos, episodeNum, formatEpDate } from '~/lib/youtube';
+import { getRelativeLocaleUrl } from 'astro:i18n';
+import { useTranslations } from '~/lib/i18n';
+
+interface Props {
+  locale: string;
+}
+
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+
+const [posts, authors, youtubeVideos] = await Promise.all([
+  getCollection('posts', ({ data }) => data.locale === locale),
+  getCollection('authors'),
+  getLatestVideos(),
+]);
+
+const firstVideo = youtubeVideos[0] ?? null;
+
+const published = posts
+  .filter((post) => !post.data.draft)
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+const recent = published.slice(0, 4);
+
+const ticker = t('home.ticker').split(',');
+---
+
+<!-- Hero: typography + TUI window, ghost circles (logo echo) -->
+<section class="relative overflow-hidden border-b border-border">
+  <div
+    aria-hidden="true"
+    class="pointer-events-none absolute -right-44 -top-44 h-[30rem] w-[30rem] rounded-full border-[3px] border-brand-500/[0.08]"
+  ></div>
+  <div
+    aria-hidden="true"
+    class="pointer-events-none absolute -right-24 -top-24 h-80 w-80 rounded-full border border-brand-500/10"
+  ></div>
+
+  <div class="relative grid items-center gap-12 py-16 sm:py-24 lg:grid-cols-[1.2fr_0.8fr]">
+    <div>
+      <p class="eyebrow mb-6">
+        <span class="text-brand-500">●</span> {t('home.hero.eyebrow')}
+      </p>
+      <h1 class="text-5xl font-black leading-[1.02] tracking-tight text-on-background sm:text-7xl">
+        {t('home.hero.title')}
+      </h1>
+      <p class="mt-6 max-w-xl text-lg leading-relaxed text-muted">{t('home.hero.subtitle')}</p>
+      <div class="mt-10 flex flex-wrap items-center gap-3">
+        <a
+          href="https://discorgento.com/discord"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="btn-primary"
+        >
+          {t('home.hero.ctaDiscord')}
+        </a>
+        <a
+          href={getRelativeLocaleUrl(locale, '/posts')}
+          class="border border-border px-6 py-3 font-semibold text-on-background transition hover:border-brand-500 hover:text-brand-400"
+        >
+          {t('home.hero.ctaPosts')}
+        </a>
+      </div>
+      <p class="mt-8 font-mono text-xs text-muted">
+        <span class="text-brand-500">$</span> git clone https://github.com/discorgento
+      </p>
+    </div>
+
+    <!-- TUI window (Bubble Tea / Lip Gloss style): status bar + real command -->
+    <div class="font-mono text-sm">
+      <div class="flex items-center justify-between border border-b-0 border-border bg-surface px-4 py-2.5">
+        <span class="text-muted">// {t('home.terminal.title')}</span>
+        <span class="flex gap-1.5">
+          <span class="h-2.5 w-2.5 rounded-full bg-border"></span>
+          <span class="h-2.5 w-2.5 rounded-full bg-border"></span>
+          <span class="h-2.5 w-2.5 bg-brand-500"></span>
+        </span>
+      </div>
+      <div class="border border-border bg-surface px-4 py-5">
+        <p class="text-muted">
+          <span class="text-brand-500">$</span> ./discorgento --info
+        </p>
+        <div class="my-4 h-px bg-border"></div>
+        <div class="space-y-4">
+          <div>
+            <p class="text-brand-400">&gt; {t('home.terminal.stack')}</p>
+            <p class="mt-1 pl-4 text-muted">{t('home.terminal.stackValue')}</p>
+          </div>
+          <div>
+            <p class="text-brand-400">&gt; {t('home.terminal.since')}</p>
+            <p class="mt-1 pl-4 text-muted">{t('home.terminal.sinceValue')}</p>
+          </div>
+          <div>
+            <p class="text-brand-400">&gt; {t('home.terminal.format')}</p>
+            <p class="mt-1 pl-4 text-muted">{t('home.terminal.formatValue')}</p>
+          </div>
+        </div>
+      </div>
+      <div class="flex items-center justify-between border border-t-0 border-border bg-surface px-4 py-2 text-xs text-muted">
+        <span class="flex items-center gap-2">
+          <span class="h-2 w-2 rounded-full bg-brand-500"></span>
+          online
+        </span>
+        <span>v0.0.1 · astro</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stats: real numbers computed from content -->
+  <div class="flex flex-wrap gap-x-10 gap-y-4 border-t border-border py-6 font-mono text-sm">
+    <p class="text-muted">
+      <span class="font-bold text-on-background">{recent.length}</span> {t('home.stats.articles')}
+    </p>
+    <p class="text-muted">
+      <span class="font-bold text-on-background">{authors.length}</span> {t('home.stats.authors')}
+    </p>
+    <p class="text-muted">
+      <span class="font-bold text-on-background">{t('home.stats.since')}</span>
+    </p>
+    <a
+      href="https://discorgento.com/discord"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="ml-auto text-brand-400 transition hover:text-brand-500"
+    >
+      discorgento.com/discord →
+    </a>
+  </div>
+</section>
+
+<!-- Ticker: radio waves / editorial tape -->
+<div
+  class="overflow-hidden border-b border-border bg-surface py-3 font-mono text-xs uppercase tracking-[0.2em] text-muted"
+  aria-hidden="true"
+>
+  <div class="ticker-track flex w-max items-center whitespace-nowrap">
+    {[...ticker, ...ticker].map((item) => (
+      <span class="flex items-center">
+        <span class="mx-6 text-brand-500">●</span>
+        {item}
+      </span>
+    ))}
+  </div>
+</div>
+
+<!-- Latest podcast episode (dynamic) -->
+{firstVideo && (
+  <section class="border-b border-border py-14">
+    <div class="mb-8 flex items-end justify-between border-b border-border pb-4">
+      <div>
+        <p class="eyebrow mb-2">
+          <span class="text-brand-500">●</span> {t('home.featuredEp.eyebrow')}
+        </p>
+        <h2 class="text-2xl font-bold tracking-tight text-on-background sm:text-3xl">
+          {t('home.featuredEp.title')}
+        </h2>
+      </div>
+      <a
+        href={getRelativeLocaleUrl(locale, '/podcast')}
+        class="font-mono text-sm text-brand-400 hover:underline"
+      >
+        {t('home.featuredEp.all')} →
+      </a>
+    </div>
+    <a
+      href={firstVideo.url}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="group grid gap-6 md:grid-cols-[minmax(0,22rem)_1fr] md:items-center"
+    >
+      <img
+        src={`https://i.ytimg.com/vi/${firstVideo.id}/mqdefault.jpg`}
+        alt={firstVideo.title}
+        class="aspect-video w-full border border-border object-cover"
+      />
+      <div>
+        <p class="font-mono text-sm text-muted">
+          {episodeNum(firstVideo.title) ? `#${episodeNum(firstVideo.title)}` : 'podcast'} ·{' '}
+          {formatEpDate(firstVideo.published, locale)} · youtube
+        </p>
+        <h3 class="mt-2 text-2xl font-bold leading-snug tracking-tight text-on-background transition group-hover:text-brand-400 sm:text-3xl">
+          {firstVideo.title}
+        </h3>
+        <span class="mt-5 inline-block border border-brand-500 px-5 py-2.5 font-semibold text-brand-400 transition group-hover:bg-brand-500 group-hover:text-white group-hover:shadow-[var(--shadow-glow)]">
+          {t('home.featuredEp.watch')} →
+        </span>
+      </div>
+    </a>
+  </section>
+)}
+
+<!-- What you'll find: numbered editorial list (not identical cards) -->
+<section class="py-16 sm:py-20">
+  <p class="eyebrow mb-8">
+    <span class="text-brand-500">●</span> {t('home.features.eyebrow')}
+  </p>
+  <div class="border-b border-border">
+    <a
+      href={getRelativeLocaleUrl(locale, '/podcast')}
+      class="group grid gap-3 border-t border-border py-8 transition hover:bg-surface md:grid-cols-[5rem_1fr_auto] md:items-baseline md:gap-6"
+    >
+      <span class="font-mono text-sm text-brand-500">● 01</span>
+      <span>
+        <h2 class="text-2xl font-bold tracking-tight text-on-background transition group-hover:text-brand-400 sm:text-3xl">
+          {t('home.feature.podcast.title')}
+        </h2>
+        <p class="mt-2 max-w-xl leading-relaxed text-muted">{t('home.feature.podcast.desc')}</p>
+      </span>
+      <span class="hidden font-mono text-sm text-muted transition group-hover:text-brand-400 md:block">
+        {t('home.feature.go')}
+      </span>
+    </a>
+    <a
+      href="https://discorgento.com/discord"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="group grid gap-3 border-t border-border py-8 transition hover:bg-surface md:grid-cols-[5rem_1fr_auto] md:items-baseline md:gap-6"
+    >
+      <span class="font-mono text-sm text-brand-500">● 02</span>
+      <span>
+        <h2 class="text-2xl font-bold tracking-tight text-on-background transition group-hover:text-brand-400 sm:text-3xl">
+          {t('home.feature.community.title')}
+        </h2>
+        <p class="mt-2 max-w-xl leading-relaxed text-muted">{t('home.feature.community.desc')}</p>
+      </span>
+      <span class="hidden font-mono text-sm text-muted transition group-hover:text-brand-400 md:block">
+        {t('home.feature.go')}
+      </span>
+    </a>
+    <a
+      href={getRelativeLocaleUrl(locale, '/posts')}
+      class="group grid gap-3 border-t border-border py-8 transition hover:bg-surface md:grid-cols-[5rem_1fr_auto] md:items-baseline md:gap-6"
+    >
+      <span class="font-mono text-sm text-brand-500">● 03</span>
+      <span>
+        <h2 class="text-2xl font-bold tracking-tight text-on-background transition group-hover:text-brand-400 sm:text-3xl">
+          {t('home.feature.news.title')}
+        </h2>
+        <p class="mt-2 max-w-xl leading-relaxed text-muted">{t('home.feature.news.desc')}</p>
+      </span>
+      <span class="hidden font-mono text-sm text-muted transition group-hover:text-brand-400 md:block">
+        {t('home.feature.go')}
+      </span>
+    </a>
+  </div>
+</section>
+
+<!-- Full-bleed art band with figure caption (editorial) -->
+<div class="ml-[calc(50%-50vw)] w-screen">
+  <div
+    class="h-36 w-full bg-cover bg-center sm:h-44"
+    role="img"
+    aria-label={t('home.band.aria')}
+    style="background-image: url('/img/bg-website-fhd.png')"
+  ></div>
+  <div class="border-y border-border bg-surface">
+    <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-2 font-mono text-xs text-muted sm:px-6">
+      <span>{t('home.band.caption')}</span>
+      <span class="hidden sm:block">png · 1920×1080</span>
+    </div>
+  </div>
+</div>
+
+<!-- Recent posts: first post featured -->
+<section class="py-16 sm:py-20">
+  <div class="mb-8 flex items-end justify-between border-b border-border pb-4">
+    <div>
+      <p class="eyebrow mb-2">
+        <span class="text-brand-500">●</span> {t('home.sectionPosts')}
+      </p>
+      <h2 class="text-2xl font-bold tracking-tight text-on-background sm:text-3xl">
+        {t('home.recent')}
+      </h2>
+    </div>
+    <a
+      href={getRelativeLocaleUrl(locale, '/posts')}
+      class="font-mono text-sm text-brand-400 hover:underline"
+    >
+      {t('home.allPosts')} →
+    </a>
+  </div>
+  <div class="grid gap-5 md:grid-cols-2">
+    {recent.map((post, i) => <ArticleCard post={post} featured={i === 0} />)}
+  </div>
+</section>
+
+<!-- Community entry band with glow -->
+<section class="relative overflow-hidden border-b border-t border-border bg-surface py-16 sm:py-20">
+  <div
+    class="pointer-events-none absolute inset-0"
+    aria-hidden="true"
+    style="background: radial-gradient(600px 300px at 50% 0%, rgb(236 103 55 / 0.14), transparent 70%);"
+  ></div>
+  <div class="relative mx-auto max-w-3xl text-center">
+    <p class="eyebrow mb-4">
+      <span class="text-brand-500">●</span> {t('home.join.eyebrow')}
+    </p>
+    <h2 class="text-3xl font-black tracking-tight text-on-background sm:text-4xl">
+      {t('home.join.title')}
+    </h2>
+    <p class="mx-auto mt-4 max-w-xl leading-relaxed text-muted">{t('home.join.desc')}</p>
+    <p class="mt-5 font-mono text-xs text-muted">
+      <span class="text-brand-500">$</span> discorgento.com/discord
+    </p>
+    <a
+      href="https://discorgento.com/discord"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="btn-primary mt-8"
+    >
+      {t('home.hero.ctaDiscord')}
+    </a>
+  </div>
+</section>

@@ -1,0 +1,117 @@
+---
+import { getCollection, getEntry, render } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import MainLayout from '~/layouts/MainLayout.astro';
+import { getRelativeLocaleUrl } from 'astro:i18n';
+import { useTranslations } from '~/lib/i18n';
+
+interface Props {
+  post: CollectionEntry<'posts'>;
+}
+
+const { post } = Astro.props;
+const locale = post.data.locale;
+const t = useTranslations(locale);
+const { Content } = await render(post);
+
+const author = await getEntry('authors', post.data.author);
+const slug = post.id.split('/').pop();
+
+const otherLocale = locale === 'en' ? 'pt-BR' : 'en';
+const otherPosts = await getCollection('posts', ({ data }) => data.locale === otherLocale);
+const hasTranslation = otherPosts.some((p) => p.id.split('/').pop() === slug);
+const otherLabel = locale === 'en' ? t('post.readPt') : t('post.readEn');
+const otherHref = getRelativeLocaleUrl(otherLocale, `/posts/${slug}`);
+
+const site = Astro.site ?? new URL('https://discorgento.com/');
+const postUrl = new URL(Astro.url.pathname, site);
+const articleJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: post.data.title,
+  description: post.data.description ?? undefined,
+  datePublished: post.data.pubDate.toISOString(),
+  dateModified: post.data.pubDate.toISOString(),
+  inLanguage: locale,
+  url: postUrl.href,
+  mainEntityOfPage: postUrl.href,
+  author: author
+    ? { '@type': 'Person', name: author.data.name, url: author.data.url }
+    : { '@type': 'Person', name: post.data.author },
+  publisher: {
+    '@type': 'Organization',
+    name: 'discorgento',
+    url: new URL('/', site).href,
+  },
+};
+---
+
+<MainLayout
+  title={post.data.title}
+  description={post.data.description}
+  ogType="article"
+  jsonLd={articleJsonLd}
+>
+  <article class="py-14">
+    <div class="mx-auto max-w-3xl">
+      <a
+        href={getRelativeLocaleUrl(locale, '/posts')}
+        class="mb-10 inline-block font-mono text-sm text-muted transition hover:text-brand-400"
+      >
+        ← {t('post.back')}
+      </a>
+
+      <header class="mb-10 border-b border-border pb-10">
+        <p class="eyebrow mb-4">
+          <span class="text-brand-500">●</span> {t('post.section')}
+        </p>
+        <h1 class="text-3xl font-extrabold leading-tight tracking-tight text-on-background sm:text-4xl">
+          {post.data.title}
+        </h1>
+        <div class="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2 font-mono text-sm text-muted">
+          <time>
+            {post.data.pubDate.toLocaleDateString(locale === 'en' ? 'en-US' : 'pt-BR', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+            })}
+          </time>
+          {author && (
+            <span class="flex items-center gap-2">
+              <img
+                src={author.data.avatar}
+                alt={author.data.name}
+                class="h-6 w-6 rounded-full"
+                width={24}
+                height={24}
+              />
+              {author.data.name}
+            </span>
+          )}
+        </div>
+        {post.data.tags.length > 0 && (
+          <div class="mt-6 flex flex-wrap gap-x-4 gap-y-1 font-mono text-xs text-muted">
+            {post.data.tags.map((tag) => (
+              <span>#{tag}</span>
+            ))}
+          </div>
+        )}
+      </header>
+
+      <div class="prose prose-invert max-w-none prose-headings:font-bold prose-headings:tracking-tight prose-headings:text-on-background prose-a:text-brand-400 prose-strong:text-on-background prose-code:text-brand-300">
+        <Content />
+      </div>
+
+      {hasTranslation && (
+        <div class="mt-12 border-t border-border pt-6">
+          <a
+            href={otherHref}
+            class="border border-brand-500 px-4 py-2 font-mono text-sm text-brand-400 transition hover:bg-brand-500 hover:text-white"
+          >
+            {otherLabel}
+          </a>
+        </div>
+      )}
+    </div>
+  </article>
+</MainLayout>

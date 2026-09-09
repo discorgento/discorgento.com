@@ -1,0 +1,54 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  post: CollectionEntry<'posts'>;
+  featured?: boolean;
+}
+
+const { post, featured = false } = Astro.props;
+const slug = post.id.split('/').pop();
+const locale = post.data.locale === 'en' ? 'en' : '';
+const href = `/${locale ? locale + '/' : ''}posts/${slug}`;
+---
+
+<a
+  href={href}
+  class:list={[
+    'group flex flex-col gap-3 border border-border bg-background transition hover:border-brand-500/60 hover:bg-surface hover:shadow-[var(--shadow-glow-card)]',
+    featured ? 'p-8 md:col-span-2' : 'p-6',
+  ]}
+>
+  <time class="font-mono text-xs uppercase tracking-widest text-muted">
+    {post.data.pubDate.toLocaleDateString(post.data.locale === 'en' ? 'en-US' : 'pt-BR', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    })}
+  </time>
+  <h2
+    class:list={[
+      'font-bold leading-snug tracking-tight text-on-background transition group-hover:text-brand-400',
+      featured ? 'text-2xl sm:text-3xl' : 'text-lg',
+    ]}
+  >
+    {post.data.title}
+  </h2>
+  {post.data.description && (
+    <p
+      class:list={[
+        'leading-relaxed text-muted',
+        featured ? 'line-clamp-3 text-base sm:max-w-2xl' : 'line-clamp-2 text-sm',
+      ]}
+    >
+      {post.data.description}
+    </p>
+  )}
+  {post.data.tags.length > 0 && (
+    <div class="mt-auto flex flex-wrap gap-x-3 gap-y-1 pt-2 font-mono text-xs text-muted">
+      {post.data.tags.map((tag) => (
+        <span>#{tag}</span>
+      ))}
+    </div>
+  )}
+</a>
