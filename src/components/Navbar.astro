@@ -21,7 +21,9 @@ const otherLabel = locale === 'pt-BR' ? 'EN' : 'PT';
       />
       <span class="text-lg font-bold tracking-tight text-on-background">discorgento</span>
     </a>
-    <div class="flex items-center gap-6 text-sm">
+
+    <!-- Desktop nav -->
+    <div class="hidden items-center gap-6 text-sm md:flex">
       <a href={getRelativeLocaleUrl(locale, '/posts')} class="text-muted transition hover:text-brand-400">
         {t('nav.posts')}
       </a>
@@ -52,5 +54,75 @@ const otherLabel = locale === 'pt-BR' ? 'EN' : 'PT';
         {otherLabel}
       </a>
     </div>
+
+    <!-- Mobile nav (no JS: <details> toggle) -->
+    <details class="group relative md:hidden">
+      <summary
+        class="flex h-10 w-10 cursor-pointer list-none items-center justify-center border border-border text-muted transition hover:border-brand-500 hover:text-brand-400 [&::-webkit-details-marker]:hidden"
+        aria-label={t('nav.menu')}
+      >
+        <svg
+          class="h-5 w-5 group-open:hidden"
+          viewBox="0 0 20 20"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          aria-hidden="true"
+        >
+          <path stroke-linecap="round" d="M3 5h14M3 10h14M3 15h14" />
+        </svg>
+        <svg
+          class="hidden h-5 w-5 group-open:block"
+          viewBox="0 0 20 20"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          aria-hidden="true"
+        >
+          <path stroke-linecap="round" d="M5 5l10 10M15 5L5 15" />
+        </svg>
+      </summary>
+      <div class="absolute right-0 top-full z-50 mt-2 w-64 border border-border bg-surface-raised p-4 shadow-[var(--shadow-glow-card)]">
+        <div class="flex flex-col text-sm" onclick="this.closest('details').open = false">
+          <a
+            href={getRelativeLocaleUrl(locale, '/posts')}
+            class="border-b border-border py-3 text-on-background transition hover:text-brand-400"
+          >
+            {t('nav.posts')}
+          </a>
+          <a
+            href={getRelativeLocaleUrl(locale, '/podcast')}
+            class="border-b border-border py-3 text-on-background transition hover:text-brand-400"
+          >
+            {t('nav.podcast')}
+          </a>
+          <a
+            href="https://github.com/discorgento"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="border-b border-border py-3 text-on-background transition hover:text-brand-400"
+          >
+            GitHub
+          </a>
+          <div class="flex items-center justify-between gap-3 py-3">
+            <a
+              href="https://discorgento.com/discord"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="border border-brand-500 px-3 py-2 font-semibold text-brand-400 transition hover:bg-brand-500 hover:text-white"
+            >
+              {t('nav.discord')}
+            </a>
+            <a
+              href={getRelativeLocaleUrl(otherLocale, Astro.url.pathname.replace(/^\/en/, '') || '/')}
+              class="font-mono text-xs text-muted transition hover:text-brand-400"
+              aria-label={t('nav.switchLabel')}
+            >
+              {otherLabel}
+            </a>
+          </div>
+        </div>
+      </div>
+    </details>
   </nav>
 </header>

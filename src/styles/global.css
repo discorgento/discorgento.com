@@ -76,10 +76,12 @@
 /* ---- Base ---- */
 html {
   scroll-behavior: smooth;
+  overflow-x: clip;
 }
 
 body {
   @apply bg-background text-on-background antialiased;
+  overflow-x: clip;
 }
 
 /* Headings always in the characterful display font */
@@ -151,7 +153,23 @@ body::before {
   animation: ticker 36s linear infinite;
 }
 @media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
   .ticker-track {
     animation: none;
   }
+}
+
+/* ---- Prose (post content) safe on narrow screens ----
+   Code blocks, images and tables must never overflow the viewport
+*/
+.prose pre,
+.prose table,
+.prose img {
+  max-width: 100%;
+  overflow-x: auto;
+}
+.prose img {
+  height: auto;
 }

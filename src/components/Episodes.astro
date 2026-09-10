@@ -47,10 +47,11 @@ function formatDate(published: string): string {
             src={`https://i.ytimg.com/vi/${v.id}/hqdefault.jpg`}
             alt={v.title}
             loading="lazy"
+            decoding="async"
             class="aspect-video w-full border border-border object-cover md:w-32"
           />
           <span class="block">
-            <span class="block text-lg font-bold tracking-tight text-on-background transition group-hover:text-brand-400">
+            <span class="block text-balance text-lg font-bold tracking-tight text-on-background transition group-hover:text-brand-400">
               {v.title}
             </span>
             <span class="mt-1 block font-mono text-xs text-muted">

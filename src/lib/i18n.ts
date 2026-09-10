@@ -5,6 +5,7 @@ export const locales = {
     'nav.podcast': 'Podcast',
     'nav.discord': 'Discord',
     'nav.switchLabel': 'Switch to English',
+    'nav.menu': 'Abrir menu',
     'footer.description':
       'Comunidade brasileira de tecnologia — nascemos no Magento e hoje somos muito mais. Artigos, podcast e troca de conhecimento.',
     'footer.social': 'Redes',
@@ -77,6 +78,7 @@ export const locales = {
     'nav.podcast': 'Podcast',
     'nav.discord': 'Discord',
     'nav.switchLabel': 'Mudar para português',
+    'nav.menu': 'Open menu',
     'footer.description':
       'Brazilian tech community — born in Magento, today we are much more. Articles, podcast and knowledge sharing.',
     'footer.social': 'Social',

@@ -44,10 +44,10 @@ const ticker = t('home.ticker').split(',');
       <p class="eyebrow mb-6">
         <span class="text-brand-500">●</span> {t('home.hero.eyebrow')}
       </p>
-      <h1 class="text-5xl font-black leading-[1.02] tracking-tight text-on-background sm:text-7xl">
+      <h1 class="text-balance text-[clamp(2.6rem,7.5vw,4.5rem)] font-black leading-[1.02] tracking-tight text-on-background">
         {t('home.hero.title')}
       </h1>
-      <p class="mt-6 max-w-xl text-lg leading-relaxed text-muted">{t('home.hero.subtitle')}</p>
+      <p class="mt-6 max-w-xl text-pretty text-lg leading-relaxed text-muted">{t('home.hero.subtitle')}</p>
       <div class="mt-10 flex flex-wrap items-center gap-3">
         <a
           href="https://discorgento.com/discord"
@@ -154,7 +154,7 @@ const ticker = t('home.ticker').split(',');
         <p class="eyebrow mb-2">
           <span class="text-brand-500">●</span> {t('home.featuredEp.eyebrow')}
         </p>
-        <h2 class="text-2xl font-bold tracking-tight text-on-background sm:text-3xl">
+        <h2 class="text-balance text-2xl font-bold tracking-tight text-on-background sm:text-3xl">
           {t('home.featuredEp.title')}
         </h2>
       </div>
@@ -174,6 +174,8 @@ const ticker = t('home.ticker').split(',');
       <img
         src={`https://i.ytimg.com/vi/${firstVideo.id}/mqdefault.jpg`}
         alt={firstVideo.title}
+        loading="lazy"
+        decoding="async"
         class="aspect-video w-full border border-border object-cover"
       />
       <div>
@@ -181,7 +183,7 @@ const ticker = t('home.ticker').split(',');
           {episodeNum(firstVideo.title) ? `#${episodeNum(firstVideo.title)}` : 'podcast'} ·{' '}
           {formatEpDate(firstVideo.published, locale)} · youtube
         </p>
-        <h3 class="mt-2 text-2xl font-bold leading-snug tracking-tight text-on-background transition group-hover:text-brand-400 sm:text-3xl">
+        <h3 class="mt-2 text-balance text-2xl font-bold leading-snug tracking-tight text-on-background transition group-hover:text-brand-400 sm:text-3xl">
           {firstVideo.title}
         </h3>
         <span class="mt-5 inline-block border border-brand-500 px-5 py-2.5 font-semibold text-brand-400 transition group-hover:bg-brand-500 group-hover:text-white group-hover:shadow-[var(--shadow-glow)]">
@@ -204,10 +206,10 @@ const ticker = t('home.ticker').split(',');
     >
       <span class="font-mono text-sm text-brand-500">● 01</span>
       <span>
-        <h2 class="text-2xl font-bold tracking-tight text-on-background transition group-hover:text-brand-400 sm:text-3xl">
+        <h2 class="text-balance text-2xl font-bold tracking-tight text-on-background transition group-hover:text-brand-400 sm:text-3xl">
           {t('home.feature.podcast.title')}
         </h2>
-        <p class="mt-2 max-w-xl leading-relaxed text-muted">{t('home.feature.podcast.desc')}</p>
+        <p class="mt-2 max-w-xl text-pretty leading-relaxed text-muted">{t('home.feature.podcast.desc')}</p>
       </span>
       <span class="hidden font-mono text-sm text-muted transition group-hover:text-brand-400 md:block">
         {t('home.feature.go')}
@@ -221,10 +223,10 @@ const ticker = t('home.ticker').split(',');
     >
       <span class="font-mono text-sm text-brand-500">● 02</span>
       <span>
-        <h2 class="text-2xl font-bold tracking-tight text-on-background transition group-hover:text-brand-400 sm:text-3xl">
+        <h2 class="text-balance text-2xl font-bold tracking-tight text-on-background transition group-hover:text-brand-400 sm:text-3xl">
           {t('home.feature.community.title')}
         </h2>
-        <p class="mt-2 max-w-xl leading-relaxed text-muted">{t('home.feature.community.desc')}</p>
+        <p class="mt-2 max-w-xl text-pretty leading-relaxed text-muted">{t('home.feature.community.desc')}</p>
       </span>
       <span class="hidden font-mono text-sm text-muted transition group-hover:text-brand-400 md:block">
         {t('home.feature.go')}
@@ -236,10 +238,10 @@ const ticker = t('home.ticker').split(',');
     >
       <span class="font-mono text-sm text-brand-500">● 03</span>
       <span>
-        <h2 class="text-2xl font-bold tracking-tight text-on-background transition group-hover:text-brand-400 sm:text-3xl">
+        <h2 class="text-balance text-2xl font-bold tracking-tight text-on-background transition group-hover:text-brand-400 sm:text-3xl">
           {t('home.feature.news.title')}
         </h2>
-        <p class="mt-2 max-w-xl leading-relaxed text-muted">{t('home.feature.news.desc')}</p>
+        <p class="mt-2 max-w-xl text-pretty leading-relaxed text-muted">{t('home.feature.news.desc')}</p>
       </span>
       <span class="hidden font-mono text-sm text-muted transition group-hover:text-brand-400 md:block">
         {t('home.feature.go')}
@@ -271,7 +273,7 @@ const ticker = t('home.ticker').split(',');
       <p class="eyebrow mb-2">
         <span class="text-brand-500">●</span> {t('home.sectionPosts')}
       </p>
-      <h2 class="text-2xl font-bold tracking-tight text-on-background sm:text-3xl">
+      <h2 class="text-balance text-2xl font-bold tracking-tight text-on-background sm:text-3xl">
         {t('home.recent')}
       </h2>
     </div>
@@ -298,10 +300,10 @@ const ticker = t('home.ticker').split(',');
     <p class="eyebrow mb-4">
       <span class="text-brand-500">●</span> {t('home.join.eyebrow')}
     </p>
-    <h2 class="text-3xl font-black tracking-tight text-on-background sm:text-4xl">
+    <h2 class="text-balance text-3xl font-black tracking-tight text-on-background sm:text-4xl">
       {t('home.join.title')}
     </h2>
-    <p class="mx-auto mt-4 max-w-xl leading-relaxed text-muted">{t('home.join.desc')}</p>
+    <p class="mx-auto mt-4 max-w-xl text-pretty leading-relaxed text-muted">{t('home.join.desc')}</p>
     <p class="mt-5 font-mono text-xs text-muted">
       <span class="text-brand-500">$</span> discorgento.com/discord
     </p>
