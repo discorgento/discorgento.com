@@ -7,36 +7,41 @@ import { useTranslations } from '~/lib/i18n';
 const locale = Astro.currentLocale ?? 'pt-BR';
 const t = useTranslations(locale);
 const videos = await getLatestVideos();
+const youtubeUrl = 'https://www.youtube.com/channel/UChJitnyFtNOoCe6cu-rHcow';
+const spotifyUrl = 'https://open.spotify.com/playlist/4pU2Abae7J8vdY4yqPCXRc';
 ---
 
 <MainLayout title={t('podcast.title')} description={t('podcast.desc')}>
-  <section class="border-b border-border py-16 sm:py-20">
+  <section class="border-b-2 border-on-background py-16 sm:py-20">
     <p class="eyebrow mb-4">
       <span class="text-brand-500">●</span> {t('podcast.eyebrow')}
     </p>
-    <h1 class="text-4xl font-black tracking-tight text-on-background sm:text-5xl">{t('podcast.title')}</h1>
+    <h1 class="font-display text-4xl font-black tracking-tight text-on-background sm:text-5xl">
+      {t('podcast.title')}
+    </h1>
     <p class="mt-4 max-w-2xl leading-relaxed text-muted">{t('podcast.desc')}</p>
   </section>
 
   <section class="py-14">
-    <p class="eyebrow mb-6">
-      <span class="text-brand-500">●</span> {t('podcast.latest')}
-    </p>
-    <div class="mb-10 flex flex-col items-start justify-between gap-4 border border-border bg-surface-raised p-6 sm:flex-row sm:items-center">
+    <div class="mb-10 flex flex-col items-start justify-between gap-4 border-2 border-on-background bg-surface p-6 sm:flex-row sm:items-center">
       <div>
-        <p class="font-display text-lg font-bold tracking-tight text-on-background">{t('podcast.seeAllTitle')}</p>
+        <p class="font-mono text-xs uppercase tracking-wider text-muted">youtube</p>
+        <p class="mt-2 font-display text-xl font-bold tracking-tight">{t('podcast.seeAllTitle')}</p>
         <p class="mt-1 font-mono text-xs text-muted">{t('podcast.seeAllDesc')}</p>
       </div>
       <a
-        href="https://www.youtube.com/channel/UChJitnyFtNOoCe6cu-rHcow"
+        href={youtubeUrl}
         target="_blank"
         rel="noopener noreferrer"
-        class="btn-primary"
+        class="inline-block bg-brand-500 px-6 py-3 font-semibold text-white transition hover:bg-brand-400"
       >
         {t('podcast.channel')} →
       </a>
     </div>
-    <div class="border-b border-border">
+    <p class="eyebrow mb-6">
+      <span class="text-brand-500">●</span> {t('podcast.latest')}
+    </p>
+    <div class="border-b-2 border-on-background">
       <Episodes locale={locale} videos={videos} />
     </div>
   </section>
@@ -45,23 +50,24 @@ const videos = await getLatestVideos();
     <p class="eyebrow mb-6">
       <span class="text-brand-500">●</span> {t('podcast.spotify')}
     </p>
-    <div class="mb-10 flex flex-col items-start justify-between gap-4 border border-border bg-surface-raised p-6 sm:flex-row sm:items-center">
+    <div class="mb-10 flex flex-col items-start justify-between gap-4 border-2 border-on-background bg-surface p-6 sm:flex-row sm:items-center">
       <div>
-        <p class="font-display text-lg font-bold tracking-tight text-on-background">{t('podcast.spotifyTitle')}</p>
+        <p class="font-mono text-xs uppercase tracking-wider text-muted">spotify</p>
+        <p class="mt-2 font-display text-xl font-bold tracking-tight">{t('podcast.spotifyTitle')}</p>
         <p class="mt-1 font-mono text-xs text-muted">{t('podcast.spotifyDesc')}</p>
       </div>
       <a
-        href="https://open.spotify.com/playlist/4pU2Abae7J8vdY4yqPCXRc"
+        href={spotifyUrl}
         target="_blank"
         rel="noopener noreferrer"
-        class="btn-primary"
+        class="inline-block bg-brand-500 px-6 py-3 font-semibold text-white transition hover:bg-brand-400"
       >
         {t('podcast.spotifyChannel')} →
       </a>
     </div>
     <iframe
       src="https://open.spotify.com/embed/playlist/4pU2Abae7J8vdY4yqPCXRc?utm_source=generator&theme=0"
-      class="min-h-[380px] w-full border border-border bg-surface-raised"
+      class="min-h-[380px] w-full border-2 border-on-background bg-surface"
       frameBorder="0"
       allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
       loading="lazy"

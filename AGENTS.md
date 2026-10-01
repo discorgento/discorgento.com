@@ -48,6 +48,7 @@ No lint, typecheck, or test commands exist. `npm run build` is the only meaningf
 - **Deps with build scripts** (`esbuild`, `workerd`) need `allowScripts` in `package.json` (already configured).
 - **Imports use the `~/` alias** (defined in `tsconfig.json` → `./src/*`) — never use relative `../`/`../../`.
 - **Always run `npm run build` from the repo root.** The content layer `glob()` resolves `base` relative to the build cwd — if a CI/monorepo builds from another folder, it resolves to a nonexistent directory and returns an empty collection **silently** (build "passes", site ships without posts). `import.meta.url` is not an alternative: Astro rewrites the `content.config.ts` URL.
+- **Never run `npm run build` while the background dev server is running.** Both share `node_modules/.vite`, and the Cloudflare adapter's SSR dep-optimizer cache (`deps_ssr`) is re-optimized by the build. The running workerd runner then points at a deleted `@astrojs_cloudflare_entrypoints_server.js?v=<hash>` and every request returns 500 ("The file does not exist at … which is in the optimize deps directory"), while the production build itself still passes. Fix: `npm run dev:stop`, `rm -rf node_modules/.vite`, `npm run dev:start`.
 - `wrangler.toml` (local, legacy) and `.wrangler/` are in `.gitignore` — they may contain sensitive account_id/IDs. Versioned configs are `wrangler.jsonc` (production) and `wrangler.staging.jsonc` (staging) — both without secrets. If one exists locally, delete `wrangler.toml` so it doesn't conflict with the versioned configs.
 
 ## Deploy

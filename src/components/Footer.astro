@@ -3,15 +3,23 @@ import { useTranslations } from '~/lib/i18n';
 
 const locale = Astro.currentLocale ?? 'pt-BR';
 const t = useTranslations(locale);
+const discordUrl = 'https://discorgento.com/discord';
+const githubUrl = 'https://github.com/discorgento';
+const youtubeUrl = 'https://www.youtube.com/@discorgento';
+const spotifyUrl = 'https://open.spotify.com/playlist/4pU2Abae7J8vdY4yqPCXRc';
+const substackUrl = 'https://discorgento.substack.com';
+const twitterUrl = 'https://twitter.com/discorgento';
 ---
 
-<footer class="mt-16 border-t border-border bg-surface-raised">
+<footer class="mt-16 border-t-2 border-on-background bg-surface">
   <div class="mx-auto max-w-6xl px-4 py-14 sm:px-6">
     <div class="flex flex-col gap-10 sm:flex-row sm:items-start sm:justify-between">
       <div class="max-w-xs">
-        <a href="/" class="flex items-center gap-2">
-          <img src="/img/logo.svg" alt="discorgento logo" class="h-7 w-7" width={28} height={28} />
-          <span class="font-display text-lg font-bold tracking-tight text-on-background">discorgento</span>
+        <a href="/" class="flex items-center gap-1.5">
+          <img src="/img/logo.svg" alt="discorgento logo" class="h-5 w-5" width={20} height={20} />
+          <span class="font-display text-xl font-extrabold lowercase tracking-tight text-on-background">
+            discorgento
+          </span>
         </a>
         <p class="mt-3 text-sm leading-relaxed text-muted">{t('footer.description')}</p>
       </div>
@@ -21,52 +29,32 @@ const t = useTranslations(locale);
         </p>
         <ul class="space-y-3">
           <li>
-            <a
-              href="https://discorgento.com/discord"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="text-muted transition hover:text-brand-400"
-            >
+            <a href={discordUrl} target="_blank" rel="noopener noreferrer" class="text-muted transition hover:text-brand-400">
               discorgento.com/discord
             </a>
           </li>
           <li>
-            <a
-              href="https://github.com/discorgento"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="text-muted transition hover:text-brand-400"
-            >
+            <a href={githubUrl} target="_blank" rel="noopener noreferrer" class="text-muted transition hover:text-brand-400">
               github.com/discorgento
             </a>
           </li>
           <li>
-            <a
-              href="https://www.youtube.com/@discorgento"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="text-muted transition hover:text-brand-400"
-            >
+            <a href={youtubeUrl} target="_blank" rel="noopener noreferrer" class="text-muted transition hover:text-brand-400">
               youtube.com/@discorgento
             </a>
           </li>
           <li>
-            <a
-              href="https://open.spotify.com/playlist/4pU2Abae7J8vdY4yqPCXRc"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="text-muted transition hover:text-brand-400"
-            >
+            <a href={spotifyUrl} target="_blank" rel="noopener noreferrer" class="text-muted transition hover:text-brand-400">
               open.spotify.com/discorgento
             </a>
           </li>
           <li>
-            <a
-              href="https://twitter.com/discorgento"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="text-muted transition hover:text-brand-400"
-            >
+            <a href={substackUrl} target="_blank" rel="noopener noreferrer" class="text-muted transition hover:text-brand-400">
+              discorgento.substack.com
+            </a>
+          </li>
+          <li>
+            <a href={twitterUrl} target="_blank" rel="noopener noreferrer" class="text-muted transition hover:text-brand-400">
               twitter.com/discorgento
             </a>
           </li>
@@ -81,7 +69,7 @@ const t = useTranslations(locale);
     </div>
     <div class="mt-8 flex flex-wrap items-center justify-between gap-2 border-t border-white/10 pt-6">
       <p class="font-mono text-xs text-muted/70">© {new Date().getFullYear()} discorgento</p>
-      <p class="font-mono text-xs text-muted/70">ed. 001 · astro</p>
+      <p class="font-mono text-xs text-muted/70">desde 2021 · astro</p>
       <p class="font-mono text-xs text-muted/50">magento · vtex · shopify · bigcommerce · php · js · [+etc]</p>
     </div>
   </div>

@@ -1,0 +1,113 @@
+---
+import { getTeam } from '~/lib/team';
+import { useTranslations } from '~/lib/i18n';
+
+interface Props {
+  locale: string;
+}
+
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+const people = getTeam(locale);
+const discordUrl = 'https://discorgento.com/discord';
+---
+
+<section class="border-b-2 border-on-background py-16 sm:py-20">
+  <p class="eyebrow mb-4">
+    <span class="text-brand-500">●</span> {t('team.eyebrow')}
+  </p>
+  <h1 class="font-display text-4xl font-black tracking-tight text-on-background sm:text-5xl">
+    {t('team.title')}
+  </h1>
+  <p class="mt-4 max-w-2xl leading-relaxed text-muted">{t('team.desc')}</p>
+  <p class="mt-6 font-mono text-xs uppercase tracking-wider text-muted">
+    {people.length.toString().padStart(2, '0')} · {t('home.hosts.label')}
+  </p>
+</section>
+
+<section class="py-14">
+  <div class="grid gap-8">
+    {
+      people.map((person, index) => (
+        <article
+          id={person.slug}
+          class="grid gap-6 border-2 border-on-background bg-surface p-6 sm:grid-cols-[minmax(0,200px)_1fr] sm:gap-8 sm:p-8"
+        >
+          <a
+            href={person.profile}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="group relative block overflow-hidden border border-border"
+            aria-label={`${person.name} — ${t('home.hosts.profile')}`}
+          >
+            {person.photo ? (
+              <img
+                src={person.photo}
+                alt={person.name}
+                width="400"
+                height="400"
+                loading="lazy"
+                decoding="async"
+                class="aspect-square w-full object-cover"
+              />
+            ) : (
+              <span class="flex aspect-square w-full items-center justify-center font-display text-4xl font-black text-muted">
+                {person.initials}
+              </span>
+            )}
+            <span class="absolute left-3 top-3 z-10 bg-brand-500 px-2 py-0.5 font-mono text-xs text-white">
+              0{index + 1}
+            </span>
+            <span class="absolute inset-x-0 bottom-0 translate-y-full bg-brand-500 px-3 py-1.5 font-mono text-xs uppercase tracking-wider text-white transition group-hover:translate-y-0">
+              {t('home.hosts.profile')} ↗
+            </span>
+          </a>
+
+          <div>
+            <h2 class="font-display text-2xl font-black tracking-tight text-on-background sm:text-3xl">
+              {person.name}
+            </h2>
+            <span class="mt-2 block h-0.5 w-10 bg-brand-500" aria-hidden="true" />
+            <p class="mt-3 font-mono text-xs uppercase tracking-wider text-muted">{person.role}</p>
+            {person.bio ? (
+              <p class="mt-4 max-w-2xl leading-relaxed text-on-background/80">{person.bio}</p>
+            ) : (
+              <p class="mt-4 font-mono text-xs text-muted">{t('team.bio.pending')}</p>
+            )}
+            <div class="mt-6 flex flex-wrap gap-2">
+              {person.socials.map((social) => (
+                <a
+                  href={social.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="border border-border px-3 py-1.5 font-mono text-xs uppercase tracking-wider text-muted transition hover:border-brand-500 hover:text-brand-400"
+                  aria-label={`${person.name} — ${social.label}`}
+                >
+                  {social.label} ↗
+                </a>
+              ))}
+            </div>
+          </div>
+        </article>
+      ))
+    }
+  </div>
+</section>
+
+<section class="border-t-2 border-on-background py-16">
+  <p class="eyebrow mb-4">
+    <span class="text-brand-500">●</span> {t('home.join.eyebrow')}
+  </p>
+  <h2 class="font-display text-3xl font-black tracking-tight text-on-background">
+    {t('home.join.title')}
+  </h2>
+  <p class="mt-3 max-w-2xl leading-relaxed text-muted">{t('home.join.desc')}</p>
+  <a
+    href={discordUrl}
+    target="_blank"
+    rel="noopener noreferrer"
+    class="mt-6 inline-block bg-brand-500 px-6 py-3 font-semibold text-white transition hover:bg-brand-400"
+  >
+    {t('home.hero.ctaDiscord')} →
+  </a>
+</section>

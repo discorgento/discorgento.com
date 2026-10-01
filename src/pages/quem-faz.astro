@@ -1,0 +1,12 @@
+---
+import MainLayout from '~/layouts/MainLayout.astro';
+import TeamPage from '~/components/TeamPage.astro';
+import { useTranslations } from '~/lib/i18n';
+
+const locale = Astro.currentLocale ?? 'pt-BR';
+const t = useTranslations(locale);
+---
+
+<MainLayout title={t('team.title')} description={t('team.desc')}>
+  <TeamPage locale={locale} />
+</MainLayout>
