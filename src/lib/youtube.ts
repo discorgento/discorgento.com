@@ -1,5 +1,11 @@
 // Fetches the latest videos from the discorgento YouTube channel via the public RSS feed.
 // Runs at build time (node) — no CORS, no API key. The feed delivers the 15 most recent videos.
+//
+// The feed is not dependable from CI: it answers 404 from datacenter IPs and 500 under load.
+// A build must never ship a home page with no cover art and no episodes, so the fetch falls
+// back to the committed snapshot in src/data/episodes.json when it yields nothing.
+
+import snapshot from '~/data/episodes.json';
 
 const CHANNEL_ID = 'UChJitnyFtNOoCe6cu-rHcow';
 const FEED_URL = `https://www.youtube.com/feeds/videos.xml?channel_id=${CHANNEL_ID}`;
@@ -49,8 +55,8 @@ function parseFeed(xml: string): Video[] {
 }
 
 export async function getLatestVideos(): Promise<Video[]> {
-  // The feed answers 500 intermittently. Retry, and shout in the build log:
-  // an empty list silently ships a site with no episodes at all.
+  // The feed answers 500 under load and 404 from datacenter IPs. Retry, and shout in the
+  // build log: an empty list silently ships a site with no episodes at all.
   for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
     try {
       const res = await fetch(FEED_URL, {
@@ -65,7 +71,10 @@ export async function getLatestVideos(): Promise<Video[]> {
       }
 
       // 4xx means we are being refused, not throttled: retrying won't help.
-      if (res.status < 500 && res.status !== 429) break;
+      if (res.status < 500 && res.status !== 429) {
+        console.warn(`[youtube] feed refused with ${res.status}`);
+        break;
+      }
 
       console.warn(
         `[youtube] feed returned ${res.status}, attempt ${attempt}/${MAX_ATTEMPTS}`
@@ -80,10 +89,8 @@ export async function getLatestVideos(): Promise<Video[]> {
     if (attempt < MAX_ATTEMPTS) await sleep(attempt * 1000);
   }
 
-  console.warn(
-    '[youtube] no episodes fetched — the site will build with an empty episode list'
-  );
-  return [];
+  console.warn('[youtube] falling back to the committed snapshot in src/data/episodes.json');
+  return snapshot as Video[];
 }
 
 export function episodeNum(title: string): string | null {
