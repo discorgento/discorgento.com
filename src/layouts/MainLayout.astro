@@ -34,7 +34,7 @@ const pageTitle = title ? `${title} · ${siteTitle}` : siteTitle;
 const pageDescription = description ?? t('home.hero.subtitle');
 const site = Astro.site ?? new URL('https://discorgento.com/');
 const canonical = new URL(Astro.url.pathname, site);
-const ogImage = new URL('/img/bg-website-fhd.png', site);
+const ogImage = new URL('/img/og.jpg', site);
 
 // Open Graph uses underscored territory tags, which don't match the BCP-47
 // locale ids ('pt-BR' → 'pt_BR', 'en' → 'en_US', 'es' → 'es_ES').
@@ -124,7 +124,12 @@ const structuredData = {
         />
       ))
     }
-    <link rel="canonical" href={canonical} />
+    {/* A canonical URL is a claim that this is *the* address of this content. On a
+        noindex page it is at best noise and at worst a pointer at an address that
+        does not exist — the 404's canonical resolved to /404/, which is not a
+        route. Suppressed here for the same reason the hreflang set is: the 404 is
+        not a translation of anything. */}
+    {!robots?.includes('noindex') && <link rel="canonical" href={canonical} />}
     {/* The site ships three locales side by side. Without hreflang, a crawler
         or agent reading the page has no machine-readable way to learn that
         /en/ and /es/ are translations of this exact page. x-default points at
@@ -143,8 +148,8 @@ const structuredData = {
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={ogImage} />
     <meta property="og:image:alt" content={pageTitle} />
-    <meta property="og:image:width" content="1920" />
-    <meta property="og:image:height" content="1080" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
     <meta property="og:locale" content={ogLocale} />
     {LOCALES.filter((l) => l !== locale).map((l) => (
       <meta property="og:locale:alternate" content={OG_LOCALE[l]} />

@@ -52,7 +52,8 @@ No lint, typecheck, or test commands exist. `npm run build` is the only meaningf
 - `src/lib/i18n.ts` — UI strings per locale (`pt-BR`, `en`, `es`) + `useTranslations(locale)`, plus `LOCALE_META` (language-switcher labels), `stripLocale` (drop the `/en` or `/es` prefix) and `intlLocale` (`Intl` tag per locale).
 - `src/lib/youtube.ts` — channel RSS fetch at build (`getLatestVideos`, `episodeNum`, `formatEpDate`, `thumb`); on failure it degrades to the committed snapshot in `src/data/episodes.json`. `thumb()` returns a self-hosted path for ids present in `CACHED_THUMBS` and the remote `i.ytimg.com` URL otherwise.
 - `plugins/thumb-cache.mjs` — Vite plugin emitting `virtual:discorgento-thumb-cache` with the ids cached under `public/img/episodes/`. Exists because page code cannot read the filesystem during prerender.
-- `scripts/sync-thumbs.mjs` — `npm run thumbs:sync`; downloads missing episode thumbnails (320 for every episode, 1280 for the newest only, which is the only one ever used as the cover).
+- `scripts/sync-thumbs.mjs` — `npm run thumbs:sync`; downloads the missing episode thumbnails. Only `mqdefault` (320x180) and `maxresdefault` (1280x720) are genuinely 16:9 on YouTube — `hqdefault` (480x360) and `sddefault` (640x480) are 4:3 and lose a quarter of the frame to the 16:9 `object-fit`. So every episode gets 320 and 1280, and the 640 is **derived** from the 1280 with sharp rather than downloaded. Page `srcset` picks between the three.
+- `scripts/gen-og.mjs` — `npm run og:generate`; builds `public/img/og.jpg`, the 1200x630 social card. Run it after changing the palette, the logo or the wordmark.
 - `src/lib/substack.ts` — `getLatestSubstackPosts`, same build-time fetch with the same silent degradation.
 - `src/lib/discord.ts` — `getDiscordStats`, community member count for the home page.
 - `src/lib/team.ts` — `team` / `getTeam`, the host roster behind `TeamPage`.

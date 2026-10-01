@@ -20,6 +20,7 @@
     "build": "node scripts/build.mjs",
     "build:raw": "astro build",
     "thumbs:sync": "node scripts/sync-thumbs.mjs",
+    "og:generate": "node scripts/gen-og.mjs",
     "preview": "astro preview",
     "astro": "astro"
   },
