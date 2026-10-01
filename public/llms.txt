@@ -1,0 +1,25 @@
+# discorgento
+
+> Podcast de entrevistas sobre e-commerce e engenharia, com newsletter e comunidade aberta no Discord.
+
+O discorgento é uma comunidade brasileira de tecnologia que nasceu no Magento e hoje publica um podcast de entrevistas sobre e-commerce e engenharia, uma newsletter e uma rede aberta no Discord. O conteúdo principal é o podcast, distribuído no YouTube, com episódios também espelhados em Spotify.
+
+## Podcast
+
+- [Todos os episódios](https://discorgento.com/podcast/): episódios do discorgento, do mais recente ao mais antigo.
+- [Canal no YouTube](https://www.youtube.com/@discorgento): cada episódio publicado em vídeo, com convidado e tema.
+
+## Sobre
+
+- [Quem faz o discorgento](https://discorgento.com/quem-faz/): a equipe por trás do podcast e do Discord, com perfis e redes.
+- [Discord](https://discord.gg/amfwybm3yj): a comunidade, o ponto de entrada para conversar sobre tecnologia.
+- [Newsletter (Substack)](https://discorgento.substack.com/): edições com bastidores, links e novidades selecionadas.
+
+## Outros idiomas
+
+- [English edition](https://discorgento.com/en/): versão em inglês do site, com as mesmas páginas de podcast e equipe.
+- [Edición en español](https://discorgento.com/es/): versión en español del sitio, con las mismas páginas de podcast y equipo.
+
+## Opcional
+
+- [Substack no Twitter](https://twitter.com/discorgento): anúncios e atualizações curtas.

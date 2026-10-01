@@ -2,11 +2,13 @@
 import MainLayout from '~/layouts/MainLayout.astro';
 import TeamPage from '~/components/TeamPage.astro';
 import { useTranslations } from '~/lib/i18n';
+import { buildTeamJsonLd } from '~/lib/team';
 
 const locale = Astro.currentLocale ?? 'pt-BR';
 const t = useTranslations(locale);
+const site = Astro.site ?? new URL('https://discorgento.com/');
 ---
 
-<MainLayout title={t('team.title')} description={t('team.desc')}>
+<MainLayout title={t('team.title')} description={t('team.desc')} jsonLd={buildTeamJsonLd(locale, site)}>
   <TeamPage locale={locale} />
 </MainLayout>

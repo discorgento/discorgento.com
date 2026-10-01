@@ -15,8 +15,12 @@ dist/
 wrangler.toml
 
 # Environment
+# The Vite/Astro convention, not just .env and .env.production: .env.local,
+# .env.staging and .env.development are the ones that actually show up. This
+# project has a staging Worker, so a staged .env.staging is a real risk.
 .env
-.env.production
+.env.*
+!.env.example
 
 # Misc
 .DS_Store

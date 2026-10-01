@@ -1,7 +1,13 @@
 // Fetches the latest posts from the discorgento Substack publication RSS feed.
-// Runs at build time — public feed, no auth. Degrades to [] silently (same pattern as youtube.ts).
+// Runs at build time — public feed, no auth. Degrades to [] when it fails.
+//
+// The timeout is not optional: this fetch runs inside `astro build`, so a feed that
+// accepts the connection and then never responds hangs the whole build with no
+// error. Same for discord.ts. youtube.ts retries as well because its failure loses
+// the entire home page; a missing newsletter block is not worth three attempts.
 
 const FEED_URL = 'https://discorgento.substack.com/feed';
+const TIMEOUT_MS = 10_000;
 
 export interface SubstackPost {
   title: string;
@@ -25,10 +31,17 @@ export async function getLatestSubstackPosts(limit = 3): Promise<SubstackPost[]>
   try {
     const res = await fetch(FEED_URL, {
       headers: { 'user-agent': 'discorgento-site' },
+      signal: AbortSignal.timeout(TIMEOUT_MS),
     });
-    if (!res.ok) return [];
+    if (!res.ok) {
+      console.warn(`[substack] feed returned ${res.status}`);
+      return [];
+    }
     const text = await res.text();
-    if (!text.includes('<item>')) return [];
+    if (!text.includes('<item>')) {
+      console.warn('[substack] feed carried no <item>, skipping the newsletter block');
+      return [];
+    }
 
     return text
       .split('<item>')
@@ -42,7 +55,11 @@ export async function getLatestSubstackPosts(limit = 3): Promise<SubstackPost[]>
       })
       .filter((post): post is SubstackPost => post !== null)
       .slice(0, limit);
-  } catch {
+  } catch (err) {
+    console.warn(
+      '[substack] feed request failed, the newsletter block will not render:',
+      err instanceof Error ? err.message : err
+    );
     return [];
   }
 }

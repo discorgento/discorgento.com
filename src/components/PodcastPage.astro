@@ -1,0 +1,134 @@
+---
+/**
+ * The whole /podcast/ route body, shared by both locales.
+ *
+ * The pt-BR and en pages used to be two near-identical copies that differed only
+ * in the hardcoded series URL and the Spotify iframe title. They already drifted
+ * once — the English edition shipped without the PodcastSeries JSON-LD — so the
+ * body lives here and the locale is the only input.
+ */
+import MainLayout from '~/layouts/MainLayout.astro';
+import Episodes from '~/components/Episodes.astro';
+import { getLatestVideos, episodeNum } from '~/lib/youtube';
+import { useTranslations } from '~/lib/i18n';
+import { getRelativeLocaleUrl } from 'astro:i18n';
+
+interface Props {
+  locale: string;
+}
+
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+const videos = await getLatestVideos();
+const youtubeUrl = 'https://www.youtube.com/channel/UChJitnyFtNOoCe6cu-rHcow';
+const spotifyUrl = 'https://open.spotify.com/playlist/4pU2Abae7J8vdY4yqPCXRc';
+const site = Astro.site ?? new URL('https://discorgento.com/');
+
+// PodcastSeries names the show as a whole; each episode is a PodcastEpisode
+// pointing back at it. Without this an agent only sees a page of links and has
+// to infer that they are episodes of one show. The @id is the localized URL, so
+// the two editions stay distinct nodes instead of overwriting each other, and
+// both point at the shared Organization from MainLayout.
+const podcastUrl = new URL(getRelativeLocaleUrl(locale, '/podcast'), site).href;
+const publisherId = `${new URL('/', site).href}#organization`;
+const seriesId = `${podcastUrl}#series`;
+const podcastJsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'PodcastSeries',
+      '@id': seriesId,
+      name: t('podcast.title'),
+      description: t('podcast.desc'),
+      url: podcastUrl,
+      inLanguage: locale,
+      publisher: { '@id': publisherId },
+      episode: videos.map((v) => {
+        const n = episodeNum(v.title);
+        return {
+          '@type': 'PodcastEpisode',
+          name: v.title,
+          url: v.url,
+          datePublished: v.published,
+          ...(n ? { episodeNumber: n } : {}),
+          partOfSeries: { '@id': seriesId },
+        };
+      }),
+    },
+    {
+      '@type': 'ItemList',
+      name: t('podcast.latest'),
+      itemListElement: videos.map((v, i) => ({
+        '@type': 'ListItem',
+        position: i + 1,
+        url: v.url,
+        name: v.title,
+      })),
+    },
+  ],
+};
+---
+
+<MainLayout title={t('podcast.title')} description={t('podcast.desc')} jsonLd={podcastJsonLd}>
+  <section class="border-b-2 border-on-background py-16 sm:py-20">
+    <p class="eyebrow mb-4">
+      <span class="text-brand-500">●</span> {t('podcast.eyebrow')}
+    </p>
+    <h1 class="font-display text-4xl font-black tracking-tight text-on-background sm:text-5xl">
+      {t('podcast.title')}
+    </h1>
+    <p class="mt-4 max-w-2xl leading-relaxed text-muted">{t('podcast.desc')}</p>
+  </section>
+
+  <section class="py-14">
+    <div class="mb-10 flex flex-col items-start justify-between gap-4 border-2 border-on-background bg-surface p-6 sm:flex-row sm:items-center">
+      <div>
+        <p class="font-mono text-xs uppercase tracking-wider text-muted">youtube</p>
+        <h2 class="mt-2 font-display text-xl font-bold tracking-tight">{t('podcast.seeAllTitle')}</h2>
+        <p class="mt-1 font-mono text-xs text-muted">{t('podcast.seeAllDesc')}</p>
+      </div>
+      <a
+        href={youtubeUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-block bg-brand-500 px-6 py-3 font-semibold text-background transition hover:bg-brand-400"
+      >
+        {t('podcast.channel')} →
+      </a>
+    </div>
+    <p class="eyebrow mb-6">
+      <span class="text-brand-500">●</span> {t('podcast.latest')}
+    </p>
+    <div class="border-b-2 border-on-background">
+      <Episodes locale={locale} videos={videos} />
+    </div>
+  </section>
+
+  <section class="pb-20">
+    <p class="eyebrow mb-6">
+      <span class="text-brand-500">●</span> {t('podcast.spotify')}
+    </p>
+    <div class="mb-10 flex flex-col items-start justify-between gap-4 border-2 border-on-background bg-surface p-6 sm:flex-row sm:items-center">
+      <div>
+        <p class="font-mono text-xs uppercase tracking-wider text-muted">spotify</p>
+        <h2 class="mt-2 font-display text-xl font-bold tracking-tight">{t('podcast.spotifyTitle')}</h2>
+        <p class="mt-1 font-mono text-xs text-muted">{t('podcast.spotifyDesc')}</p>
+      </div>
+      <a
+        href={spotifyUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-block bg-brand-500 px-6 py-3 font-semibold text-background transition hover:bg-brand-400"
+      >
+        {t('podcast.spotifyChannel')} →
+      </a>
+    </div>
+    <iframe
+      src="https://open.spotify.com/embed/playlist/4pU2Abae7J8vdY4yqPCXRc?utm_source=generator&theme=0"
+      class="min-h-[380px] w-full border-2 border-on-background bg-surface"
+      allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+      loading="lazy"
+      title={t('podcast.spotifyEmbedTitle')}
+    ></iframe>
+  </section>
+</MainLayout>

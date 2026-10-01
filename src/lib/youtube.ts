@@ -6,6 +6,11 @@
 // back to the committed snapshot in src/data/episodes.json when it yields nothing.
 
 import snapshot from '~/data/episodes.json';
+import { intlLocale } from '~/lib/i18n';
+// Ids we have on disk, emitted at build time by plugins/thumb-cache.mjs. Reading
+// the filesystem from here is not an option: prerendering runs inside workerd,
+// where no path base resolves to the real project.
+import { CACHED_THUMBS } from 'virtual:discorgento-thumb-cache';
 
 const CHANNEL_ID = 'UChJitnyFtNOoCe6cu-rHcow';
 const FEED_URL = `https://www.youtube.com/feeds/videos.xml?channel_id=${CHANNEL_ID}`;
@@ -93,6 +98,46 @@ export async function getLatestVideos(): Promise<Video[]> {
   return snapshot as Video[];
 }
 
+// Thumbnail URLs, self-hosted under public/img/episodes/ instead of i.ytimg.com.
+// Three reasons, in order of weight: the cover is the LCP element and a third-party
+// origin puts a DNS + TLS handshake on the critical path; Cloudflare cannot cache
+// what it does not control, so every cold view re-fetches from Google; and ytimg
+// leaks the visitor's IP to Google before they click anything.
+//
+// Sizing is deliberate, and the YouTube ladder is not what it looks like. Only
+// mqdefault (320x180) and maxresdefault/hq720 (1280x720) are genuinely 16:9;
+// hqdefault is 480x360 and sddefault is 640x480, both 4:3, and either would lose
+// a quarter of the frame to the 16:9 object-fit: cover. Measured against the
+// layout, that leaves three tiers:
+//
+//   320  →  the mobile card, whose art is a 7.5rem strip (120 CSS px) at 1x–2x
+//   640  →  the same strip on a 3x phone, and desktop cards at 1x. YouTube has
+//          no 16:9 asset this wide, so this one is derived from the 1280 by
+//          scripts/sync-thumbs.mjs rather than downloaded.
+//   1280 →  the cover, and cards on a 2x tablet, where 320 was drawing at 0.47x
+//
+// Do not add a downloaded mid tier without re-measuring the file it produces;
+// `sddefault` is 640x480, not 640x360.
+//
+// The local copies are an optimisation, never a requirement: the feed yields a new
+// id on every publish, and nobody is around to commit its thumbnail in the same
+// commit that publishes the episode. Any id missing from CACHED_THUMBS falls back
+// to the remote original, so a new episode costs one cross-origin request instead
+// of a broken image. Run `npm run thumbs:sync` to pull the new files in.
+
+/**
+ * Fallback for each size when there is no local copy. 640 has no YouTube variant
+ * of its own, so it falls back to the 1280 — never to sddefault, which would hand
+ * back a 4:3 frame to a 16:9 box.
+ */
+const REMOTE_VARIANT = { 320: 'mqdefault', 640: 'maxresdefault', 1280: 'maxresdefault' } as const;
+export type ThumbSize = keyof typeof REMOTE_VARIANT;
+
+export function thumb(id: string, size: ThumbSize = 320): string {
+  const has = CACHED_THUMBS[id]?.includes(size) ?? false;
+  return has ? `/img/episodes/${id}-${size}.jpg` : `https://i.ytimg.com/vi/${id}/${REMOTE_VARIANT[size]}.jpg`;
+}
+
 export function episodeNum(title: string): string | null {
   const m = title.match(/^#(\d+)/);
   return m ? m[1] : null;
@@ -100,10 +145,13 @@ export function episodeNum(title: string): string | null {
 
 export function formatEpDate(published: string, locale: string): string {
   try {
-    return new Intl.DateTimeFormat(locale === 'pt-BR' ? 'pt-BR' : 'en-US', {
+    // UTC: the feed stamps are UTC and the build machine's timezone must not
+    // decide which day an episode falls on.
+    return new Intl.DateTimeFormat(intlLocale(locale), {
       day: '2-digit',
       month: 'short',
       year: 'numeric',
+      timeZone: 'UTC',
     }).format(new Date(published));
   } catch {
     return '';

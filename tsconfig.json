@@ -5,7 +5,8 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "~/*": ["./src/*"]
+      "~/*": ["./src/*"],
+      "virtual:discorgento-thumb-cache": ["./plugins/thumb-cache.d.ts"]
     }
   }
 }

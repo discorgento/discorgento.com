@@ -3,6 +3,8 @@
 /* Full build: exposes the opsz/SOFT/WONK axes (optical sizing + axis play).
    Same subsets as the standard build, ~52K bigger on the latin subset. */
 @import "@fontsource-variable/fraunces/full.css";
+/* Brand wordmark face, see --font-brand below. */
+@import "@fontsource-variable/outfit";
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
@@ -43,12 +45,21 @@
   --color-brand-800: #a03d21;
   --color-brand-900: #7a2d18;
 
+  /* YouTube red: used only where the UI explicitly points at YouTube (the
+     cover stamp and the caption link), so the external destination reads as
+     YouTube instead of blending into the orange brand. */
+  --color-youtube: #ff0033;
+
   /* ---- Warm surfaces (dark theme with orange bias) ----
      No zinc: warm black, like ink on dark paper
   */
-  --color-background: #16130f;
-  --color-surface: #1f1b15;      /* card/container hover */
-  --color-surface-raised: #262019; /* footer, bars */
+  /* Shifted down 8 per channel from the previous #16130f / #1f1b15 / #262019
+     set. Moving all three by the same amount keeps their separation intact, so
+     hover states still read as hover states; only the floor under the warm white
+     text drops, which raises contrast rather than lowering it. */
+  --color-background: #0e0c0a;
+  --color-surface: #171410;      /* card/container hover */
+  --color-surface-raised: #1e1a14; /* footer, bars */
 
   /* ---- Text (warm white) ----
      Different from #f4f4f5 (zinc): paper instead of screen
@@ -67,6 +78,14 @@
   --font-display: "Fraunces Variable", Georgia, serif;
   --font-mono: "JetBrains Mono Variable", ui-monospace, SFMono-Regular, Menlo, monospace;
 
+  /* Brand wordmark face, used only on the "discorgento" lockup (masthead and
+     nav), never on running copy. TypoGraphica v3.0 is the intended face, but it
+     is free for personal use only — the dafont build is a demo and the ffonts
+     copy is unlicensed, so neither can be self-hosted here. Outfit is the
+     stand-in: same geometric skeleton, emboldened weight, sharp diagonal
+     terminals. Swap the first family name when a licensed webfont arrives. */
+  --font-brand: "Outfit Variable", var(--font-display);
+
   /* ---- Glow (sparingly: card hover, nav dropdown) ---- */
   --shadow-glow-card: 0 0 0 1px rgb(236 103 55 / 0.4), 0 0 32px rgb(236 103 55 / 0.18);
 }
@@ -75,6 +94,14 @@
 html {
   scroll-behavior: smooth;
   overflow-x: clip;
+  /* Stops the scroll chaining past the ends of the document, which otherwise
+     hands the gesture to the browser's back/forward swipe mid-page. */
+  overscroll-behavior-y: none;
+  /* The default scrollbar on Linux and Windows is a wide grey slab that fights
+     the palette. Standard properties only, so Firefox and the Chromium family
+     both honour them without a ::-webkit-scrollbar block. */
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-brand-700) var(--color-background);
 }
 
 body {
@@ -157,6 +184,38 @@ body::after {
   outline-offset: 2px;
 }
 
+/* ---- Skip link (WCAG 2.4.1 Bypass Blocks) ----
+   Lives as the first focusable element in the body. Off-screen until focused,
+   then pinned to the top-left above everything else (the grain overlay sits at
+   z-100, so this needs to clear it) and given the brand focus ring for a
+   visible focus indicator.
+   Deliberately not Tailwind utilities: the off-screen state uses a negative
+   offset, which is clearer as a component class next to the other layout
+   helpers above.
+*/
+.skip-link {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 200;
+  padding: 0.75rem 1.25rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--color-background);
+  background: var(--color-brand-500);
+  border: 2px solid var(--color-brand-500);
+  transform: translateY(-110%);
+  transition: transform 0.15s ease;
+}
+.skip-link:focus-visible,
+.skip-link:focus {
+  transform: translateY(0);
+  outline: 2px solid var(--color-on-background);
+  outline-offset: 2px;
+}
+
 /* ---- Monospaced eyebrow (system's typographic signature) ----
    Usage: <p class="eyebrow"><span class="text-brand-500">●</span> SECTION</p>
 */
@@ -172,6 +231,10 @@ body::after {
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
+  }
+  /* The skip link still appears instantly, just without the slide */
+  .skip-link {
+    transition: none;
   }
 }
 
@@ -189,6 +252,31 @@ body::after {
   width: 0;
   background: var(--color-brand-500);
   transition: width 0.1s linear;
+}
+/* Where the browser can drive it, the compositor does. animation-timeline: scroll()
+   replaces the rAF loop that read scrollY and wrote width on every frame: no
+   script, no layout read, nothing to jank. The width/transition pair above stays
+   as the fallback and the JS in MainLayout only runs when this is unsupported,
+   so both paths are driven by the same rule.
+
+   Deliberately not gated on prefers-reduced-motion. The bar reports where the
+   reader is, so it is position feedback rather than autonomous motion, and
+   gating it would take the feature away from exactly the people who use the
+   bar to orient. scaleX is used over width so the animation stays on the
+   compositor instead of re-running layout on each frame. */
+@supports (animation-timeline: scroll()) {
+  .read-progress > span {
+    width: 100%;
+    transform: scaleX(0);
+    transform-origin: 0 50%;
+    animation: dg-read-progress linear both;
+    animation-timeline: scroll(root block);
+  }
+  @keyframes dg-read-progress {
+    to {
+      transform: scaleX(1);
+    }
+  }
 }
 
 /* View transitions must not animate for the motion-sensitive */

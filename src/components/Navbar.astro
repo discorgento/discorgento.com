@@ -1,10 +1,16 @@
 ---
 import { getRelativeLocaleUrl } from 'astro:i18n';
-import { useTranslations } from '~/lib/i18n';
+import { LOCALES, LOCALE_META, stripLocale, useTranslations, type Locale } from '~/lib/i18n';
 
 interface Props {
   /** The home page renders its own big masthead, so it can drop this small lockup. */
   showLockup?: boolean;
+  /**
+   * Render the root as <header> (a banner landmark). The home page sets this to
+   * false because it already has a banner — the masthead — and two banners fail
+   * axe's landmark-no-duplicate-banner.
+   */
+  banner?: boolean;
 }
 
 type Section = {
@@ -17,19 +23,20 @@ type Section = {
 
 const locale = Astro.currentLocale ?? 'pt-BR';
 const t = useTranslations(locale);
-const { showLockup = true } = Astro.props;
+const { showLockup = true, banner = true } = Astro.props;
+const NavRoot = banner ? 'header' : 'div';
 
 const substackUrl = 'https://discorgento.substack.com';
 const discordUrl = 'https://discorgento.com/discord';
 const githubUrl = 'https://github.com/discorgento';
 
 const homeUrl = getRelativeLocaleUrl(locale, '/');
-// Strip the /en prefix so section matching works the same in both locales.
-const base = Astro.url.pathname.replace(/^\/en(?=\/|$)/, '') || '/';
-// Section hrefs carry the locale prefix; strip it here too so both sides match.
-const withoutLocale = (href: string) => href.replace(/^\/en(?=\/|$)/, '') || '/';
+// Locale-prefixed routes (/en/podcast/, /es/podcast/) must match their
+// unprefixed siblings so the active-section test works the same in every
+// edition. Section hrefs carry the prefix too, so both sides get stripped.
+const base = stripLocale(Astro.url.pathname);
 const isActive = (href: string) => {
-  const clean = withoutLocale(href);
+  const clean = stripLocale(href);
   return base === clean || base.startsWith(`${clean}/`);
 };
 
@@ -45,20 +52,28 @@ const outbound = [
   { label: 'GitHub', href: githubUrl },
 ];
 
-const otherLocale = locale === 'pt-BR' ? 'en' : 'pt-BR';
-const currentLabel = locale === 'pt-BR' ? 'PT' : 'EN';
-const otherLabel = otherLocale === 'en' ? 'EN' : 'PT';
-const switchUrl = getRelativeLocaleUrl(otherLocale, base);
+// Every other edition, linked to the same page. The accessible name pairs the
+// code with the locale's own endonym, so it reads no matter which language the
+// visitor understands — and the visible code stays inside the name (WCAG 2.5.3).
+const currentCode = LOCALE_META[locale as Locale]?.code ?? 'PT';
+const switchLinks = LOCALES.filter((l) => l !== locale).map((l) => ({
+  locale: l,
+  href: getRelativeLocaleUrl(l, base),
+  ...LOCALE_META[l],
+}));
 ---
 
-<header class="bg-background">
+<NavRoot class="nav-plane bg-background">
   <div class="mx-auto flex w-full max-w-[74rem] items-center justify-between gap-6 px-5 py-3 sm:px-6">
     <!-- Lockup + index share one left-aligned cluster -->
     <div class="flex min-w-0 items-center gap-8">
       {showLockup && (
-        <a href={homeUrl} class="flex shrink-0 items-center gap-2">
-          <img src="/img/logo.svg" alt="" class="h-7 w-7" width={28} height={28} />
-          <span class="font-display text-xl font-extrabold lowercase tracking-tight text-on-background">
+        <a href={homeUrl} class="lockup flex shrink-0 items-center gap-2">
+          <span class="logo" aria-hidden="true">
+            <img src="/img/logo.svg" alt="" width={28} height={28} />
+            <span class="logo-ghost"></span>
+          </span>
+          <span class="text-xl font-extrabold lowercase tracking-tight text-on-background [font-family:var(--font-brand)]">
             discorgento
           </span>
         </a>
@@ -82,12 +97,21 @@ const switchUrl = getRelativeLocaleUrl(otherLocale, base);
               s.brand ? 'font-bold text-brand-500' : isActive(s.href) ? 'text-on-background' : 'text-muted',
             ]}
           >
-            <span class="text-[0.65rem] tabular-nums opacity-60" aria-hidden="true">
+            {/* Decorative index number. aria-hidden keeps it out of the a11y
+                tree, but contrast is judged on rendered pixels, so the opacity
+                floor is 0.9: the span inherits its colour from the link, and
+                over brand-500 the lower steps land at 4.09:1 (0.8) and
+                3.73:1 (0.75), both under AA. At 0.9 it is 4.91:1 on brand and
+                5.23:1 on muted, so one value covers both. */}
+            <span class="text-[0.65rem] tabular-nums opacity-90" aria-hidden="true">
               {s.n}
             </span>
             <span>{s.label}</span>
+            {/* Inherits the parent's colour at full strength. An opacity
+                dim here pushed it to 3.73:1 (on brand-500) and 3.94:1 (on
+                muted); the glyph is small enough to still read as secondary. */}
             {s.external && (
-              <span class="text-[0.7rem] opacity-70" aria-hidden="true">
+              <span class="text-[0.7rem]" aria-hidden="true">
                 ↗
               </span>
             )}
@@ -106,7 +130,7 @@ const switchUrl = getRelativeLocaleUrl(otherLocale, base);
             class="inline-flex items-center gap-1 border-b-2 border-transparent pt-1 pb-0.5 text-muted transition hover:text-brand-400"
           >
             {o.label}
-            <span class="text-[0.7rem] opacity-70" aria-hidden="true">
+            <span class="text-[0.7rem]" aria-hidden="true">
               ↗
             </span>
           </a>
@@ -116,15 +140,26 @@ const switchUrl = getRelativeLocaleUrl(otherLocale, base);
       <span class="h-4 w-px bg-border" aria-hidden="true" />
 
       <span class="inline-flex items-center gap-1.5 border border-border px-2 py-1">
-        <span class="text-on-background" aria-hidden="true">{currentLabel}</span>
+        <span class="text-on-background" aria-hidden="true">{currentCode}</span>
         <span class="text-border" aria-hidden="true">/</span>
-        <a
-          href={switchUrl}
-          aria-label={t('nav.switchLabel')}
-          class="text-muted transition hover:text-brand-400"
-        >
-          {otherLabel}
-        </a>
+        {/* The code leads the accessible name (WCAG 2.5.3 Label in Name): the
+            visible text is just "EN"/"ES", so the name starts with it before the
+            endonym. `lang` tells a screen reader to pronounce it in the target
+            language rather than the current one. */}
+        {switchLinks.map((l, i) => (
+          <>
+            {i > 0 && <span class="text-border" aria-hidden="true">·</span>}
+            <a
+              href={l.href}
+              hreflang={l.locale}
+              lang={l.locale}
+              aria-label={`${l.code} — ${l.name}`}
+              class="locale-link text-muted transition hover:text-brand-400"
+            >
+              {l.code}
+            </a>
+          </>
+        ))}
       </span>
       </nav>
     </div>
@@ -149,12 +184,13 @@ const switchUrl = getRelativeLocaleUrl(otherLocale, base);
                   href={s.href}
                   target={s.external ? '_blank' : undefined}
                   rel={s.external ? 'noopener noreferrer' : undefined}
+                  aria-current={!s.external && isActive(s.href) ? 'page' : undefined}
                   class:list={[
                     'flex items-baseline gap-2 border-b border-border px-3 py-3 transition hover:text-brand-400',
                     s.brand ? 'font-bold text-brand-500' : 'text-on-background',
                   ]}
                 >
-                  <span class="text-[0.65rem] opacity-60" aria-hidden="true">
+                  <span class="text-[0.65rem] opacity-90" aria-hidden="true">
                     {s.n}
                   </span>
                   {s.label}
@@ -183,15 +219,22 @@ const switchUrl = getRelativeLocaleUrl(otherLocale, base);
             }
             <div class="flex items-center justify-end gap-3 px-3 py-3">
               <span class="inline-flex items-center gap-1.5 border border-border px-2 py-1">
-                <span class="text-on-background" aria-hidden="true">{currentLabel}</span>
+                <span class="text-on-background" aria-hidden="true">{currentCode}</span>
                 <span class="text-border" aria-hidden="true">/</span>
-                <a
-                  href={switchUrl}
-                  aria-label={t('nav.switchLabel')}
-                  class="text-muted transition hover:text-brand-400"
-                >
-                  {otherLabel}
-                </a>
+                {switchLinks.map((l, i) => (
+                  <>
+                    {i > 0 && <span class="text-border" aria-hidden="true">·</span>}
+                    <a
+                      href={l.href}
+                      hreflang={l.locale}
+                      lang={l.locale}
+                      aria-label={`${l.code} — ${l.name}`}
+                      class="locale-link text-muted transition hover:text-brand-400"
+                    >
+                      {l.code}
+                    </a>
+                  </>
+                ))}
               </span>
             </div>
           </div>
@@ -203,7 +246,118 @@ const switchUrl = getRelativeLocaleUrl(otherLocale, base);
   <!-- Double rule, same as the zine -->
   <div class="h-0.5 bg-on-background"></div>
   <div class="h-px bg-border"></div>
-</header>
+</NavRoot>
+
+<style>
+  /* The running head had no plane: bg-background is the same tone as the page,
+     so the band read as a gap rather than a strip. It now carries the same
+     halftone dot field as the team block. The cell is tightened from the team's
+     14px to 10px because the band is ~56px tall and the coarser grid all but
+     vanished at that height. background-image, not the shorthand, so the
+     bg-background utility keeps owning the base colour. */
+  .nav-plane {
+    background-image: radial-gradient(
+      circle,
+      rgb(236 103 55 / 0.1) 1px,
+      transparent 1.2px
+    );
+    background-size: 10px 10px;
+    background-position: center;
+  }
+  /* ---- Logo mark: same tear as the masthead, at 28px ----
+     The nav mark is the same SVG, so the same mask trick works. The offsets are
+     larger than the masthead's because 28px gives the clip band less room to
+     read; 0.08em of a 40px lockup is a visible tear but only 2px here. */
+  .lockup .logo {
+    position: relative;
+    display: block;
+    height: 1.75rem;
+    width: 1.75rem;
+    flex-shrink: 0;
+  }
+  .lockup .logo img {
+    display: block;
+    height: 100%;
+    width: 100%;
+  }
+  .lockup .logo-ghost {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-color: var(--color-background);
+    mask-image: url('/img/logo.svg');
+    mask-size: contain;
+    mask-repeat: no-repeat;
+    mask-position: center;
+    opacity: 0;
+    will-change: transform, clip-path, opacity;
+  }
+  .lockup:hover .logo-ghost {
+    animation: 0.4s steps(3, end) nav-glitch both;
+  }
+  .lockup:hover .logo img {
+    animation: 0.4s steps(3, end) nav-jitter both;
+  }
+  @keyframes nav-glitch {
+    0% {
+      opacity: 0;
+      transform: none;
+      clip-path: inset(24% 0 58% 0);
+    }
+    33% {
+      opacity: 0.9;
+      transform: translateX(-0.14em);
+      clip-path: inset(38% 0 34% 0);
+    }
+    66% {
+      opacity: 0.7;
+      transform: translateX(0.11em);
+      clip-path: inset(62% 0 12% 0);
+    }
+    100% {
+      opacity: 0;
+      transform: none;
+      clip-path: inset(24% 0 58% 0);
+    }
+  }
+  @keyframes nav-jitter {
+    0%,
+    100% {
+      transform: none;
+    }
+    33% {
+      transform: translateX(-1px);
+    }
+    66% {
+      transform: translateX(1px);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .lockup .logo img,
+    .lockup .logo-ghost {
+      animation: none;
+    }
+  }
+  /* Locale switcher tap target. The bare code links measure 18x19px on a phone
+     and sit shoulder to shoulder, so padding would shove the row apart. An
+     overlay grows the hit area without moving the codes. Block-ish rather than
+     full-bleed: a full-width overlay per link would make the three codes
+     overlap, since they are only a couple of characters apart. */
+  @media (max-width: 639px) {
+    .locale-link {
+      position: relative;
+    }
+    .locale-link::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 44px;
+      height: 44px;
+      transform: translate(-50%, -50%);
+    }
+  }
+</style>
 
 <script>
   // Close the mobile menu when a link inside the panel is tapped. Delegated on

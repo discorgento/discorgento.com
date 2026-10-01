@@ -3,35 +3,92 @@ import '~/styles/global.css';
 import { ClientRouter } from 'astro:transitions';
 import Navbar from '~/components/Navbar.astro';
 import Footer from '~/components/Footer.astro';
-import { useTranslations } from '~/lib/i18n';
+import { LOCALES, stripLocale, useTranslations, type Locale } from '~/lib/i18n';
+// Vite resolves these to the hashed filenames emitted into /_astro, so the
+// preload points at the exact file the stylesheet will request — no guessing,
+// no 404 if the hash changes between builds.
+import frauncesUrl from '@fontsource-variable/fraunces/files/fraunces-latin-full-normal.woff2?url';
+import interUrl from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
+import monoUrl from '@fontsource-variable/jetbrains-mono/files/jetbrains-mono-latin-wght-normal.woff2?url';
+// Wordmark face. On the home page this is the h1, so it is LCP-relevant.
+import brandUrl from '@fontsource-variable/outfit/files/outfit-latin-wght-normal.woff2?url';
+
+const PRELOAD_FONTS = [frauncesUrl, interUrl, monoUrl, brandUrl];
 
 interface Props {
   title?: string;
   description?: string;
   ogType?: string;
+  robots?: string;
   jsonLd?: Record<string, unknown>;
 }
 
-const { title, description, ogType = 'website', jsonLd } = Astro.props;
+const { title, description, ogType = 'website', robots, jsonLd } = Astro.props;
 const locale = Astro.currentLocale ?? 'pt-BR';
 const t = useTranslations(locale);
 // The home page renders its own masthead; skip the shared Navbar there.
-// Pathname keeps the trailing slash (e.g. '/en/'), so match both forms.
-const isHome = ['/', '/en', '/en/'].includes(Astro.url.pathname);
+// `stripLocale` collapses '/', '/en', '/en/', '/es', '/es/' to '/' alike.
+const isHome = stripLocale(Astro.url.pathname) === '/';
 const siteTitle = t('site.title');
 const pageTitle = title ? `${title} · ${siteTitle}` : siteTitle;
 const pageDescription = description ?? t('home.hero.subtitle');
 const site = Astro.site ?? new URL('https://discorgento.com/');
 const canonical = new URL(Astro.url.pathname, site);
 const ogImage = new URL('/img/bg-website-fhd.png', site);
-const ogLocale = locale === 'pt-BR' ? 'pt_BR' : 'en_US';
-const webSiteJsonLd = {
+
+// Open Graph uses underscored territory tags, which don't match the BCP-47
+// locale ids ('pt-BR' → 'pt_BR', 'en' → 'en_US', 'es' → 'es_ES').
+const OG_LOCALE: Record<Locale, string> = {
+  'pt-BR': 'pt_BR',
+  en: 'en_US',
+  es: 'es_ES',
+};
+const ogLocale = OG_LOCALE[locale as Locale] ?? 'pt_BR';
+
+// The default locale owns the root path (no prefix); the others live under
+// /en/ and /es/. Strip whatever prefix is present to get the shared path, then
+// re-add the one that matches the target locale.
+const sharedPath = stripLocale(Astro.url.pathname);
+const alternateUrl = (target: Locale) => {
+  const base =
+    target === 'pt-BR' ? sharedPath : `/${target}${sharedPath === '/' ? '/' : sharedPath}`;
+  return new URL(base, site).href;
+};
+
+const SOCIALS = [
+  'https://www.youtube.com/@discorgento',
+  'https://github.com/discorgento',
+  'https://open.spotify.com/playlist/4pU2Abae7J8vdY4yqPCXRc',
+  'https://discorgento.substack.com/',
+  'https://twitter.com/discorgento',
+];
+
+// WebSite describes the site as a browsing surface. Organization describes the
+// entity itself, which is what an agent needs to recognise the brand and its
+// outposts; both live in @graph so they share one @context.
+const structuredData = {
   '@context': 'https://schema.org',
-  '@type': 'WebSite',
-  name: siteTitle,
-  url: new URL('/', site).href,
-  description: t('footer.description'),
-  inLanguage: locale,
+  '@graph': [
+    {
+      '@type': 'WebSite',
+      '@id': `${new URL('/', site).href}#website`,
+      url: new URL('/', site).href,
+      name: siteTitle,
+      description: t('footer.description'),
+      inLanguage: [...LOCALES],
+      publisher: { '@id': `${new URL('/', site).href}#organization` },
+    },
+    {
+      '@type': 'Organization',
+      '@id': `${new URL('/', site).href}#organization`,
+      name: siteTitle,
+      url: new URL('/', site).href,
+      logo: new URL('/img/logo.svg', site).href,
+      description: t('footer.description'),
+      foundingDate: '2021',
+      sameAs: SOCIALS,
+    },
+  ],
 };
 ---
 
@@ -43,53 +100,127 @@ const webSiteJsonLd = {
     <meta name="generator" content={Astro.generator} />
     <title>{pageTitle}</title>
     <meta name="description" content={pageDescription} />
+    {robots && <meta name="robots" content={robots} />}
     <link rel="icon" type="image/svg+xml" href="/img/logo.svg" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/img/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    {/* Episode thumbnails are self-hosted now, so only the host avatars are
+        still a third-party origin. Open that socket during head parsing to keep
+        the DNS + TLS round trip off the first images. */}
+    <link rel="preconnect" href="https://avatars.githubusercontent.com" crossorigin />
+    <link rel="dns-prefetch" href="https://www.youtube-nocookie.com" />
     <meta name="theme-color" content="#16130f" />
+    {/* Fonts are declared in CSS, so the browser only finds them after the
+        stylesheet resolves. Preloading the three faces used above the fold
+        takes that discovery off the critical path. */}
+    {
+      PRELOAD_FONTS.map((font) => (
+        <link
+          rel="preload"
+          href={font}
+          as="font"
+          type="font/woff2"
+          crossorigin="anonymous"
+        />
+      ))
+    }
     <link rel="canonical" href={canonical} />
+    {/* The site ships three locales side by side. Without hreflang, a crawler
+        or agent reading the page has no machine-readable way to learn that
+        /en/ and /es/ are translations of this exact page. x-default points at
+        the pt-BR original, which is the fallback for unmatched languages.
+        Skipped on noindex pages (the 404), whose translation URLs don't exist. */}
+    {!robots?.includes('noindex') && (
+      <>
+        {LOCALES.map((l) => <link rel="alternate" hreflang={l} href={alternateUrl(l)} />)}
+        <link rel="alternate" hreflang="x-default" href={alternateUrl('pt-BR')} />
+      </>
+    )}
     <meta property="og:type" content={ogType} />
     <meta property="og:site_name" content={siteTitle} />
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={pageDescription} />
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={ogImage} />
+    <meta property="og:image:alt" content={pageTitle} />
     <meta property="og:image:width" content="1920" />
     <meta property="og:image:height" content="1080" />
     <meta property="og:locale" content={ogLocale} />
-    <meta property="og:locale:alternate" content={ogLocale === 'pt_BR' ? 'en_US' : 'pt_BR'} />
+    {LOCALES.filter((l) => l !== locale).map((l) => (
+      <meta property="og:locale:alternate" content={OG_LOCALE[l]} />
+    ))}
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={pageTitle} />
     <meta name="twitter:description" content={pageDescription} />
     <meta name="twitter:image" content={ogImage} />
-    <script type="application/ld+json" set:html={JSON.stringify(webSiteJsonLd)} />
+    <meta name="twitter:image:alt" content={pageTitle} />
+    <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
     {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
     <ClientRouter />
   </head>
   <body class="flex min-h-screen flex-col bg-background text-on-background antialiased">
     <div class="read-progress" transition:persist aria-hidden="true"><span></span></div>
+    {/* WCAG 2.4.1 Bypass Blocks. Off-screen until focused, then pinned to the
+        top-left. The target needs tabindex="-1": without it, following the
+        fragment scrolls the page but leaves keyboard focus behind on the link,
+        so the next Tab resumes inside the masthead instead of at the content. */}
+    <a href="#main" class="skip-link">{t('nav.skip')}</a>
     {!isHome && <Navbar />}
-    <main transition:animate="fade" class="mx-auto w-full max-w-[74rem] flex-1 px-5 sm:px-6">
+    {/* The home page ships its own <main> because its masthead banner has to sit
+        outside <main> — a <header> nested in <main> is not a banner landmark.
+        Every other page gets the shared wrapper here. */}
+    {isHome ? (
       <slot />
-    </main>
+    ) : (
+      <main
+        id="main"
+        tabindex="-1"
+        transition:animate="fade"
+        class="mx-auto w-full max-w-[74rem] flex-1 px-5 sm:px-6 focus:outline-none"
+      >
+        <slot />
+      </main>
+    )}
     <Footer />
 
     <script>
-      const progressBar = document.querySelector<HTMLElement>('.read-progress > span');
+      // Where animation-timeline: scroll() is supported the compositor drives
+      // the bar from global.css and none of this is needed, so bail out early
+      // rather than keep a scroll listener and a per-frame style write alive for
+      // no visible effect. The listener stays as the fallback path.
+      const supportsScrollTimeline = CSS.supports('animation-timeline', 'scroll()');
 
-      function updateProgress() {
-        if (!progressBar) return;
-        const max = document.documentElement.scrollHeight - window.innerHeight;
-        const ratio = max > 0 ? window.scrollY / max : 0;
-        progressBar.style.width = `${Math.min(100, Math.max(0, ratio * 100))}%`;
-      }
+      if (!supportsScrollTimeline) {
+        const progressBar = document.querySelector<HTMLElement>('.read-progress > span');
 
-      const scope = window as unknown as Record<string, unknown>;
-      if (!scope.__dgProgress) {
-        scope.__dgProgress = true;
-        window.addEventListener('scroll', updateProgress, { passive: true });
-        window.addEventListener('resize', updateProgress);
+        // Reads scrollY (a layout read) and writes width (a layout write). Doing
+        // that per scroll event forces a synchronous reflow on every frame the
+        // user scrolls, which is exactly the presentation delay INP measures.
+        // One write per animation frame is the cheapest correct fix.
+        let frame = 0;
+
+        function paintProgress() {
+          frame = 0;
+          if (!progressBar) return;
+          const max = document.documentElement.scrollHeight - window.innerHeight;
+          const ratio = max > 0 ? window.scrollY / max : 0;
+          progressBar.style.width = `${Math.min(100, Math.max(0, ratio * 100))}%`;
+        }
+
+        function requestProgress() {
+          if (frame) return;
+          frame = requestAnimationFrame(paintProgress);
+        }
+
+        const scope = window as unknown as Record<string, unknown>;
+        if (!scope.__dgProgress) {
+          scope.__dgProgress = true;
+          window.addEventListener('scroll', requestProgress, { passive: true });
+          window.addEventListener('resize', requestProgress);
+        }
+        document.addEventListener('astro:page-load', requestProgress);
+        requestProgress();
       }
-      document.addEventListener('astro:page-load', updateProgress);
-      updateProgress();
     </script>
   </body>
 </html>
