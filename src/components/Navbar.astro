@@ -139,8 +139,8 @@ const switchUrl = getRelativeLocaleUrl(otherLocale, base);
           <span class="text-brand-500" aria-hidden="true">●</span>
         </summary>
         <div
+          data-nav-panel
           class="absolute right-0 top-full z-50 mt-2 w-[min(20rem,calc(100vw-2.5rem))] border border-border bg-surface"
-          onclick="this.closest('details').open = false"
         >
           <div class="flex flex-col font-mono text-[0.8rem] tracking-[0.12em] uppercase">
             {
@@ -204,3 +204,13 @@ const switchUrl = getRelativeLocaleUrl(otherLocale, base);
   <div class="h-0.5 bg-on-background"></div>
   <div class="h-px bg-border"></div>
 </header>
+
+<script>
+  // Close the mobile menu when a link inside the panel is tapped. Delegated on
+  // the document so it keeps working across client-side navigations, and so no
+  // inline handler is needed (script-src 'self' blocks those).
+  document.addEventListener('click', (event) => {
+    const panel = (event.target as HTMLElement | null)?.closest('[data-nav-panel]');
+    panel?.closest('details')?.removeAttribute('open');
+  });
+</script>
