@@ -1,9 +1,11 @@
 ---
-import { getCollection } from 'astro:content';
-import ArticleCard from '~/components/ArticleCard.astro';
 import { getLatestVideos, episodeNum, formatEpDate } from '~/lib/youtube';
+import { getDiscordStats } from '~/lib/discord';
+import { getLatestSubstackPosts } from '~/lib/substack';
 import { getRelativeLocaleUrl } from 'astro:i18n';
 import { useTranslations } from '~/lib/i18n';
+import { getTeam } from '~/lib/team';
+import Navbar from '~/components/Navbar.astro';
 
 interface Props {
   locale: string;
@@ -11,309 +13,1943 @@ interface Props {
 
 const { locale } = Astro.props;
 const t = useTranslations(locale);
+const otherLocale = locale === 'pt-BR' ? 'en' : 'pt-BR';
 
-const [posts, authors, youtubeVideos] = await Promise.all([
-  getCollection('posts', ({ data }) => data.locale === locale),
-  getCollection('authors'),
+const [youtubeVideos, discord, substackPosts] = await Promise.all([
   getLatestVideos(),
+  getDiscordStats(),
+  getLatestSubstackPosts(1),
 ]);
+const latestPost = substackPosts[0] ?? null;
 
 const firstVideo = youtubeVideos[0] ?? null;
+const epNum = firstVideo ? (episodeNum(firstVideo.title) ?? '') : '';
+const epTag = epNum ? `#${epNum}` : 'podcast';
+const epDate = firstVideo ? formatEpDate(firstVideo.published, locale) : '';
+const stampText = `${epTag} · ${t('home.toc.watch')} · youtube · `;
 
-const published = posts
-  .filter((post) => !post.data.draft)
-  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
-const recent = published.slice(0, 4);
+const hosts = getTeam(locale);
 
-const ticker = t('home.ticker').split(',');
+const mastheadSub = t('home.hero.eyebrow').split(' · ');
+const dateline = new Intl.DateTimeFormat(locale === 'pt-BR' ? 'pt-BR' : 'en-US', {
+  weekday: 'long',
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+}).format(new Date());
+const youtubeUrl = 'https://www.youtube.com/@discorgento';
+const spotifyUrl = 'https://open.spotify.com/playlist/4pU2Abae7J8vdY4yqPCXRc';
+const substackUrl = 'https://discorgento.substack.com';
+const discordUrl = 'https://discorgento.com/discord';
+const githubUrl = 'https://github.com/discorgento';
+const twitterUrl = 'https://twitter.com/discorgento';
 ---
 
-<!-- Hero: typography + TUI window, ghost circles (logo echo) -->
-<section class="relative overflow-hidden border-b border-border">
-  <div
-    aria-hidden="true"
-    class="pointer-events-none absolute -right-44 -top-44 h-[30rem] w-[30rem] rounded-full border-[3px] border-brand-500/[0.08]"
-  ></div>
-  <div
-    aria-hidden="true"
-    class="pointer-events-none absolute -right-24 -top-24 h-80 w-80 rounded-full border border-brand-500/10"
-  ></div>
+<div class="zine -mx-5 sm:-mx-6">
+  <!-- MASTHEAD -->
+  <header class="wrap masthead">
+    <h1 class="lockup">
+      <img src="/img/logo.svg" alt="discorgento" class="logo" width="48" height="48" />
+      <span class="word" aria-label="discorgento">
+        {'discorgento'
+          .split('')
+          .map((ch, i) => (
+            <span class="l" aria-hidden="true" style={`--i:${i}`}>
+              {ch}
+            </span>
+          ))}
+      </span>
+    </h1>
+    <div class="sub">
+      {mastheadSub.map((part, i) => (
+        <span class="bit">
+          {i > 0 && <span class="o" aria-hidden="true">●</span>}
+          <span>{part}</span>
+        </span>
+      ))}
+    </div>
+    <p class="dateline">{dateline}</p>
+  </header>
+  <div class="rule"></div>
 
-  <div class="relative grid items-center gap-12 py-16 sm:py-24 lg:grid-cols-[1.2fr_0.8fr]">
-    <div>
-      <p class="eyebrow mb-6">
-        <span class="text-brand-500">●</span> {t('home.hero.eyebrow')}
-      </p>
-      <h1 class="text-balance text-[clamp(2.6rem,7.5vw,4.5rem)] font-black leading-[1.02] tracking-tight text-on-background">
-        {t('home.hero.title')}
-      </h1>
-      <p class="mt-6 max-w-xl text-pretty text-lg leading-relaxed text-muted">{t('home.hero.subtitle')}</p>
-      <div class="mt-10 flex flex-wrap items-center gap-3">
-        <a
-          href="https://discorgento.com/discord"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="btn-primary"
+  <!-- NAV: same running head as the inner pages, minus the lockup (the masthead above is it) -->
+  <Navbar showLockup={false} />
+
+  <!-- CAPA -->
+  <div class="wrap front">
+    {firstVideo && (
+      <figure class="cover">
+        <div
+          class="cover-art"
+          role="img"
+          aria-label={`discorgento — episódio ${epTag}: ${firstVideo.title}`}
+          style={`--thumb-max: url('https://i.ytimg.com/vi/${firstVideo.id}/maxresdefault.jpg'); --thumb-hq: url('https://i.ytimg.com/vi/${firstVideo.id}/hqdefault.jpg')`}
         >
-          {t('home.hero.ctaDiscord')}
-        </a>
-        <a
-          href={getRelativeLocaleUrl(locale, '/posts')}
-          class="border border-border px-6 py-3 font-semibold text-on-background transition hover:border-brand-500 hover:text-brand-400"
-        >
-          {t('home.hero.ctaPosts')}
-        </a>
-      </div>
-      <p class="mt-8 font-mono text-xs text-muted">
-        <span class="text-brand-500">$</span> git clone https://github.com/discorgento
-      </p>
+          <span class="n">{epTag}</span>
+          <a href={firstVideo.url} target="_blank" rel="noopener noreferrer" class="badge">
+            ▶ {t('home.featuredEp.watch')}
+          </a>
+          <a
+            href={firstVideo.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="stamp"
+            aria-label={`${epTag} — ${t('home.featuredEp.watch')}`}
+          >
+            <svg viewBox="0 0 100 100" aria-hidden="true">
+              <circle cx="50" cy="50" r="46" fill="none" stroke="currentColor" stroke-width="0.8" opacity="0.6" />
+              <circle cx="50" cy="50" r="33" fill="none" stroke="currentColor" stroke-width="1.4" />
+              <defs>
+                <path id="stampPath" d="M50,50 m-36,0 a36,36 0 1,1 72,0 a36,36 0 1,1 -72,0" />
+              </defs>
+              <text><textPath href="#stampPath">{stampText}</textPath></text>
+            </svg>
+          </a>
+        </div>
+        <figcaption class="figcap">fig. 01 — {t('home.featuredEp.title')}</figcaption>
+      </figure>
+    )}
+
+    {firstVideo && (
+      <article class="lead">
+        <p class="kicker">
+          <span class="o">●</span> {t('home.featuredEp.eyebrow')} — {t('home.capa.tag')}
+        </p>
+        <h2>{firstVideo.title}</h2>
+        <p class="deck">{t('home.capa.deck')}</p>
+        <div class="facts">
+          <span>{t('home.capa.published')} <b>{epDate}</b></span>
+          <span>{t('home.capa.medium')} <b>youtube</b></span>
+          <span>{t('home.capa.by')} <b>@discorgento</b></span>
+        </div>
+        <div class="ctas">
+          <a href={firstVideo.url} target="_blank" rel="noopener noreferrer" class="btn">
+            ▶ {t('home.featuredEp.watch')} →
+          </a>
+          <a href={getRelativeLocaleUrl(locale, '/podcast')} class="link-arrow">
+            {t('home.featuredEp.all')} →
+          </a>
+        </div>
+      </article>
+    )}
+
     </div>
 
-    <!-- TUI window (Bubble Tea / Lip Gloss style): status bar + real command -->
-    <div class="font-mono text-sm">
-      <div class="flex items-center justify-between border border-b-0 border-border bg-surface px-4 py-2.5">
-        <span class="text-muted">// {t('home.terminal.title')}</span>
-        <span class="flex gap-1.5">
-          <span class="h-2.5 w-2.5 rounded-full bg-border"></span>
-          <span class="h-2.5 w-2.5 rounded-full bg-border"></span>
-          <span class="h-2.5 w-2.5 bg-brand-500"></span>
-        </span>
-      </div>
-      <div class="border border-border bg-surface px-4 py-5">
-        <p class="text-muted">
-          <span class="text-brand-500">$</span> ./discorgento --info
-        </p>
-        <div class="my-4 h-px bg-border"></div>
-        <div class="space-y-4">
-          <div>
-            <p class="text-brand-400">&gt; {t('home.terminal.stack')}</p>
-            <p class="mt-1 pl-4 text-muted">{t('home.terminal.stackValue')}</p>
-          </div>
-          <div>
-            <p class="text-brand-400">&gt; {t('home.terminal.since')}</p>
-            <p class="mt-1 pl-4 text-muted">{t('home.terminal.sinceValue')}</p>
-          </div>
-          <div>
-            <p class="text-brand-400">&gt; {t('home.terminal.format')}</p>
-            <p class="mt-1 pl-4 text-muted">{t('home.terminal.formatValue')}</p>
-          </div>
+  <!-- BYLINE (as caras logo abaixo da capa) -->
+  <div class="byline reveal">
+    <div class="wrap row">
+      <span class="lbl">{t('home.hosts.byline')}</span>
+      <ul>
+        {hosts.map((person) => (
+          <li>
+            <a
+              class="face-link"
+              href={person.profile}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`${person.name} — ${t('home.hosts.profile')}`}
+            >
+              {person.photo ? (
+                <img
+                  class="face"
+                  src={person.photo}
+                  alt={person.name}
+                  width="36"
+                  height="36"
+                  loading="lazy"
+                  decoding="async"
+                />
+              ) : (
+                <span class="face monogram" aria-hidden="true">{person.initials}</span>
+              )}
+            </a>
+            <span class="nm">{person.name.split(' ')[0]}</span>
+          </li>
+        ))}
+      </ul>
+      <a class="all" href="#quem-faz">{t('home.hosts.all')} →</a>
+    </div>
+  </div>
+
+  <!-- COLOPHON + SIGNATURES (colophon block) -->
+  <div class="colofao reveal">
+    <div class="wrap">
+      <div class="colophon" role="region" aria-label={t('home.terminal.aria')}>
+        <div class="h">
+          <span>terminal discorgento</span>
+          <span class="dots" aria-hidden="true"><i></i><i></i><i class="o"></i></span>
+        </div>
+        <div class="b">
+          <p class="cmd"><span class="p">$</span> ./discorgento --info</p>
+          <div class="sep"></div>
+          <p class="f">&gt; {t('home.terminal.stack')}</p>
+          <p>{t('home.terminal.stackValue')}</p>
+          <p class="f">&gt; {t('home.terminal.since')}</p>
+          <p>{t('home.terminal.sinceValue')}</p>
+          <p class="f">&gt; {t('home.terminal.format')}</p>
+          <p>{t('home.terminal.formatValue')}</p>
+          {firstVideo && (
+            <>
+              <p class="f">&gt; {t('home.terminal.lastEp')}</p>
+              <p class="ep">
+                <a href={firstVideo.url} target="_blank" rel="noopener noreferrer">
+                  {epTag} · {firstVideo.title} ({epDate})
+                </a>
+              </p>
+            </>
+          )}
+        </div>
+        <div class="cap">
+          <span><span class="led" aria-hidden="true"></span>online</span>
+          <span>v0.0.1 · astro</span>
         </div>
       </div>
-      <div class="flex items-center justify-between border border-t-0 border-border bg-surface px-4 py-2 text-xs text-muted">
-        <span class="flex items-center gap-2">
-          <span class="h-2 w-2 rounded-full bg-brand-500"></span>
-          online
-        </span>
-        <span>v0.0.1 · astro</span>
+
+      <div class="subs">
+        <p class="eyebrow"><span class="o">●</span> {t('home.subs.eyebrow')}</p>
+        <ul>
+          <li><a href={youtubeUrl} target="_blank" rel="noopener noreferrer">youtube.com/@discorgento <span class="go">→</span></a></li>
+          <li><a href={spotifyUrl} target="_blank" rel="noopener noreferrer">open.spotify.com/discorgento <span class="go">→</span></a></li>
+          <li><a href={substackUrl} target="_blank" rel="noopener noreferrer">substack · newsletter <span class="go">→</span></a></li>
+          <li><a href={twitterUrl} target="_blank" rel="noopener noreferrer">twitter.com/discorgento <span class="go">→</span></a></li>
+          <li><a href={discordUrl} target="_blank" rel="noopener noreferrer">discorgento.com/discord <span class="go">→</span></a></li>
+        </ul>
+        <div class="stats">
+          {discord && (
+            <>
+              <span><b>{discord.members}</b> {t('home.stats.members')}</span>
+              <span><b>{discord.online}</b> {t('home.stats.online')}</span>
+            </>
+          )}
+          <span><b>{t('home.stats.since')}</b></span>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- Stats: real numbers computed from content -->
-  <div class="flex flex-wrap gap-x-10 gap-y-4 border-t border-border py-6 font-mono text-sm">
-    <p class="text-muted">
-      <span class="font-bold text-on-background">{recent.length}</span> {t('home.stats.articles')}
-    </p>
-    <p class="text-muted">
-      <span class="font-bold text-on-background">{authors.length}</span> {t('home.stats.authors')}
-    </p>
-    <p class="text-muted">
-      <span class="font-bold text-on-background">{t('home.stats.since')}</span>
-    </p>
-    <a
-      href="https://discorgento.com/discord"
-      target="_blank"
-      rel="noopener noreferrer"
-      class="ml-auto text-brand-400 transition hover:text-brand-500"
-    >
-      discorgento.com/discord →
-    </a>
-  </div>
-</section>
-
-<!-- Ticker: radio waves / editorial tape -->
-<div
-  class="overflow-hidden border-b border-border bg-surface py-3 font-mono text-xs uppercase tracking-[0.2em] text-muted"
-  aria-hidden="true"
->
-  <div class="ticker-track flex w-max items-center whitespace-nowrap">
-    {[...ticker, ...ticker].map((item) => (
-      <span class="flex items-center">
-        <span class="mx-6 text-brand-500">●</span>
-        {item}
-      </span>
-    ))}
-  </div>
-</div>
-
-<!-- Latest podcast episode (dynamic) -->
-{firstVideo && (
-  <section class="border-b border-border py-14">
-    <div class="mb-8 flex items-end justify-between border-b border-border pb-4">
-      <div>
-        <p class="eyebrow mb-2">
-          <span class="text-brand-500">●</span> {t('home.featuredEp.eyebrow')}
-        </p>
-        <h2 class="text-balance text-2xl font-bold tracking-tight text-on-background sm:text-3xl">
-          {t('home.featuredEp.title')}
-        </h2>
+  <!-- SUMÁRIO -->
+  <section class="block reveal">
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <p class="eyebrow"><span class="o">●</span> {t('home.features.eyebrow')}</p>
+          <h2>{t('home.toc.title')}</h2>
+        </div>
+        <span class="mono small">{t('home.toc.label')}</span>
       </div>
-      <a
-        href={getRelativeLocaleUrl(locale, '/podcast')}
-        class="font-mono text-sm text-brand-400 hover:underline"
-      >
-        {t('home.featuredEp.all')} →
-      </a>
+      <div class="toc-big">
+        <a href={getRelativeLocaleUrl(locale, '/podcast')} class="row">
+          <span class="num">01</span>
+          <span class="mid">
+            <h3>{t('home.feature.podcast.title')}</h3>
+            <p>{t('home.feature.podcast.desc')}</p>
+          </span>
+          <span class="pg"><u>ep. {epTag}</u> {t('home.toc.watch')}</span>
+        </a>
+        <a href={discordUrl} target="_blank" rel="noopener noreferrer" class="row">
+          <span class="num">02</span>
+          <span class="mid">
+            <h3>{t('home.feature.community.title')}</h3>
+            <p>{t('home.feature.community.desc')}</p>
+          </span>
+          <span class="pg"><u>discord.gg</u> {t('home.toc.enter')}</span>
+        </a>
+        <a href={substackUrl} target="_blank" rel="noopener noreferrer" class="row">
+          <span class="num">03</span>
+          <span class="mid">
+            <h3>{t('home.feature.substack.title')}</h3>
+            <p>{t('home.feature.substack.desc')}</p>
+          </span>
+          <span class="pg"><u>substack.com</u> {t('home.toc.subscribe')}</span>
+        </a>
+      </div>
     </div>
-    <a
-      href={firstVideo.url}
-      target="_blank"
-      rel="noopener noreferrer"
-      class="group grid gap-6 md:grid-cols-[minmax(0,22rem)_1fr] md:items-center"
-    >
-      <img
-        src={`https://i.ytimg.com/vi/${firstVideo.id}/mqdefault.jpg`}
-        alt={firstVideo.title}
-        loading="lazy"
-        decoding="async"
-        class="aspect-video w-full border border-border object-cover"
-      />
-      <div>
-        <p class="font-mono text-sm text-muted">
-          {episodeNum(firstVideo.title) ? `#${episodeNum(firstVideo.title)}` : 'podcast'} ·{' '}
-          {formatEpDate(firstVideo.published, locale)} · youtube
-        </p>
-        <h3 class="mt-2 text-balance text-2xl font-bold leading-snug tracking-tight text-on-background transition group-hover:text-brand-400 sm:text-3xl">
-          {firstVideo.title}
-        </h3>
-        <span class="mt-5 inline-block border border-brand-500 px-5 py-2.5 font-semibold text-brand-400 transition group-hover:bg-brand-500 group-hover:text-white group-hover:shadow-[var(--shadow-glow)]">
-          {t('home.featuredEp.watch')} →
-        </span>
-      </div>
-    </a>
   </section>
-)}
 
-<!-- What you'll find: numbered editorial list (not identical cards) -->
-<section class="py-16 sm:py-20">
-  <p class="eyebrow mb-8">
-    <span class="text-brand-500">●</span> {t('home.features.eyebrow')}
-  </p>
-  <div class="border-b border-border">
-    <a
-      href={getRelativeLocaleUrl(locale, '/podcast')}
-      class="group grid gap-3 border-t border-border py-8 transition hover:bg-surface md:grid-cols-[5rem_1fr_auto] md:items-baseline md:gap-6"
-    >
-      <span class="font-mono text-sm text-brand-500">● 01</span>
-      <span>
-        <h2 class="text-balance text-2xl font-bold tracking-tight text-on-background transition group-hover:text-brand-400 sm:text-3xl">
-          {t('home.feature.podcast.title')}
-        </h2>
-        <p class="mt-2 max-w-xl text-pretty leading-relaxed text-muted">{t('home.feature.podcast.desc')}</p>
-      </span>
-      <span class="hidden font-mono text-sm text-muted transition group-hover:text-brand-400 md:block">
-        {t('home.feature.go')}
-      </span>
-    </a>
-    <a
-      href="https://discorgento.com/discord"
-      target="_blank"
-      rel="noopener noreferrer"
-      class="group grid gap-3 border-t border-border py-8 transition hover:bg-surface md:grid-cols-[5rem_1fr_auto] md:items-baseline md:gap-6"
-    >
-      <span class="font-mono text-sm text-brand-500">● 02</span>
-      <span>
-        <h2 class="text-balance text-2xl font-bold tracking-tight text-on-background transition group-hover:text-brand-400 sm:text-3xl">
-          {t('home.feature.community.title')}
-        </h2>
-        <p class="mt-2 max-w-xl text-pretty leading-relaxed text-muted">{t('home.feature.community.desc')}</p>
-      </span>
-      <span class="hidden font-mono text-sm text-muted transition group-hover:text-brand-400 md:block">
-        {t('home.feature.go')}
-      </span>
-    </a>
-    <a
-      href={getRelativeLocaleUrl(locale, '/posts')}
-      class="group grid gap-3 border-t border-border py-8 transition hover:bg-surface md:grid-cols-[5rem_1fr_auto] md:items-baseline md:gap-6"
-    >
-      <span class="font-mono text-sm text-brand-500">● 03</span>
-      <span>
-        <h2 class="text-balance text-2xl font-bold tracking-tight text-on-background transition group-hover:text-brand-400 sm:text-3xl">
-          {t('home.feature.news.title')}
-        </h2>
-        <p class="mt-2 max-w-xl text-pretty leading-relaxed text-muted">{t('home.feature.news.desc')}</p>
-      </span>
-      <span class="hidden font-mono text-sm text-muted transition group-hover:text-brand-400 md:block">
-        {t('home.feature.go')}
-      </span>
-    </a>
-  </div>
-</section>
+  <!-- EPISÓDIOS -->
+  {youtubeVideos.length > 0 && (
+    <section class="block reveal">
+      <div class="wrap">
+        <div class="sec-head">
+          <div>
+            <p class="eyebrow"><span class="o">●</span> {t('home.episodes.eyebrow')}</p>
+            <h2>{t('home.episodes.title')}</h2>
+          </div>
+          <a href={getRelativeLocaleUrl(locale, '/podcast')} class="link-arrow">
+            {t('home.featuredEp.all')} →
+          </a>
+        </div>
+        <div class="eps">
+          {youtubeVideos.slice(0, 4).map((ep) => (
+            <a href={ep.url} target="_blank" rel="noopener noreferrer" class="ep">
+              <div
+                class="art"
+                role="img"
+                aria-label={ep.title}
+                style={`background-image: url('https://i.ytimg.com/vi/${ep.id}/hqdefault.jpg')`}
+              ></div>
+              <div class="body">
+                <p class="meta">
+                  <span class="num">{episodeNum(ep.title) ? `#${episodeNum(ep.title)}` : t('home.featuredEp.eyebrow')}</span>
+                  <span class="date">{formatEpDate(ep.published, locale)}</span>
+                </p>
+                <h3 class="title">{ep.title}</h3>
+                <p class="go">{t('home.toc.watch')}</p>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
 
-<!-- Full-bleed art band with figure caption (editorial) -->
-<div class="ml-[calc(50%-50vw)] w-screen">
-  <div
-    class="h-36 w-full bg-cover bg-center sm:h-44"
-    role="img"
-    aria-label={t('home.band.aria')}
-    style="background-image: url('/img/bg-website-fhd.png')"
-  ></div>
-  <div class="border-y border-border bg-surface">
-    <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-2 font-mono text-xs text-muted sm:px-6">
-      <span>{t('home.band.caption')}</span>
-      <span class="hidden sm:block">png · 1920×1080</span>
+  <!-- NEWSLETTER -->
+  <section class="block reveal inverted">
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <p class="eyebrow"><span class="o">●</span> {t('home.newsletter.eyebrow')}</p>
+          <h2>{t('home.newsletter.title')}</h2>
+        </div>
+        <a href={substackUrl} target="_blank" rel="noopener noreferrer" class="link-arrow">
+          {t('home.newsletter.read')} →
+        </a>
+      </div>
+      {latestPost ? (
+        <a href={latestPost.url} target="_blank" rel="noopener noreferrer" class="edition">
+          <p class="meta">
+            <span class="tag">{t('home.newsletter.tag')}</span>
+            <span class="date">{formatEpDate(latestPost.published, locale)}</span>
+          </p>
+          <h3>{latestPost.title}</h3>
+          <p class="go">{t('home.newsletter.read')} →</p>
+        </a>
+      ) : (
+        <a href={substackUrl} target="_blank" rel="noopener noreferrer" class="edition">
+          <p class="meta">
+            <span class="tag">{t('home.newsletter.tag')}</span>
+          </p>
+          <h3>{t('home.newsletter.empty')}</h3>
+          <p class="go">{t('home.sign.substack')} →</p>
+        </a>
+      )}
+    </div>
+  </section>
+
+  <!-- PULL QUOTE -->
+  <div class="wrap">
+    <div class="pullquote reveal">
+      <span class="qm" aria-hidden="true">“</span>
+      <p>{t('home.pullquote')}</p>
+      <p class="src">{t('home.pullquote.src')}</p>
+      {firstVideo && (
+        <p class="pick">
+          <a href={firstVideo.url} target="_blank" rel="noopener noreferrer">
+            {epTag} · {firstVideo.title} →
+          </a>
+        </p>
+      )}
     </div>
   </div>
+
+  <!-- TEAM (who makes it) -->
+  <section class="block reveal halftone" id="quem-faz">
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <p class="eyebrow"><span class="o">●</span> {t('home.hosts.eyebrow')}</p>
+          <h2>{t('home.hosts.title')}</h2>
+        </div>
+        <a class="link-arrow" href={getRelativeLocaleUrl(locale, '/quem-faz')}>
+          {t('home.hosts.all')} →
+        </a>
+      </div>
+      <p class="hosts-note">{t('home.hosts.desc')}</p>
+      <div class="hosts-grid">
+        {hosts.map((person, index) => (
+          <article class="host">
+            <a
+              class="ph"
+              href={person.profile}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`${person.name} — ${t('home.hosts.profile')}`}
+            >
+              {person.photo ? (
+                <img
+                  class="face"
+                  src={person.photo}
+                  alt={person.name}
+                  width="400"
+                  height="400"
+                  loading="lazy"
+                  decoding="async"
+                />
+              ) : (
+                <span class="face monogram" aria-hidden="true">{person.initials}</span>
+              )}
+              <span class="idx" aria-hidden="true">0{index + 1}</span>
+              <span class="see" aria-hidden="true">{t('home.hosts.profile')} ↗</span>
+            </a>
+            <div class="who">
+              <h3>{person.name}</h3>
+              <span class="rule" aria-hidden="true"></span>
+              <p class="role">{person.role}</p>
+              <div class="socials">
+                {person.socials.map((social) => (
+                  <a
+                    class="s"
+                    href={social.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`${person.name} — ${social.label}`}
+                  >
+                    {social.label} <span class="ext" aria-hidden="true">↗</span>
+                  </a>
+                ))}
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ASSINATURA (CTA) -->
+  <section class="block sign reveal">
+    <div class="wrap inner" style="padding-block: 0">
+      <p class="eyebrow"><span class="o">●</span> {t('home.join.eyebrow')}</p>
+      <h2>{t('home.join.title')}</h2>
+      <p>{t('home.join.desc')}</p>
+      <div class="ctas">
+        <a href={discordUrl} target="_blank" rel="noopener noreferrer" class="btn">
+          {t('home.hero.ctaDiscord')}
+        </a>
+        <a href={substackUrl} target="_blank" rel="noopener noreferrer" class="btn ghost">
+          {t('home.sign.substack')}
+        </a>
+        <button type="button" class="btn ghost" data-copy={discordUrl}>{t('share.copy')}</button>
+      </div>
+    </div>
+  </section>
 </div>
 
-<!-- Recent posts: first post featured -->
-<section class="py-16 sm:py-20">
-  <div class="mb-8 flex items-end justify-between border-b border-border pb-4">
-    <div>
-      <p class="eyebrow mb-2">
-        <span class="text-brand-500">●</span> {t('home.sectionPosts')}
-      </p>
-      <h2 class="text-balance text-2xl font-bold tracking-tight text-on-background sm:text-3xl">
-        {t('home.recent')}
-      </h2>
-    </div>
-    <a
-      href={getRelativeLocaleUrl(locale, '/posts')}
-      class="font-mono text-sm text-brand-400 hover:underline"
-    >
-      {t('home.allPosts')} →
-    </a>
-  </div>
-  <div class="grid gap-5 md:grid-cols-2">
-    {recent.map((post, i) => <ArticleCard post={post} featured={i === 0} />)}
-  </div>
-</section>
-
-<!-- Community entry band with glow -->
-<section class="relative overflow-hidden border-b border-t border-border bg-surface py-16 sm:py-20">
+<dialog
+  class="ep-modal"
+  data-ep-modal
+  aria-label={t('player.title')}
+  style="position:fixed;inset:0;width:100%;max-width:56rem;height:fit-content;max-height:100dvh;margin:auto;"
+>
+  <button type="button" class="ep-modal-close" data-player-close aria-label={t('player.close')}>×</button>
   <div
-    class="pointer-events-none absolute inset-0"
-    aria-hidden="true"
-    style="background: radial-gradient(600px 300px at 50% 0%, rgb(236 103 55 / 0.14), transparent 70%);"
-  ></div>
-  <div class="relative mx-auto max-w-3xl text-center">
-    <p class="eyebrow mb-4">
-      <span class="text-brand-500">●</span> {t('home.join.eyebrow')}
-    </p>
-    <h2 class="text-balance text-3xl font-black tracking-tight text-on-background sm:text-4xl">
-      {t('home.join.title')}
-    </h2>
-    <p class="mx-auto mt-4 max-w-xl text-pretty leading-relaxed text-muted">{t('home.join.desc')}</p>
-    <p class="mt-5 font-mono text-xs text-muted">
-      <span class="text-brand-500">$</span> discorgento.com/discord
-    </p>
-    <a
-      href="https://discorgento.com/discord"
-      target="_blank"
-      rel="noopener noreferrer"
-      class="btn-primary mt-8"
-    >
-      {t('home.hero.ctaDiscord')}
-    </a>
+    class="ep-modal-frame"
+    data-ep-frame
+    style="position:relative;width:100%;aspect-ratio:16/9;"
+  >
   </div>
-</section>
+</dialog>
+<div class="toast" data-toast data-copied={t('share.copied')} role="status" aria-live="polite"></div>
+
+<style>
+  /* ============================================================
+     HOME — editorial fanzine (dark)
+     Reuses the global palette tokens from src/styles/global.css
+     ============================================================ */
+  .zine {
+  --term: #0d0a05;
+  --term-line: #2e2618;
+  counter-reset: dg-sec;
+}
+  .zine .wrap {
+    max-width: 74rem;
+    margin-inline: auto;
+    padding-inline: 1.25rem;
+  }
+  @media (min-width: 640px) {
+    .zine .wrap {
+      padding-inline: 1.5rem;
+    }
+  }
+  .zine a {
+    color: inherit;
+    text-decoration: none;
+  }
+  .zine .mono {
+    font-family: var(--font-mono);
+  }
+  .zine .small {
+    font-size: 0.8rem;
+    color: var(--color-muted);
+  }
+  .zine .o {
+    color: var(--color-brand-500);
+  }
+  .zine .btn {
+    display: inline-block;
+    background: var(--color-brand-500);
+    color: #fff;
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    border: 1px solid var(--color-brand-500);
+    transition: background 0.15s;
+  }
+  .zine .btn:hover {
+    background: var(--color-brand-400);
+  }
+  /* Solid buttons get the sticker treatment plus the glow token that was
+     defined in global.css but never used. */
+  .zine .btn:not(.ghost) {
+    box-shadow: 4px 4px 0 var(--color-brand-500);
+    transition: background 0.15s, transform 0.15s, box-shadow 0.15s;
+  }
+  .zine .btn:not(.ghost):hover {
+    transform: translate(-1px, -1px);
+    box-shadow: 6px 6px 0 var(--color-brand-500), var(--shadow-glow-card);
+  }
+  .zine .btn.ghost {
+    background: transparent;
+    border-color: var(--color-brand-500);
+    color: var(--color-on-background);
+  }
+  .zine .btn.ghost:hover {
+    background: var(--color-background);
+  }
+
+  /* ---- masthead (full-height hero) ---- */
+  .zine .masthead {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    min-height: 0;
+    padding-block: 0.9rem 0.75rem;
+  }
+  .zine .masthead .lockup {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    font-family: var(--font-display);
+    font-weight: 900;
+    letter-spacing: -0.045em;
+    font-size: clamp(1.9rem, 4.5vw, 3rem);
+    line-height: 0.86;
+    text-transform: lowercase;
+  }
+  .zine .masthead .lockup .logo {
+    height: 2.5rem;
+    width: 2.5rem;
+    flex-shrink: 0;
+  }
+  /* Marker sweep under the wordmark + print misregistration ghost. */
+  .zine .masthead:hover .lockup .word {
+    /* Print misregistration: the word splits into two passes on hover. */
+    text-shadow: -0.03em 0 0 var(--color-brand-500), 0.03em 0 0 var(--color-brand-400);
+  }
+  /* The wordmark lands misregistered and pulls into register, like a press
+       that missed the first pull. No fill mode on the second animation, so the
+       hover transition still works. */
+  .zine .masthead .lockup .word {
+    background-image: linear-gradient(var(--color-brand-500), var(--color-brand-500));
+    background-repeat: no-repeat;
+    background-position: 0 84%;
+    background-size: 0% 0.1em;
+    text-shadow: 0.02em 0 0 var(--color-brand-500);
+    transition: text-shadow 0.18s ease;
+    animation:
+      0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.3s forwards dg-marker,
+      0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.55s dg-register;
+  }
+  @keyframes dg-register {
+    0% {
+      text-shadow: -0.1em 0 0 var(--color-brand-500), 0.1em 0 0 var(--color-brand-400);
+    }
+    60% {
+      text-shadow: -0.05em 0 0 var(--color-brand-500), 0.05em 0 0 var(--color-brand-400);
+    }
+    100% {
+      text-shadow: 0.02em 0 0 var(--color-brand-500);
+    }
+  }
+  @keyframes dg-marker {
+    to {
+      background-size: 100% 0.1em;
+    }
+  }
+  /* Letters drop into place one by one, like type being set. */
+  .zine .masthead .lockup .l {
+    display: inline-block;
+    animation: 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both dg-letter;
+    animation-delay: calc(var(--i) * 40ms + 120ms);
+  }
+  @keyframes dg-letter {
+    from {
+      opacity: 0;
+      transform: translateY(-0.32em) rotate(-5deg);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .zine .masthead .lockup .word {
+      animation: none;
+      background-size: 100% 0.1em;
+    }
+    .zine .masthead .lockup .l {
+      animation: none;
+    }
+  }
+  .zine .masthead .sub {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem 0.9rem;
+    justify-content: center;
+    margin-top: 0.9rem;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--color-muted);
+  }
+  /* One unit per word so the ● keeps equal space on both sides and never wraps alone. */
+  .zine .masthead .sub .bit {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    white-space: nowrap;
+  }
+  .zine .masthead .dateline {
+    margin-top: 1.1rem;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    color: var(--color-muted);
+  }
+  .zine .rule {
+    height: 2px;
+    background: var(--color-on-background);
+  }
+  .zine .rule.thin {
+    height: 1px;
+    background: var(--color-border);
+  }
+
+  /* ---- nav ---- */
+  .zine .navprint .wrap {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem 1rem;
+    padding-block: 0.6rem;
+  }
+  .zine .nav-l {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 1.6rem;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+  .zine .nav-l a {
+    color: var(--color-on-background);
+    transition: color 0.15s;
+  }
+  .zine .nav-l a:hover {
+    color: var(--color-brand-400);
+  }
+  .zine .nav-l .discord {
+    color: var(--color-brand-500);
+    font-weight: 700;
+  }
+  .zine .nav-r {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--color-muted);
+  }
+
+  /* ---- capa ---- */
+  .zine .front {
+    display: grid;
+    gap: 2.5rem;
+    padding-block: 1.75rem 2.5rem;
+    position: relative;
+  }
+  /* Ambient depth: a soft brand bloom behind the cover, so the risograph
+     art sits in light instead of floating on flat black. */
+  .zine .front::before {
+    content: '';
+    position: absolute;
+    inset: 0 -6% auto;
+    height: 26rem;
+    background: radial-gradient(
+      58% 62% at 50% 22%,
+      rgb(236 103 55 / 0.16),
+      transparent 72%
+    );
+    pointer-events: none;
+  }
+  @media (min-width: 1024px) {
+    .zine .front {
+      gap: 3rem;
+    }
+  }
+  .zine .cover-art {
+    position: relative;
+    aspect-ratio: 16/7.5;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 1.5rem 2rem;
+    background-color: var(--color-background);
+    /* Cover prints itself in from the left on load. */
+    animation: 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both dg-wipe;
+  }
+  @keyframes dg-wipe {
+    from {
+      clip-path: inset(0 100% 0 0);
+    }
+    to {
+      clip-path: inset(0);
+    }
+  }
+  @media (min-width: 1024px) {
+/* ---- parallax: CSS scroll-driven, progressive enhancement ----
+     Browsers without animation-timeline simply don't move anything. */
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      /* The cover lags behind the page while crossing the viewport. */
+      .zine .cover {
+        animation: dg-drift linear both;
+        animation-timeline: view();
+      }
+      /* The quote drifts the other way, so the two layers read as depth. */
+      .zine .pullquote {
+        animation: dg-drift-quote linear both;
+        animation-timeline: view();
+      }
+      @keyframes dg-drift {
+        from {
+          transform: translateY(-1.25rem);
+        }
+        to {
+          transform: translateY(1.25rem);
+        }
+      }
+      @keyframes dg-drift-quote {
+        from {
+          transform: translateY(0.875rem);
+        }
+        to {
+          transform: translateY(-0.875rem);
+        }
+      }
+    }
+  }
+  .zine .cover-art {
+      aspect-ratio: 21/7;
+    }
+  }
+  /* Risograph cover: the still is grayscaled, then an orange ink layer with a
+     dot screen multiplies over it (duotone + halftone). The scrim stays so the
+     numeral and badge remain readable. */
+  .zine .cover-art::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background-image:
+      linear-gradient(to bottom, rgba(13, 10, 5, 0.78), rgba(13, 10, 5, 0.32) 45%, rgba(13, 10, 5, 0.6)),
+      var(--thumb-max), var(--thumb-hq);
+    background-position: center;
+    background-size: cover;
+    filter: grayscale(1) contrast(1.12) brightness(0.92);
+    transition: transform 0.6s ease;
+  }
+  .zine .cover-art::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background-color: var(--color-brand-500);
+    background-image: radial-gradient(circle, rgba(0, 0, 0, 0.18) 0.9px, transparent 1px);
+    background-size: 4px 4px;
+    mix-blend-mode: multiply;
+    opacity: 0.88;
+    transition: opacity 0.6s ease;
+  }
+  .zine .cover:hover .cover-art::before {
+    transform: scale(1.04);
+  }
+  .zine .cover:hover .cover-art::after {
+    opacity: 1;
+  }
+  .zine .cover-art > * {
+    position: relative;
+    z-index: 1;
+  }
+  /* ---- carimbo (selo rotacionado) ---- */
+  .zine .cover-art .stamp {
+    position: absolute;
+    top: 1.25rem;
+    right: 1.25rem;
+    z-index: 2;
+    width: 7.5rem;
+    height: 7.5rem;
+    transform: rotate(-8deg);
+    color: var(--color-brand-500);
+    transition: transform 0.3s ease, color 0.15s;
+  }
+  .zine .cover-art .stamp:hover {
+    transform: rotate(-4deg) scale(1.06);
+    color: var(--color-brand-400);
+  }
+  .zine .cover-art .stamp svg {
+    width: 100%;
+    height: 100%;
+  }
+  .zine .cover-art .stamp text {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    fill: currentColor;
+  }
+  .zine .cover-art .n {
+    font-family: var(--font-sans);
+    font-weight: 900;
+    font-size: clamp(4rem, 12vw, 8.5rem);
+    letter-spacing: -0.03em;
+    line-height: 1;
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(13, 10, 5, 0.55), 0 2px 14px rgba(13, 10, 5, 0.55);
+  }
+  .zine .cover-art .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: #fff;
+    background: var(--color-brand-500);
+    padding: 0.4rem 0.8rem;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    transition: background 0.15s;
+  }
+  .zine .cover-art .badge:hover {
+    background: var(--color-brand-400);
+  }
+  /* Stretched link: the badge anchor paints an invisible layer over the whole
+     artwork so the entire cover is clickable. The stamp sits at z-index 2 and
+     keeps its own hit area; both point at the same episode URL. */
+  .zine .cover-art .badge::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+  }
+  .zine .cover .figcap {
+    margin-top: 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--color-muted);
+  }
+  .zine .lead {
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: 2rem;
+  }
+  .zine .lead .kicker {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--color-muted);
+    margin-bottom: 0.35rem;
+  }
+  .zine .lead h2 {
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.06;
+    font-size: clamp(2rem, 4vw, 3rem);
+    text-wrap: balance;
+  }
+  .zine .lead .deck {
+    margin-top: 1rem;
+    max-width: 38rem;
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: var(--color-muted);
+    text-wrap: pretty;
+  }
+  /* drop cap (detalhe de impresso) */
+  .zine .lead .deck::first-letter {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 3.2em;
+    line-height: 0.8;
+    float: left;
+    padding: 0.06em 0.1em 0 0;
+    color: var(--color-brand-400);
+  }
+  .zine .lead .facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+    margin-top: 1.25rem;
+    padding-top: 1rem;
+    border-top: 1px dotted var(--color-border);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--color-muted);
+  }
+  .zine .lead .facts b {
+    color: var(--color-on-background);
+    font-weight: 500;
+  }
+  .zine .lead .ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+    align-items: center;
+  }
+  .zine .link-arrow {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--color-brand-400);
+  }
+  .zine .link-arrow:hover {
+    text-decoration: underline;
+  }
+
+  /* ---- colophon (terminal + signatures) ---- */
+  .zine .colofao {
+    border-top: 1px solid var(--color-border);
+    padding-block: 3.5rem;
+  }
+  .zine .colofao .wrap {
+    display: grid;
+    gap: 1.5rem;
+  }
+  @media (min-width: 768px) {
+    .zine .colofao .wrap {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  /* ---- terminal (colophon) ---- */
+  .zine .colophon {
+    background: var(--term);
+    border: 1px solid var(--term-line);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+  }
+  .zine .colophon .h {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.6rem 1rem;
+    border-bottom: 1px solid var(--term-line);
+    color: var(--color-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 0.7rem;
+  }
+  .zine .colophon .h .dots {
+    display: flex;
+    gap: 0.4rem;
+  }
+  .zine .colophon .h .dots i {
+    width: 0.55rem;
+    height: 0.55rem;
+    border-radius: 50%;
+    background: var(--term-line);
+    font-style: normal;
+  }
+  .zine .colophon .h .dots i.o {
+    background: var(--color-brand-500);
+  }
+  .zine .colophon .b {
+    padding: 1.1rem 1rem;
+    color: var(--color-muted);
+  }
+  .zine .colophon .b .cmd {
+    color: var(--color-on-background);
+  }
+  .zine .colophon .b .cmd .p {
+    color: var(--color-brand-400);
+  }
+  .zine .colophon .b .sep {
+    height: 1px;
+    background: var(--term-line);
+    margin: 0.9rem 0;
+  }
+  .zine .colophon .b .f {
+    color: var(--color-brand-400);
+  }
+  .zine .colophon .b .f + p {
+    margin-top: 0.25rem;
+    padding-left: 1rem;
+  }
+  .zine .colophon .b .ep a {
+    color: var(--color-on-background);
+    transition: color 0.15s;
+  }
+  .zine .colophon .b .ep a:hover {
+    color: var(--color-brand-400);
+  }
+  .zine .colophon .b p + .f {
+    margin-top: 0.9rem;
+  }
+  .zine .colophon .cap {
+    padding: 0.5rem 1rem;
+    border-top: 1px solid var(--term-line);
+    color: var(--color-muted);
+    font-size: 0.7rem;
+    display: flex;
+    justify-content: space-between;
+  }
+  .zine .colophon .cap .led {
+    display: inline-block;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: var(--color-brand-500);
+    margin-right: 0.45rem;
+  }
+
+  /* ---- assinaturas ---- */
+  .zine .subs {
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+    padding: 1.25rem;
+    text-wrap: pretty;
+  }
+  /* Anchored sections should not land flush against the viewport edge. */
+  .zine section[id] {
+    scroll-margin-top: 1.5rem;
+  }
+  .zine .subs ul {
+    list-style: none;
+    display: grid;
+    gap: 0.6rem;
+    margin-top: 0.9rem;
+  }
+  .zine .subs a {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    color: var(--color-muted);
+    border-bottom: 1px dotted var(--color-border);
+    padding-bottom: 0.6rem;
+    transition: color 0.15s;
+  }
+  .zine .subs a:hover {
+    color: var(--color-brand-400);
+  }
+  .zine .subs a .go {
+    color: var(--color-brand-500);
+  }
+  .zine .subs .stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.25rem;
+    margin-top: 1rem;
+    padding-top: 0.9rem;
+    border-top: 1px solid var(--color-border);
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--color-muted);
+  }
+  .zine .subs .stats b {
+    color: var(--color-on-background);
+  }
+
+  /* ---- sections ---- */
+  :global(.js) .zine .reveal {
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  :global(.js) .zine .reveal.in {
+    opacity: 1;
+    transform: none;
+  }
+  /* headings rise out of a mask as the section enters */
+  :global(.js) .zine .reveal h2,
+  :global(.js) .zine .reveal .eyebrow {
+    clip-path: inset(0 0 100% 0);
+    transform: translateY(0.45em);
+    padding-bottom: 0.06em;
+    transition: clip-path 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) 0.08s,
+      transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) 0.08s;
+  }
+  :global(.js) .zine .reveal.in h2,
+  :global(.js) .zine .reveal.in .eyebrow {
+    clip-path: inset(0);
+    transform: none;
+  }
+  /* grids cascade in (animation, not transition: keeps the hover) */
+  :global(.js) .zine .reveal.in :is(.eps, .hosts-grid) > * {
+    animation: dg-rise 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+  :global(.js) .zine .reveal.in :is(.eps, .hosts-grid) > *:nth-child(1) {
+    animation-delay: 0.06s;
+  }
+  :global(.js) .zine .reveal.in :is(.eps, .hosts-grid) > *:nth-child(2) {
+    animation-delay: 0.13s;
+  }
+  :global(.js) .zine .reveal.in :is(.eps, .hosts-grid) > *:nth-child(3) {
+    animation-delay: 0.2s;
+  }
+  :global(.js) .zine .reveal.in :is(.eps, .hosts-grid) > *:nth-child(4) {
+    animation-delay: 0.27s;
+  }
+  @keyframes dg-rise {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  .zine section.block {
+    border-top: 1px solid var(--color-border);
+    padding-block: 3.5rem;
+  }
+  @media (min-width: 640px) {
+    .zine section.block {
+      padding-block: 4.5rem;
+    }
+  }
+  .zine .sec-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    border-bottom: 2px solid var(--color-on-background);
+    padding-bottom: 0.75rem;
+  }
+  .zine .sec-head h2 {
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    font-size: clamp(1.6rem, 3vw, 2.1rem);
+    text-wrap: balance;
+  }
+  /* Axis jump on the biggest display type. No transition on purpose: the
+     reveal rules already own `transition` on these headings. */
+  .zine .sec-head h2:hover {
+    font-variation-settings: 'wght' 780, 'WONK' 1;
+  }
+  /* Outlined numerals: one per headed section, counter bumped on the head so
+     headless sections never consume a number. */
+  .zine .sec-head {
+    counter-increment: dg-sec;
+  }
+  .zine .sec-head .eyebrow::before {
+    content: counter(dg-sec, decimal-leading-zero);
+    display: block;
+    margin-bottom: 0.25rem;
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: clamp(2.75rem, 6vw, 4.5rem);
+    line-height: 0.8;
+    letter-spacing: -0.04em;
+    color: transparent;
+    -webkit-text-stroke: 1px var(--color-brand-500);
+    opacity: 0.6;
+  }
+  .zine .sec-head .eyebrow {
+    margin-bottom: 0.35rem;
+  }
+
+  /* Inverted (paper) block: a light print sheet breaking the dark run.
+     Flipping --color-on-background to ink makes every hairline/title inside
+     invert on its own; surfaces stay dark, so cards read as ink on paper. */
+  .zine section.block.inverted {
+    --color-on-background: var(--color-background);
+    --color-on-surface: var(--color-background);
+    --color-muted: #6b635a;
+    --color-border: #d9d2c6;
+    /* Notebook grid, so the paper block reads as a printed page. */
+    background-color: #f3efe9;
+    background-image:
+      repeating-linear-gradient(to right, rgb(13 10 5 / 0.06) 0 1px, transparent 1px 2rem),
+      repeating-linear-gradient(to bottom, rgb(13 10 5 / 0.06) 0 1px, transparent 1px 2rem);
+    color: var(--color-background);
+  }
+  /* Cards inside the paper block stay ink-dark, so they flip the tokens back
+     and set their own color (the section's black is inherited, not a var). */
+  .zine section.block.inverted .edition {
+    --color-on-background: #f3efe9;
+    --color-on-surface: #e7e2da;
+    --color-muted: #a49c90;
+    --color-border: #2e2923;
+    color: var(--color-on-background);
+  }
+
+  /* ---- table of contents ---- */
+  .zine .toc-big {
+    border-bottom: 1px solid var(--color-border);
+  }
+  .zine .toc-big .row {
+    display: grid;
+    gap: 0.5rem 1.5rem;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    padding-block: 1.75rem;
+    border-top: 1px solid var(--color-border);
+    transition: background 0.15s;
+  }
+  .zine .toc-big .row:hover {
+    background: var(--color-surface);
+  }
+  .zine .toc-big .num {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: 2rem;
+    color: var(--color-brand-500);
+    line-height: 1;
+  }
+  .zine .toc-big .mid h3 {
+    font-weight: 600;
+    font-size: 1.6rem;
+    letter-spacing: -0.01em;
+  }
+  .zine .toc-big .mid p {
+    margin-top: 0.4rem;
+    max-width: 34rem;
+    line-height: 1.6;
+    color: var(--color-muted);
+  }
+  .zine .toc-big .pg {
+    display: none;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--color-muted);
+  }
+  .zine .toc-big .pg u {
+    border-bottom: 1px dotted var(--color-muted);
+    display: inline-block;
+    min-width: 6rem;
+    text-decoration: none;
+    margin-right: 0.6rem;
+  }
+  @media (min-width: 1024px) {
+    .zine .toc-big .pg {
+      display: block;
+    }
+  }
+
+  /* ---- pull quote ---- */
+  .zine .pullquote {
+    border-top: 2px solid var(--color-on-background);
+    border-bottom: 2px solid var(--color-on-background);
+    padding-block: 2.75rem;
+    text-align: center;
+    margin-top: 2.5rem;
+  }
+  .zine .pullquote p {
+    font-weight: 600;
+    font-variation-settings: 'wght' 600;
+    transition: font-variation-settings 0.45s cubic-bezier(0.2, 0.7, 0.2, 1);
+    font-size: clamp(1.6rem, 4vw, 2.6rem);
+    letter-spacing: -0.02em;
+    line-height: 1.25;
+    max-width: 46rem;
+    margin-inline: auto;
+    text-wrap: balance;
+  }
+  /* Variable-font axis play: the full Fraunces build exposes wght, SOFT and
+     WONK, so hover gains weight and swaps in the "wonky" alternates. */
+  .zine .pullquote p:hover {
+    font-variation-settings: 'wght' 780, 'SOFT' 40, 'WONK' 1;
+  }
+  .zine .pullquote .qm {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 3.5rem;
+    line-height: 0;
+    color: var(--color-brand-500);
+    margin-bottom: 1.1rem;
+  }
+  .zine .pullquote .src {
+    margin-top: 1.25rem;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--color-muted);
+  }
+  .zine .pullquote .pick {
+    margin-top: 1rem;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+  }
+  .zine .pullquote .pick a {
+    color: var(--color-brand-400);
+    transition: color 0.15s;
+  }
+  .zine .pullquote .pick a:hover {
+    color: var(--color-brand-500);
+  }
+
+  /* ---- episodes ---- */
+  .zine .eps {
+    display: grid;
+    gap: 1.25rem;
+  }
+  @media (min-width: 768px) {
+    .zine .eps {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 1024px) {
+    .zine .eps {
+      /* Bento-ish: uneven cells instead of four identical boxes. */
+      grid-template-columns: repeat(6, 1fr);
+    }
+    .zine .eps > :first-child {
+      grid-column: span 3;
+    }
+    .zine .eps > :nth-child(2) {
+      grid-column: span 3;
+    }
+    .zine .eps > :nth-child(3) {
+      grid-column: span 2;
+    }
+    .zine .eps > :nth-child(4) {
+      grid-column: span 4;
+    }
+  }
+  .zine .ep {
+    position: relative;
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    /* Hard offset shadow reads as a sticker stuck on the page. */
+    box-shadow: 5px 5px 0 var(--color-brand-500);
+    transition: background 0.15s, transform 0.2s, box-shadow 0.2s;
+  }
+  .zine .ep:hover {
+    background: var(--color-background);
+    transform: translate(-2px, -2px);
+    box-shadow: 8px 8px 0 var(--color-brand-500);
+  }
+  /* Washi tape over the thumb. It lives inside the card because the card
+     clips its own overflow. */
+  .zine .ep::before {
+    content: '';
+    position: absolute;
+    top: 0.55rem;
+    left: 0.9rem;
+    z-index: 1;
+    width: 3.25rem;
+    height: 1.05rem;
+    background: rgb(236 103 55 / 0.55);
+    transform: rotate(-4deg);
+    pointer-events: none;
+  }
+  .zine .ep .art {
+    aspect-ratio: 16/9;
+    background-size: cover;
+    background-position: center;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .zine .ep .body {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    flex: 1;
+  }
+  .zine .ep .meta {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--color-muted);
+  }
+  .zine .ep .meta .num {
+    color: var(--color-brand-500);
+    font-weight: 700;
+  }
+  .zine .ep .title {
+    font-weight: 600;
+    font-size: 1.05rem;
+    line-height: 1.35;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .zine .ep .go {
+    margin-top: auto;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--color-brand-400);
+    transition: transform 0.3s ease;
+  }
+  .zine .ep:hover .go {
+    transform: translateX(4px);
+  }
+
+  /* ---- newsletter ---- */
+  .zine .edition {
+    display: block;
+    border: 1px solid var(--color-border);
+    border-left: 6px solid var(--color-brand-500);
+    background: var(--color-surface);
+    padding: 2rem;
+    transition: background 0.15s;
+  }
+  .zine .edition:hover {
+    background: var(--color-background);
+  }
+  .zine .edition .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+    align-items: center;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--color-muted);
+  }
+  .zine .edition .meta .tag {
+    background: var(--color-brand-500);
+    color: #fff;
+    padding: 0.15rem 0.55rem;
+  }
+  .zine .edition h3 {
+    margin-top: 1rem;
+    font-weight: 600;
+    font-size: clamp(1.4rem, 3vw, 2.1rem);
+    letter-spacing: -0.01em;
+    line-height: 1.25;
+    max-width: 42rem;
+    text-wrap: balance;
+  }
+  .zine .edition .go {
+    margin-top: 1.25rem;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--color-brand-400);
+  }
+
+  /* ---- assinatura (CTA) ---- */
+  .zine .sign {
+    background: var(--color-surface);
+    border-top: 2px solid var(--color-on-background);
+  }
+  .zine .sign .inner {
+    max-width: 42rem;
+    margin-inline: auto;
+    text-align: center;
+  }
+  .zine .sign h2 {
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    font-size: clamp(1.9rem, 4vw, 2.7rem);
+    text-wrap: balance;
+    margin-top: 0.75rem;
+  }
+  .zine .sign p {
+    margin: 1rem auto 0;
+    max-width: 34rem;
+    line-height: 1.7;
+    color: var(--color-muted);
+  }
+  .zine .sign .ctas {
+    margin-top: 2rem;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem;
+  }
+  .zine .sign .btn {
+    padding: 0.9rem 2.25rem;
+    font-size: 1.05rem;
+  }
+
+  /* ---- byline (caras na dobra da capa) ---- */
+  .zine .byline {
+    border-top: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-border);
+    background: var(--color-surface);
+  }
+  .zine .byline .row {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    flex-wrap: wrap;
+    padding-block: 0.8rem;
+  }
+  .zine .byline .lbl {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--color-muted);
+  }
+  .zine .byline ul {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    flex-wrap: wrap;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .zine .byline li {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+  }
+  .zine .byline .face-link {
+    display: inline-flex;
+    position: relative;
+    overflow: hidden;
+    border-radius: 50%;
+  }
+  .zine .byline .nm {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+  }
+  .zine .byline .all {
+    margin-left: auto;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--color-brand-400);
+  }
+  .zine .byline .all:hover {
+    color: var(--color-brand-500);
+  }
+
+  /* ---- team (who makes it) — cover cards ---- */
+  .zine .face {
+    display: block;
+    object-fit: cover;
+    background: var(--color-surface-raised);
+  }
+  /* avatar pequeno da byline */
+  .zine .byline .face {
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 50%;
+    border: 1px solid var(--color-border);
+  }
+  .zine .byline .face.monogram {
+    display: grid;
+    place-items: center;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 0.82rem;
+    color: var(--color-muted);
+  }
+  .zine .hosts-note {
+    margin-top: 0.5rem;
+    max-width: 34rem;
+    font-size: 0.95rem;
+    color: var(--color-muted);
+    text-wrap: pretty;
+  }
+  .zine section.halftone {
+    /* Halftone dot field: the print texture the risograph cover uses, kept
+       faint so it stays a backdrop. */
+    background-image: radial-gradient(circle, rgb(236 103 55 / 0.1) 1px, transparent 1.2px);
+    background-size: 14px 14px;
+    background-position: center;
+  }
+  .zine .hosts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(13.5rem, 1fr));
+    gap: 1px;
+    background: var(--color-border);
+    border: 1px solid var(--color-border);
+    margin-top: 1.75rem;
+  }
+  .zine .host {
+    display: flex;
+    flex-direction: column;
+    background: var(--color-surface);
+    transition: background 0.2s;
+  }
+  .zine .host:hover {
+    background: var(--color-surface-raised);
+  }
+  .zine .host .ph {
+    display: block;
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 1/1;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .zine .host .ph .face {
+    width: 100%;
+    height: 100%;
+  }
+  .zine .host .ph .face.monogram {
+    display: grid;
+    place-items: center;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 3rem;
+    color: var(--color-muted);
+  }
+  .zine .host .idx {
+    position: absolute;
+    top: 0.65rem;
+    left: 0.75rem;
+    z-index: 1;
+    padding: 0.15rem 0.4rem;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.14em;
+    color: var(--color-background);
+    background: var(--color-brand-500);
+  }
+  .zine .host .see {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1;
+    padding: 0.45rem 0.75rem;
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--color-background);
+    background: var(--color-brand-500);
+    transform: translateY(101%);
+    transition: transform 0.25s ease;
+  }
+  .zine .host .ph:hover .see,
+  .zine .host .ph:focus-visible .see {
+    transform: none;
+  }
+  .zine .host .who {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: 1.1rem 1.25rem 1.35rem;
+  }
+  .zine .host h3 {
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+  }
+  .zine .host .rule {
+    display: block;
+    width: 0;
+    height: 2px;
+    margin-top: 0.5rem;
+    background: var(--color-brand-500);
+    transition: width 0.35s ease;
+  }
+  .zine .host:hover .rule {
+    width: 2.5rem;
+  }
+  .zine .host .role {
+    margin-top: 0.55rem;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--color-muted);
+  }
+  .zine .host .socials {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 1rem;
+  }
+  .zine .host .s {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.3rem 0.55rem;
+    border: 1px solid var(--color-border);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-muted);
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .zine .host .s:hover {
+    border-color: var(--color-brand-500);
+    color: var(--color-brand-400);
+  }
+  .zine .host .s .ext {
+    font-size: 0.85em;
+    opacity: 0.7;
+  }
+
+  /* ---- episode player (modal) ---- */
+  .ep-modal {
+    /* Size explicitly: never rely on the UA's fit-content for a dialog whose
+       only child is an absolutely positioned iframe (that collapses to 0).
+       height must be resolved (fit-content): with inset:0 and height:auto the
+       box stretches to the full viewport instead of hugging the video. */
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    max-width: 56rem;
+    height: fit-content;
+    max-height: 100dvh;
+    margin: auto;
+    padding: 0;
+    border: 1px solid var(--color-border);
+    background: #000;
+  }
+  .ep-modal::backdrop {
+    background: rgb(13 10 5 / 85%);
+  }
+  .ep-modal-frame {
+    position: relative;
+    aspect-ratio: 16 / 9;
+  }
+  .ep-modal-frame iframe {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+  .ep-modal-close {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    z-index: 1;
+    width: 2.25rem;
+    height: 2.25rem;
+    display: grid;
+    place-items: center;
+    font-size: 1.35rem;
+    line-height: 1;
+    color: var(--color-on-background);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    cursor: pointer;
+  }
+  .ep-modal-close:hover,
+  .ep-modal-close:focus-visible {
+    color: var(--color-brand-400);
+    border-color: var(--color-brand-500);
+  }
+
+  /* ---- toast (copiar convite) ---- */
+  .toast {
+    position: fixed;
+    left: 50%;
+    bottom: 1.5rem;
+    z-index: 70;
+    transform: translate(-50%, 0.75rem);
+    opacity: 0;
+    visibility: hidden;
+    padding: 0.6rem 1rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--color-on-background);
+    background: var(--color-surface);
+    border: 1px solid var(--color-brand-500);
+    transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+  }
+  .toast.on {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, 0);
+  }
+
+  /* ---- movimento reduzido ---- */
+  @media (prefers-reduced-motion: reduce) {
+    :global(.js) .zine .reveal {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+    :global(.js) .zine .reveal h2,
+    :global(.js) .zine .reveal .eyebrow {
+      clip-path: none;
+      transform: none;
+      transition: none;
+    }
+    :global(.js) .zine .reveal.in :is(.eps, .hosts-grid) > * {
+      animation: none;
+    }
+    .toast {
+      transform: translate(-50%, 0);
+      transition: opacity 0.2s ease, visibility 0.2s;
+    }
+    .zine .cover-art::before,
+    .zine .cover-art::after,
+    .zine .ep .go,
+    .zine .cover-art .stamp,
+    .zine .host .rule,
+    .zine .host .s,
+    .zine .host .see {
+      transition: none;
+    }
+    .zine .cover:hover .cover-art::before,
+    .zine .ep:hover .go {
+      transform: none;
+    }
+    /* The load-in choreography (cover wipe) is motion, so it goes. */
+    .zine .cover-art,
+    .zine .btn:not(.ghost),
+    .zine .ep {
+      animation: none;
+      transition: none;
+      transform: none;
+    }
+  }
+</style>
+
+<script>
+  document.documentElement.classList.add('js');
+
+  function initReveal() {
+    const items = document.querySelectorAll('.zine .reveal:not([data-reveal-ready])');
+    if (!items.length) return;
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduceMotion || !('IntersectionObserver' in window)) {
+      items.forEach((el) => {
+        el.setAttribute('data-reveal-ready', '');
+        el.classList.add('in');
+      });
+      return;
+    }
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('in');
+            observer.unobserve(entry.target);
+          }
+        }
+      },
+      { rootMargin: '0px 0px -8% 0px', threshold: 0.06 }
+    );
+    items.forEach((el) => {
+      el.setAttribute('data-reveal-ready', '');
+      observer.observe(el);
+    });
+  }
+
+  const scope = window as unknown as Record<string, unknown>;
+
+  if (!scope.__dgHome) {
+    scope.__dgHome = true;
+
+    let toastTimer = 0;
+
+    function showToast(message: string) {
+      const toast = document.querySelector<HTMLElement>('[data-toast]');
+      if (!toast) return;
+      toast.textContent = message;
+      toast.classList.add('on');
+      window.clearTimeout(toastTimer);
+      toastTimer = window.setTimeout(() => toast.classList.remove('on'), 2400);
+    }
+
+    const modal = () =>
+      document.querySelector<HTMLDialogElement>('[data-ep-modal]');
+
+    document.addEventListener('click', async (event) => {
+      const target = event.target as Element | null;
+      if (!target || !target.closest) return;
+
+      // copiar convite do Discord
+      const copier = target.closest<HTMLElement>('[data-copy]');
+      if (copier) {
+        const value = copier.getAttribute('data-copy') ?? '';
+        const toast = document.querySelector('[data-toast]');
+        try {
+          await navigator.clipboard.writeText(value);
+        } catch {
+          /* clipboard bloqueado: avisa mesmo assim */
+        }
+        showToast(toast?.getAttribute('data-copied') ?? '');
+        return;
+      }
+
+      // fechar o player
+      if (target.closest('[data-player-close]')) {
+        modal()?.close();
+        return;
+      }
+
+      // open the episode in the player instead of leaving the site
+      const card = target.closest('.zine .ep');
+      if (card) {
+        const id = (card.getAttribute('href') ?? '').match(/(?:v=|youtu\.be\/|embed\/)([\w-]{6,})/)?.[1];
+        const dialog = modal();
+        const frame = dialog?.querySelector('[data-ep-frame]');
+        if (!id || !dialog || !frame) return;
+        event.preventDefault();
+        frame.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0" style="position:absolute;inset:0;width:100%;height:100%;border:0;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+        const iframe = frame.querySelector('iframe');
+        if (iframe) {
+          const label = card.querySelector('.title')?.textContent?.trim();
+          iframe.setAttribute('title', label || 'YouTube');
+        }
+        dialog.showModal();
+        return;
+      }
+
+      // clique no backdrop fecha
+      const opened = modal();
+      if (opened?.open && event.target === opened) opened.close();
+    });
+
+    // the close event does not bubble: capture it so the iframe (and audio) is torn down
+    document.addEventListener(
+      'close',
+      (event) => {
+        const dialog = event.target as HTMLDialogElement | null;
+        if (dialog?.matches?.('[data-ep-modal]')) {
+          const frame = dialog.querySelector('[data-ep-frame]');
+          if (frame) frame.innerHTML = '';
+        }
+      },
+      true
+    );
+  }
+
+  document.addEventListener('astro:page-load', initReveal);
+  initReveal();
+</script>

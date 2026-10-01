@@ -1,6 +1,8 @@
 @import "@fontsource-variable/inter";
 @import "@fontsource-variable/jetbrains-mono";
-@import "@fontsource-variable/bricolage-grotesque";
+/* Full build: exposes the opsz/SOFT/WONK axes (optical sizing + axis play).
+   Same subsets as the standard build, ~52K bigger on the latin subset. */
+@import "@fontsource-variable/fraunces/full.css";
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
@@ -13,7 +15,7 @@
   Visual contract:
   - Sharp corners: no pills, no large rounded corners
   - WARM palette (black with orange bias), not zinc/cool gray-blue
-  - Bricolage Grotesque for headings (characterful display font),
+  - Fraunces for editorial headings (print/fanzine DNA),
     Inter for body, JetBrains Mono for details/terminal
   - Brand marker: the ORANGE CIRCLE (logo echo) — used in eyebrows,
     timestamps, status and indexes. Never more than one marker
@@ -57,19 +59,15 @@
   --color-border: #2e2923;
 
   /* ---- Fonts (self-hosted via Fontsource, no external request) ----
-     Bricolage Grotesque: headings (characterful display, no Inter/Geist)
+     Fraunces: editorial headings (print/fanzine DNA)
      Inter Variable: readable body
      JetBrains Mono: terminal, metadata, eyebrows
   */
   --font-sans: "Inter Variable", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-display: "Bricolage Grotesque Variable", var(--font-sans);
+  --font-display: "Fraunces Variable", Georgia, serif;
   --font-mono: "JetBrains Mono Variable", ui-monospace, SFMono-Regular, Menlo, monospace;
 
-  /* ---- Glow ("AI era" signature) ----
-     1 glow per viewport: CTAs, card hover, hero corners
-  */
-  --shadow-glow: 0 0 20px rgb(236 103 55 / 0.35), 0 0 60px rgb(236 103 55 / 0.15);
-  --shadow-glow-lg: 0 0 30px rgb(236 103 55 / 0.5), 0 0 90px rgb(236 103 55 / 0.25);
+  /* ---- Glow (sparingly: card hover, nav dropdown) ---- */
   --shadow-glow-card: 0 0 0 1px rgb(236 103 55 / 0.4), 0 0 32px rgb(236 103 55 / 0.18);
 }
 
@@ -89,6 +87,41 @@ h1,
 h2,
 h3 {
   font-family: var(--font-display);
+  font-optical-sizing: auto;
+}
+
+/* ---- Clickable affordance ----
+   Browsers render <button> and <summary> with the arrow cursor, and
+   Tailwind v4's preflight no longer normalizes them to `pointer` (v3 did).
+   Anchors with href get it from the UA stylesheet; everything else needs
+   to be explicit so no click target ever reads as inert.
+*/
+button:not(:disabled),
+input[type='button']:not(:disabled),
+input[type='submit']:not(:disabled),
+input[type='reset']:not(:disabled),
+input[type='checkbox']:not(:disabled),
+input[type='radio']:not(:disabled),
+input[type='file']:not(:disabled),
+input[type='range']:not(:disabled),
+input[type='color']:not(:disabled),
+select:not(:disabled),
+summary,
+label[for],
+[role='button']:not([aria-disabled='true']),
+[role='tab']:not([aria-disabled='true']),
+a[href],
+area[href] {
+  cursor: pointer;
+}
+
+/* Disabled controls must not look clickable */
+button:disabled,
+input:disabled,
+select:disabled,
+textarea:disabled,
+[aria-disabled='true'] {
+  cursor: not-allowed;
 }
 
 /* Ambient radial blur (warm background glow) */
@@ -101,6 +134,17 @@ body::before {
   background:
     radial-gradient(700px 320px at 15% -10%, rgb(236 103 55 / 0.1), transparent 60%),
     radial-gradient(900px 420px at 95% 5%, rgb(236 103 55 / 0.06), transparent 60%);
+}
+
+/* Paper grain (editorial texture, subtle) */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  pointer-events: none;
+  opacity: 0.04;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
 }
 
 ::selection {
@@ -125,39 +169,34 @@ body::before {
   color: var(--color-muted);
 }
 
-/* ---- Primary button with orange glow ---- */
-.btn-primary {
-  display: inline-block;
-  background-color: var(--color-brand-500);
-  color: #fff;
-  font-weight: 600;
-  padding: 0.75rem 1.5rem;
-  transition: background-color 0.15s ease, box-shadow 0.15s ease;
-  box-shadow: var(--shadow-glow);
-}
-.btn-primary:hover {
-  background-color: var(--color-brand-600);
-  box-shadow: var(--shadow-glow-lg);
-}
-
-/* ---- Ticker (radio waves / editorial tape) ---- */
-@keyframes ticker {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
-  }
-}
-.ticker-track {
-  animation: ticker 36s linear infinite;
-}
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
   }
-  .ticker-track {
-    animation: none;
+}
+
+/* ---- Read progress (MainLayout) ---- */
+.read-progress {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 60;
+  height: 2px;
+  pointer-events: none;
+}
+.read-progress > span {
+  display: block;
+  height: 100%;
+  width: 0;
+  background: var(--color-brand-500);
+  transition: width 0.1s linear;
+}
+
+/* View transitions must not animate for the motion-sensitive */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
   }
 }
 
@@ -173,3 +212,4 @@ body::before {
 .prose img {
   height: auto;
 }
+
