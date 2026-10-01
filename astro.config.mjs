@@ -26,5 +26,10 @@ export default defineConfig({
   },
   vite: {
     plugins: [tailwindcss()],
+    // Keep assets as real files. Small inlined assets become `data:` URIs,
+    // which the CSP in public/_headers blocks (no font-src), and small script
+    // chunks get emitted as inline <script type="module">, which
+    // `script-src 'self'` blocks — that kills all the page JS in production.
+    build: { assetsInlineLimit: 0 },
   },
 });
