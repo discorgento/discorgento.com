@@ -5,7 +5,7 @@ Discorgento community site (Brazilian Magento/tech community + podcast), built w
 ## Language rules
 
 - **Code, comments, filenames, commit messages and docs (this file, README, etc.) must be in English.**
-- **Exception — site content stays in Portuguese**: blog posts under `src/content/posts/pt-br/*.md` and the `pt-BR` strings in `src/lib/i18n.ts` are the product itself (Brazilian community site). Never translate or "fix" them to English.
+- **Exception — site content stays in Portuguese**: the `pt-BR` strings in `src/lib/i18n.ts` are the product itself (Brazilian community site). Never translate or "fix" them to English.
 - UI copy that is hardcoded in components must be moved to `src/lib/i18n.ts` instead of being written inline.
 
 ## Commands
@@ -61,11 +61,11 @@ No lint, typecheck, or test commands exist. `npm run build` is the only meaningf
 
 ## Key gotchas
 
-- **Default locale is `pt-BR`, content is in Portuguese.** Keep new blog prose in Brazilian Portuguese (site content exception — see Language rules). Locale folders must match `i18n.locales` exactly (`pt-BR`, `en`, `es`).
+- **Default locale is `pt-BR`, content is in Portuguese.** Keep new UI copy in Brazilian Portuguese (site content exception — see Language rules). Locale folders must match `i18n.locales` exactly (`pt-BR`, `en`, `es`).
 - **Astro 7 + Tailwind v4 — do not follow old tutorials (≤ Astro 5 / Tailwind v3).** Content Layer API (`content.config.ts` at root, `glob()` loader, `z` from `astro/zod`) and CSS-first Tailwind (`@theme`, no `tailwind.config.js`) changed everything.
 - **`@tailwindcss/vite` ≥ 4.2.2 is required** with Vite 8 (Astro 7). Old versions break the build.
 - **Frontmatter YAML:** colons (`:`) in values break the build — quote them (e.g. `description: "texto: com dois pontos"`).
-- **English posts exist** (`src/content/posts/en/*.md`) — all posts have translations; the translation button only shows when the post exists in the other locale (same slug).
+- **All three editions exist for every route** — `pt-BR` (root), `en/` and `es/`. The language switcher is derived from `LOCALES` and `LOCALE_META` in `src/lib/i18n.ts`; never hardcode a pair of locales in a component. There is no per-post translation logic because there are no posts.
 - **Deps with build scripts** (`esbuild`, `workerd`) need `allowScripts` in `package.json` (already configured).
 - **Imports use the `~/` alias** (defined in `tsconfig.json` → `./src/*`) — never use relative `../`/`../../`.
 - **The filesystem is not readable from page code at build time.** With the Cloudflare adapter, prerendering runs inside workerd, where `process.cwd()` is `/bundle`, `import.meta.dirname` is `undefined`, and `import.meta.url` is rewritten to a site URL. Never use `existsSync` in an `.astro` file or `src/lib` to decide on-disk state — it silently always misses and you ship the fallback path. Read the disk in a Vite plugin instead (see `plugins/thumb-cache.mjs`), which runs in real Node.
