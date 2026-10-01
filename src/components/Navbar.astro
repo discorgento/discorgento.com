@@ -2,55 +2,205 @@
 import { getRelativeLocaleUrl } from 'astro:i18n';
 import { useTranslations } from '~/lib/i18n';
 
+interface Props {
+  /** The home page renders its own big masthead, so it can drop this small lockup. */
+  showLockup?: boolean;
+}
+
+type Section = {
+  n: string;
+  label: string;
+  href: string;
+  external?: boolean;
+  brand?: boolean;
+};
+
 const locale = Astro.currentLocale ?? 'pt-BR';
 const t = useTranslations(locale);
+const { showLockup = true } = Astro.props;
+
+const substackUrl = 'https://discorgento.substack.com';
+const discordUrl = 'https://discorgento.com/discord';
+const githubUrl = 'https://github.com/discorgento';
+
+const homeUrl = getRelativeLocaleUrl(locale, '/');
+// Strip the /en prefix so section matching works the same in both locales.
+const base = Astro.url.pathname.replace(/^\/en(?=\/|$)/, '') || '/';
+// Section hrefs carry the locale prefix; strip it here too so both sides match.
+const withoutLocale = (href: string) => href.replace(/^\/en(?=\/|$)/, '') || '/';
+const isActive = (href: string) => {
+  const clean = withoutLocale(href);
+  return base === clean || base.startsWith(`${clean}/`);
+};
+
+// Numbered index: the sections of the zine, in reading order.
+const sections: Section[] = [
+  { n: '01', label: t('nav.podcast'), href: getRelativeLocaleUrl(locale, '/podcast') },
+  { n: '02', label: t('nav.team'), href: getRelativeLocaleUrl(locale, '/quem-faz') },
+  { n: '03', label: t('nav.discord'), href: discordUrl, external: true, brand: true },
+];
+
+const outbound = [
+  { label: 'Substack', href: substackUrl },
+  { label: 'GitHub', href: githubUrl },
+];
+
 const otherLocale = locale === 'pt-BR' ? 'en' : 'pt-BR';
-const otherLabel = locale === 'pt-BR' ? 'EN' : 'PT';
+const currentLabel = locale === 'pt-BR' ? 'PT' : 'EN';
+const otherLabel = otherLocale === 'en' ? 'EN' : 'PT';
+const switchUrl = getRelativeLocaleUrl(otherLocale, base);
 ---
 
-<header class="sticky top-0 z-50 border-b border-border bg-background/95">
-  <div class="h-px bg-gradient-to-r from-transparent via-brand-500/70 to-transparent"></div>
-  <nav class="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6">
-    <a href={getRelativeLocaleUrl(locale, '/')} class="flex items-center gap-2.5">
-      <img
-        src="/img/logo.svg"
-        alt="discorgento logo"
-        class="h-8 w-8"
-        width={32}
-        height={32}
-      />
-      <span class="text-lg font-bold tracking-tight text-on-background">discorgento</span>
-    </a>
-    <div class="flex items-center gap-6 text-sm">
-      <a href={getRelativeLocaleUrl(locale, '/posts')} class="text-muted transition hover:text-brand-400">
-        {t('nav.posts')}
-      </a>
-      <a href={getRelativeLocaleUrl(locale, '/podcast')} class="text-muted transition hover:text-brand-400">
-        {t('nav.podcast')}
-      </a>
-      <a
-        href="https://github.com/discorgento"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="text-muted transition hover:text-brand-400"
-      >
-        GitHub
-      </a>
-      <a
-        href="https://discorgento.com/discord"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="border border-brand-500 px-3 py-1.5 font-semibold text-brand-400 transition hover:bg-brand-500 hover:text-white hover:shadow-[var(--shadow-glow)]"
-      >
-        {t('nav.discord')}
-      </a>
-      <a
-        href={getRelativeLocaleUrl(otherLocale, Astro.url.pathname.replace(/^\/en/, '') || '/')}
-        class="font-mono text-xs text-muted transition hover:text-brand-400"
-        aria-label={t('nav.switchLabel')}
-      >
-        {otherLabel}
-      </a>
+<header class="bg-background">
+  <div class="mx-auto flex w-full max-w-[74rem] items-center justify-between gap-6 px-5 py-3 sm:px-6">
+    <!-- Lockup + index share one left-aligned cluster -->
+    <div class="flex min-w-0 items-center gap-8">
+      {showLockup && (
+        <a href={homeUrl} class="flex shrink-0 items-center gap-2">
+          <img src="/img/logo.svg" alt="" class="h-7 w-7" width={28} height={28} />
+          <span class="font-display text-xl font-extrabold lowercase tracking-tight text-on-background">
+            discorgento
+          </span>
+        </a>
+      )}
+
+    <!-- Desktop: numbered index + outbound + locale control -->
+    <nav
+      class="hidden items-center gap-5 font-mono text-[0.8rem] tracking-[0.12em] uppercase md:flex"
+      aria-label={t('nav.primary')}
+    >
+      {
+        sections.map((s) => (
+          <a
+            href={s.href}
+            target={s.external ? '_blank' : undefined}
+            rel={s.external ? 'noopener noreferrer' : undefined}
+            aria-current={!s.external && isActive(s.href) ? 'page' : undefined}
+            class:list={[
+              'inline-flex items-center gap-1.5 border-b-2 pt-1 pb-0.5 transition hover:text-brand-400',
+              !s.external && isActive(s.href) ? 'border-brand-500' : 'border-transparent',
+              s.brand ? 'font-bold text-brand-500' : isActive(s.href) ? 'text-on-background' : 'text-muted',
+            ]}
+          >
+            <span class="text-[0.65rem] tabular-nums opacity-60" aria-hidden="true">
+              {s.n}
+            </span>
+            <span>{s.label}</span>
+            {s.external && (
+              <span class="text-[0.7rem] opacity-70" aria-hidden="true">
+                ↗
+              </span>
+            )}
+          </a>
+        ))
+      }
+
+      <span class="h-4 w-px bg-border" aria-hidden="true" />
+
+      {
+        outbound.map((o) => (
+          <a
+            href={o.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-1 border-b-2 border-transparent pt-1 pb-0.5 text-muted transition hover:text-brand-400"
+          >
+            {o.label}
+            <span class="text-[0.7rem] opacity-70" aria-hidden="true">
+              ↗
+            </span>
+          </a>
+        ))
+      }
+
+      <span class="h-4 w-px bg-border" aria-hidden="true" />
+
+      <span class="inline-flex items-center gap-1.5 border border-border px-2 py-1">
+        <span class="text-on-background" aria-hidden="true">{currentLabel}</span>
+        <span class="text-border" aria-hidden="true">/</span>
+        <a
+          href={switchUrl}
+          aria-label={t('nav.switchLabel')}
+          class="text-muted transition hover:text-brand-400"
+        >
+          {otherLabel}
+        </a>
+      </span>
+      </nav>
     </div>
-  </nav>
+
+    <div class="flex items-center gap-4">
+      <!-- Mobile: <details> toggle, no JS required -->
+      <details class="group relative md:hidden">
+        <summary
+          class="flex cursor-pointer list-none items-center gap-2 border border-border px-3 py-2 font-mono text-[0.7rem] tracking-[0.12em] uppercase text-on-background transition hover:border-brand-500 hover:text-brand-400 [&::-webkit-details-marker]:hidden"
+        >
+          {t('nav.menu')}
+          <span class="text-brand-500" aria-hidden="true">●</span>
+        </summary>
+        <div
+          class="absolute right-0 top-full z-50 mt-2 w-[min(20rem,calc(100vw-2.5rem))] border border-border bg-surface"
+          onclick="this.closest('details').open = false"
+        >
+          <div class="flex flex-col font-mono text-[0.8rem] tracking-[0.12em] uppercase">
+            {
+              sections.map((s) => (
+                <a
+                  href={s.href}
+                  target={s.external ? '_blank' : undefined}
+                  rel={s.external ? 'noopener noreferrer' : undefined}
+                  class:list={[
+                    'flex items-baseline gap-2 border-b border-border px-3 py-3 transition hover:text-brand-400',
+                    s.brand ? 'font-bold text-brand-500' : 'text-on-background',
+                  ]}
+                >
+                  <span class="text-[0.65rem] opacity-60" aria-hidden="true">
+                    {s.n}
+                  </span>
+                  {s.label}
+                  {s.external && (
+                    <span class="ml-auto text-muted" aria-hidden="true">
+                      ↗
+                    </span>
+                  )}
+                </a>
+              ))
+            }
+            {
+              outbound.map((o) => (
+                <a
+                  href={o.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="flex items-baseline gap-2 border-b border-border px-3 py-3 text-muted transition hover:text-brand-400"
+                >
+                  {o.label}
+                  <span class="ml-auto" aria-hidden="true">
+                    ↗
+                  </span>
+                </a>
+              ))
+            }
+            <div class="flex items-center justify-end gap-3 px-3 py-3">
+              <span class="inline-flex items-center gap-1.5 border border-border px-2 py-1">
+                <span class="text-on-background" aria-hidden="true">{currentLabel}</span>
+                <span class="text-border" aria-hidden="true">/</span>
+                <a
+                  href={switchUrl}
+                  aria-label={t('nav.switchLabel')}
+                  class="text-muted transition hover:text-brand-400"
+                >
+                  {otherLabel}
+                </a>
+              </span>
+            </div>
+          </div>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <!-- Double rule, same as the zine -->
+  <div class="h-0.5 bg-on-background"></div>
+  <div class="h-px bg-border"></div>
 </header>
