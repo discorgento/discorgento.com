@@ -6,6 +6,11 @@
 // back to the committed snapshot in src/data/episodes.json when it yields nothing.
 
 import snapshot from '~/data/episodes.json';
+import { intlLocale } from '~/lib/i18n';
+// Ids we have on disk, emitted at build time by plugins/thumb-cache.mjs. Reading
+// the filesystem from here is not an option: prerendering runs inside workerd,
+// where no path base resolves to the real project.
+import { CACHED_THUMBS } from 'virtual:discorgento-thumb-cache';
 
 const CHANNEL_ID = 'UChJitnyFtNOoCe6cu-rHcow';
 const FEED_URL = `https://www.youtube.com/feeds/videos.xml?channel_id=${CHANNEL_ID}`;
@@ -93,6 +98,32 @@ export async function getLatestVideos(): Promise<Video[]> {
   return snapshot as Video[];
 }
 
+// Thumbnail URLs, self-hosted under public/img/episodes/ instead of i.ytimg.com.
+// Three reasons, in order of weight: the cover is the LCP element and a third-party
+// origin puts a DNS + TLS handshake on the critical path; Cloudflare cannot cache
+// what it does not control, so every cold view re-fetches from Google; and ytimg
+// leaks the visitor's IP to Google before they click anything.
+//
+// Sizing is deliberate. `mqdefault` (320x180) is the smallest genuinely 16:9 asset,
+// and the layout crops to 16:9 with object-fit: cover — `hqdefault` is 480x360 (4:3),
+// so serving it would silently crop ~43% of the frame. Only the cover (first id in
+// the feed) gets the 1280 variant; the cards never need more than 320.
+//
+// The local copies are an optimisation, never a requirement: the feed yields a new
+// id on every publish, and nobody is around to commit its thumbnail in the same
+// commit that publishes the episode. Any id missing from CACHED_THUMBS falls back
+// to the remote original, so a new episode costs one cross-origin request instead
+// of a broken image. Run `npm run thumbs:sync` to pull the new files in.
+
+/** YouTube's own names for the two sizes we cache. */
+const REMOTE_VARIANT = { 320: 'mqdefault', 1280: 'maxresdefault' } as const;
+export type ThumbSize = keyof typeof REMOTE_VARIANT;
+
+export function thumb(id: string, size: ThumbSize = 320): string {
+  const has = CACHED_THUMBS[id]?.includes(size) ?? false;
+  return has ? `/img/episodes/${id}-${size}.jpg` : `https://i.ytimg.com/vi/${id}/${REMOTE_VARIANT[size]}.jpg`;
+}
+
 export function episodeNum(title: string): string | null {
   const m = title.match(/^#(\d+)/);
   return m ? m[1] : null;
@@ -100,10 +131,13 @@ export function episodeNum(title: string): string | null {
 
 export function formatEpDate(published: string, locale: string): string {
   try {
-    return new Intl.DateTimeFormat(locale === 'pt-BR' ? 'pt-BR' : 'en-US', {
+    // UTC: the feed stamps are UTC and the build machine's timezone must not
+    // decide which day an episode falls on.
+    return new Intl.DateTimeFormat(intlLocale(locale), {
       day: '2-digit',
       month: 'short',
       year: 'numeric',
+      timeZone: 'UTC',
     }).format(new Date(published));
   } catch {
     return '';
