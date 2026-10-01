@@ -16,7 +16,7 @@ import { resolve } from 'node:path';
 const VIRTUAL_ID = 'virtual:discorgento-thumb-cache';
 const RESOLVED_ID = '\0' + VIRTUAL_ID;
 
-/** Cached sizes are part of the contract: the 1280 variant only exists for a cover. */
+/** Cached sizes are part of the contract; see the sizing note in src/lib/youtube.ts. */
 export function thumbCache() {
   return {
     name: 'discorgento:thumb-cache',
@@ -33,7 +33,7 @@ export function thumbCache() {
       const sizes = {};
       try {
         for (const file of readdirSync(dir)) {
-          const m = /^(.+)-(320|1280)\.jpg$/.exec(file);
+          const m = /^(.+)-(320|640|1280)\.jpg$/.exec(file);
           if (!m) continue;
           (sizes[m[1]] ??= []).push(Number(m[2]));
         }

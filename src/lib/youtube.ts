@@ -104,10 +104,20 @@ export async function getLatestVideos(): Promise<Video[]> {
 // what it does not control, so every cold view re-fetches from Google; and ytimg
 // leaks the visitor's IP to Google before they click anything.
 //
-// Sizing is deliberate. `mqdefault` (320x180) is the smallest genuinely 16:9 asset,
-// and the layout crops to 16:9 with object-fit: cover — `hqdefault` is 480x360 (4:3),
-// so serving it would silently crop ~43% of the frame. Only the cover (first id in
-// the feed) gets the 1280 variant; the cards never need more than 320.
+// Sizing is deliberate, and the YouTube ladder is not what it looks like. Only
+// mqdefault (320x180) and maxresdefault/hq720 (1280x720) are genuinely 16:9;
+// hqdefault is 480x360 and sddefault is 640x480, both 4:3, and either would lose
+// a quarter of the frame to the 16:9 object-fit: cover. Measured against the
+// layout, that leaves three tiers:
+//
+//   320  →  the mobile card, whose art is a 7.5rem strip (120 CSS px) at 1x–2x
+//   640  →  the same strip on a 3x phone, and desktop cards at 1x. YouTube has
+//          no 16:9 asset this wide, so this one is derived from the 1280 by
+//          scripts/sync-thumbs.mjs rather than downloaded.
+//   1280 →  the cover, and cards on a 2x tablet, where 320 was drawing at 0.47x
+//
+// Do not add a downloaded mid tier without re-measuring the file it produces;
+// `sddefault` is 640x480, not 640x360.
 //
 // The local copies are an optimisation, never a requirement: the feed yields a new
 // id on every publish, and nobody is around to commit its thumbnail in the same
@@ -115,8 +125,12 @@ export async function getLatestVideos(): Promise<Video[]> {
 // to the remote original, so a new episode costs one cross-origin request instead
 // of a broken image. Run `npm run thumbs:sync` to pull the new files in.
 
-/** YouTube's own names for the two sizes we cache. */
-const REMOTE_VARIANT = { 320: 'mqdefault', 1280: 'maxresdefault' } as const;
+/**
+ * Fallback for each size when there is no local copy. 640 has no YouTube variant
+ * of its own, so it falls back to the 1280 — never to sddefault, which would hand
+ * back a 4:3 frame to a 16:9 box.
+ */
+const REMOTE_VARIANT = { 320: 'mqdefault', 640: 'maxresdefault', 1280: 'maxresdefault' } as const;
 export type ThumbSize = keyof typeof REMOTE_VARIANT;
 
 export function thumb(id: string, size: ThumbSize = 320): string {

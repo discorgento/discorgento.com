@@ -66,6 +66,8 @@ function isoDate(published: string): string {
                 target twice — worse once the title below became a real h3. */}
             <img
               src={thumb(v.id)}
+              srcset={`${thumb(v.id, 320)} 320w, ${thumb(v.id, 640)} 640w, ${thumb(v.id, 1280)} 1280w`}
+              sizes="(min-width: 768px) 8rem, 100vw"
               alt=""
               loading="lazy"
               decoding="async"

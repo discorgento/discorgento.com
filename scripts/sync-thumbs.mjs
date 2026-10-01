@@ -13,24 +13,31 @@
 // URL for any id without a local copy. Syncing only removes that extra
 // cross-origin request from the critical path.
 //
-// Note on sizes: mqdefault (320x180) is the smallest genuinely 16:9 asset, and
-// the layout crops with object-fit: cover — hqdefault is 480x360 (4:3) and would
-// silently crop ~43% of the frame. Only the newest episode gets the 1280 variant,
-// because only the newest episode is ever the cover.
+// Note on sizes: YouTube's ladder is not what the names suggest. Only mqdefault
+// (320x180) and maxresdefault/hq720 (1280x720) are genuinely 16:9. hqdefault is
+// 480x360 and sddefault is 640x480, both 4:3 — either would lose a quarter of the
+// frame to the 16:9 object-fit: cover.
+//
+// So there is no mid tier to download, and there is no reason not to have one.
+// The 1280 is already 16:9, so the 640 is derived from it locally with sharp: an
+// exact 2:1 downscale, no crop, ~46 kB against the 1280's ~146 kB. Without it the
+// browser jumps from 320 straight to 1280 on a 3x phone, which is ~870 kB for six
+// 120px thumbnails instead of ~276 kB.
 
 import { existsSync } from 'node:fs';
-import { mkdir, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
+import sharp from 'sharp';
 
 const CHANNEL_ID = 'UChJitnyFtNOoCe6cu-rHcow';
 const FEED_URL = `https://www.youtube.com/feeds/videos.xml?channel_id=${CHANNEL_ID}`;
 const OUT_DIR = resolve(process.cwd(), 'public/img/episodes');
 const TIMEOUT_MS = 15_000;
 
-const sizesFor = (isNewest) =>
-  isNewest
-    ? [['mqdefault', 320], ['maxresdefault', 1280]]
-    : [['mqdefault', 320]];
+/** Downloaded straight from YouTube. Both are 16:9. */
+const SOURCES = [['mqdefault', 320], ['maxresdefault', 1280]];
+/** Derived locally from the 1280. YouTube has no 16:9 asset at this width. */
+const DERIVED = [[1280, 640]];
 
 /* YouTube video ids are [A-Za-z0-9_-]. Validating here is what keeps an id from
    the feed out of the download URL and out of the write path below: the feed
@@ -75,6 +82,26 @@ const download = async (id, variant, size) => {
   return true;
 };
 
+/* YouTube has no 16:9 asset at 640 wide — sddefault is 640x480, which the 16:9
+   cover would crop. The 1280 is already 16:9, so resize it. `cover` on an exact
+   2:1 source and target crops nothing; it only matters if a future source is a
+   different shape, where it keeps the frame filling 16:9 the same way the CSS
+   object-fit does. */
+const derive = async (id, from, to) => {
+  const src = resolve(OUT_DIR, `${id}-${from}.jpg`);
+  if (!existsSync(src)) {
+    console.warn(`  skip ${id}-${to}.jpg: ${from} is not on disk`);
+    return false;
+  }
+  const out = await sharp(await readFile(src))
+    .resize(to, Math.round((to * 9) / 16), { fit: 'cover' })
+    .jpeg({ quality: 82, chromaSubsampling: '4:2:0', progressive: true })
+    .toBuffer();
+  await writeFile(resolve(OUT_DIR, `${id}-${to}.jpg`), out);
+  console.log(`  made ${id}-${to}.jpg  ${(out.length / 1024).toFixed(1)} kB`);
+  return true;
+};
+
 const main = async () => {
   await mkdir(OUT_DIR, { recursive: true });
 
@@ -87,22 +114,32 @@ const main = async () => {
     ids = await snapshotIds();
   }
 
-  const snap = await snapshotIds();
+const snap = await snapshotIds();
   const all = [...new Set([...ids, ...snap])];
   let downloaded = 0;
+  let derived = 0;
   let skipped = 0;
 
-  for (const [i, id] of all.entries()) {
-    for (const [variant, size] of sizesFor(i === 0)) {
+  for (const id of all) {
+    for (const [variant, size] of SOURCES) {
       if (existsSync(resolve(OUT_DIR, `${id}-${size}.jpg`))) {
         skipped++;
         continue;
       }
       if (await download(id, variant, size)) downloaded++;
     }
+    for (const [from, to] of DERIVED) {
+      if (existsSync(resolve(OUT_DIR, `${id}-${to}.jpg`))) {
+        skipped++;
+        continue;
+      }
+      if (await derive(id, from, to)) derived++;
+    }
   }
 
-  console.log(`\ndone: ${downloaded} downloaded, ${skipped} already present`);
+  console.log(
+    `\ndone: ${downloaded} downloaded, ${derived} derived, ${skipped} already present`
+  );
   if (downloaded) console.log('review the new files, then commit them with the episode');
 };
 

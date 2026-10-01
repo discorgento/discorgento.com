@@ -333,9 +333,14 @@ const twitterUrl = 'https://twitter.com/discorgento';
           {youtubeVideos.slice(1, 7).map((ep) => (
             <a href={ep.url} target="_blank" rel="noopener noreferrer" class="ep">
               <div class="art-wrap">
+                  {/* 7.5rem strip on mobile, the full card from 768px up. Without a
+                      srcset the 320 asset was the only choice, so every tablet card
+                      drew ~344 CSS px of frame from 320 px of pixels. */}
                   <img
                     class="art"
                     src={thumb(ep.id)}
+                    srcset={`${thumb(ep.id, 320)} 320w, ${thumb(ep.id, 640)} 640w, ${thumb(ep.id, 1280)} 1280w`}
+                    sizes="(min-width: 768px) 24rem, 7.5rem"
                     alt={ep.title}
                     width={320}
                     height={180}
