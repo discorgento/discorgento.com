@@ -33,12 +33,15 @@ const discordUrl = 'https://discorgento.com/discord';
           id={person.slug}
           class="grid gap-6 border-2 border-on-background bg-surface p-6 sm:grid-cols-[minmax(0,200px)_1fr] sm:gap-8 sm:p-8"
         >
+          {/* No aria-label: the link takes its accessible name from its own
+              content (photo alt + the profile badge), which is what
+              label-content-name-mismatch (WCAG 2.5.3 Label in Name) wants —
+              an aria-label here used to omit the visible "01" badge text. */}
           <a
             href={person.profile}
             target="_blank"
             rel="noopener noreferrer"
             class="group relative block overflow-hidden border border-border"
-            aria-label={`${person.name} — ${t('home.hosts.profile')}`}
           >
             {person.photo ? (
               <img
@@ -55,10 +58,13 @@ const discordUrl = 'https://discorgento.com/discord';
                 {person.initials}
               </span>
             )}
-            <span class="absolute left-3 top-3 z-10 bg-brand-500 px-2 py-0.5 font-mono text-xs text-white">
+            {/* Grid position: decorative, and hidden so it stays out of the
+                accessible name. Dark ink on brand-500 (5.79:1) instead of white
+                (3.2:1, fails AA at this size) — the pairing ::selection uses. */}
+            <span aria-hidden="true" class="absolute left-3 top-3 z-10 bg-brand-500 px-2 py-0.5 font-mono text-xs text-background">
               0{index + 1}
             </span>
-            <span class="absolute inset-x-0 bottom-0 translate-y-full bg-brand-500 px-3 py-1.5 font-mono text-xs uppercase tracking-wider text-white transition group-hover:translate-y-0">
+            <span class="absolute inset-x-0 bottom-0 translate-y-full bg-brand-500 px-3 py-1.5 font-mono text-xs uppercase tracking-wider text-background transition group-hover:translate-y-0">
               {t('home.hosts.profile')} ↗
             </span>
           </a>
@@ -106,7 +112,7 @@ const discordUrl = 'https://discorgento.com/discord';
     href={discordUrl}
     target="_blank"
     rel="noopener noreferrer"
-    class="mt-6 inline-block bg-brand-500 px-6 py-3 font-semibold text-white transition hover:bg-brand-400"
+    class="mt-6 inline-block bg-brand-500 px-6 py-3 font-semibold text-background transition hover:bg-brand-400"
   >
     {t('home.hero.ctaDiscord')} →
   </a>

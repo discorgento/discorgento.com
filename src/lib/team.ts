@@ -86,6 +86,28 @@ export const team: TeamMember[] = [
   },
 ];
 
+/**
+ * Person nodes for the roster, keyed by the profile URL so the two editions
+ * describe the same humans without colliding. Built here rather than in each
+ * route because the pt-BR and en pages are otherwise identical and drift easily.
+ */
+export function buildTeamJsonLd(locale: string, site: URL) {
+  const publisherId = `${new URL('/', site).href}#organization`;
+  return {
+    '@context': 'https://schema.org',
+    '@graph': getTeam(locale).map((person) => ({
+      '@type': 'Person',
+      '@id': person.profile,
+      name: person.name,
+      description: person.bio ?? undefined,
+      jobTitle: person.role,
+      image: person.photo ?? undefined,
+      worksFor: { '@id': publisherId },
+      sameAs: person.socials.map((social) => social.url),
+    })),
+  };
+}
+
 /** Resolves photos (public/time/<slug>.{jpg,png,webp} wins), initials, role and bio for a locale. */
 export function getTeam(locale: string): ResolvedMember[] {
   const t = useTranslations(locale);

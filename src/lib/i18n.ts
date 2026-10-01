@@ -4,14 +4,15 @@ export const locales = {
     'nav.podcast': 'Podcast',
     'nav.team': 'Quem faz',
     'nav.discord': 'Discord',
-    'nav.switchLabel': 'Switch to English',
     'nav.menu': 'Abrir menu',
     'nav.primary': 'Navegação principal',
+    'nav.skip': 'Pular para o conteúdo',
     'footer.description':
       'Comunidade brasileira de tecnologia — nascemos no Magento e hoje somos muito mais. Artigos, podcast e troca de conhecimento.',
     'footer.social': 'Redes',
+    'footer.since': 'desde 2021 · astro',
     'home.hero.eyebrow': 'podcast · comunidade · tecnologia',
-    'home.hero.title': 'Podcast e comunidade de tecnologia',
+    'home.metaTitle': 'Podcast e comunidade de tecnologia',
     'home.hero.subtitle':
       'Comunidade que nasceu no Magento e hoje fala de tecnologia em geral — PHP, JS, e-commerce, IA e o que vier. Artigos, podcast e troca de conhecimento todo dia.',
     'home.hero.ctaDiscord': 'Entrar no Discord',
@@ -61,6 +62,7 @@ export const locales = {
     'home.subs.eyebrow': 'assinaturas',
     'home.featuredEp.eyebrow': 'podcast',
     'home.featuredEp.title': 'último episódio',
+    'home.featuredEp.play': 'assistir agora',
     'home.featuredEp.watch': 'assistir no youtube',
     'home.featuredEp.all': 'ver todos os episódios',
     'home.join.eyebrow': 'comunidade',
@@ -73,7 +75,6 @@ export const locales = {
     'home.hosts.byline': 'com',
     'home.hosts.label': 'pessoas',
     'home.hosts.all': 'equipe completa',
-    'home.hosts.linkedin': 'perfil no linkedin',
     'home.hosts.profile': 'ver perfil',
     'home.hosts.role.host': 'Host',
     'home.hosts.role.cohostCommunity': 'Co-Host & Community Manager',
@@ -90,6 +91,7 @@ export const locales = {
     'notFound.eyebrow': 'erro 404',
     'notFound.title': 'Página não encontrada',
     'notFound.description': 'O conteúdo que você procura não existe ou foi movido.',
+    'notFound.linksLabel': 'Seções do site',
     'podcast.title': 'Podcast',
     'podcast.eyebrow': 'podcast · youtube · spotify',
     'podcast.desc':
@@ -102,7 +104,9 @@ export const locales = {
     'podcast.spotifyTitle': 'quer ouvir no spotify?',
     'podcast.spotifyDesc': 'essa é a nossa seleção — a playlist completa está no spotify.',
     'podcast.spotifyChannel': 'abrir playlist no spotify',
+    'podcast.spotifyEmbedTitle': 'discorgento no Spotify',
     'podcast.empty': '// sem episódios por enquanto',
+    'episodes.stamp': 'no youtube',
     'site.title': 'discorgento',
   },
   en: {
@@ -110,14 +114,15 @@ export const locales = {
     'nav.podcast': 'Podcast',
     'nav.team': 'Who makes it',
     'nav.discord': 'Discord',
-    'nav.switchLabel': 'Mudar para português',
     'nav.menu': 'Open menu',
     'nav.primary': 'Main navigation',
+    'nav.skip': 'Skip to content',
     'footer.description':
       'Brazilian tech community — born in Magento, today we are much more. Articles, podcast and knowledge sharing.',
     'footer.social': 'Social',
+    'footer.since': 'since 2021 · astro',
     'home.hero.eyebrow': 'podcast · community · tech',
-    'home.hero.title': 'Podcast and tech community',
+    'home.metaTitle': 'Podcast and tech community',
     'home.hero.subtitle':
       'A community born in Magento that now talks about tech in general — PHP, JS, e-commerce, AI and whatever comes next. Articles, podcast and daily knowledge sharing.',
     'home.hero.ctaDiscord': 'Join the Discord',
@@ -167,6 +172,7 @@ export const locales = {
     'home.subs.eyebrow': 'subscriptions',
     'home.featuredEp.eyebrow': 'podcast',
     'home.featuredEp.title': 'latest episode',
+    'home.featuredEp.play': 'watch now',
     'home.featuredEp.watch': 'watch on youtube',
     'home.featuredEp.all': 'see all episodes',
     'home.join.eyebrow': 'community',
@@ -179,7 +185,6 @@ export const locales = {
     'home.hosts.byline': 'with',
     'home.hosts.label': 'people',
     'home.hosts.all': 'full team',
-    'home.hosts.linkedin': 'linkedin profile',
     'home.hosts.profile': 'view profile',
     'home.hosts.role.host': 'Host',
     'home.hosts.role.cohostCommunity': 'Co-Host & Community Manager',
@@ -196,6 +201,7 @@ export const locales = {
     'notFound.eyebrow': 'error 404',
     'notFound.title': 'Page not found',
     'notFound.description': 'The content you are looking for does not exist or has moved.',
+    'notFound.linksLabel': 'Site sections',
     'podcast.title': 'Podcast',
     'podcast.eyebrow': 'podcast · youtube · spotify',
     'podcast.desc':
@@ -208,12 +214,151 @@ export const locales = {
     'podcast.spotifyTitle': 'want to listen on spotify?',
     'podcast.spotifyDesc': 'this is our selection — the full playlist lives on spotify.',
     'podcast.spotifyChannel': 'open playlist on spotify',
+    'podcast.spotifyEmbedTitle': 'discorgento on Spotify',
     'podcast.empty': '// no episodes yet',
+    'episodes.stamp': 'on youtube',
+    'site.title': 'discorgento',
+  },
+  es: {
+    'nav.home': 'Inicio',
+    'nav.podcast': 'Podcast',
+    'nav.team': 'Quién lo hace',
+    'nav.discord': 'Discord',
+    'nav.menu': 'Abrir menú',
+    'nav.primary': 'Navegación principal',
+    'nav.skip': 'Saltar al contenido',
+    'footer.description':
+      'Comunidad brasileña de tecnología — nacimos en Magento y hoy somos mucho más. Artículos, podcast e intercambio de conocimiento.',
+    'footer.social': 'Redes',
+    'footer.since': 'desde 2021 · astro',
+    'home.hero.eyebrow': 'podcast · comunidad · tecnología',
+    'home.metaTitle': 'Podcast y comunidad de tecnología',
+    'home.hero.subtitle':
+      'Comunidad que nació en Magento y hoy habla de tecnología en general — PHP, JS, e-commerce, IA y lo que venga. Artículos, podcast e intercambio de conocimiento todos los días.',
+    'home.hero.ctaDiscord': 'Entrar al Discord',
+    'home.terminal.aria': 'Terminal interactiva con información del proyecto',
+    'home.terminal.stack': 'stack',
+    'home.terminal.since': 'desde',
+    'home.terminal.format': 'formato',
+    'home.terminal.stackValue': 'magento · vtex · shopify · bigcommerce · php · js · [+etc]',
+    'home.terminal.sinceValue': '2021 · brasil',
+    'home.terminal.formatValue': 'podcast + comunidad',
+    'home.stats.since': 'desde 2021',
+    'home.features.eyebrow': 'lo que vas a encontrar',
+    'home.feature.podcast.title': 'Podcast',
+    'home.feature.podcast.desc':
+      'Presentamos un podcast que aborda temas esenciales del mundo de la tecnología, siempre con invitados especiales.',
+    'home.feature.community.title': 'Comunidad',
+    'home.feature.community.desc':
+      'Comunidad activa en Discord para compartir conocimiento sobre Magento, VTEX, Shopify, PHP y más.',
+    'home.feature.substack.title': 'Substack',
+    'home.feature.substack.desc':
+      'Newsletter en tu correo — bastidores, enlaces y novedades seleccionadas de discorgento.',
+    'home.toc.title': 'en esta edición',
+    'home.toc.label': 'índice',
+    'home.toc.watch': 'ver →',
+    'home.toc.enter': 'entrar →',
+    'home.toc.subscribe': 'suscribirse →',
+    'home.episodes.eyebrow': 'podcast',
+    'home.episodes.title': 'episodios',
+    'home.newsletter.eyebrow': 'newsletter',
+    'home.newsletter.title': 'última edición',
+    'home.newsletter.tag': 'edición',
+    'home.newsletter.read': 'leer en substack',
+    'home.newsletter.empty': 'no hay edición en vivo ahora — la próxima llega por correo',
+    'home.stats.members': 'miembros en discord',
+    'home.stats.online': 'en línea ahora',
+    'home.pullquote':
+      'Comunidad que nació en Magento y hoy habla de tecnología en general — PHP, JS, e-commerce, IA y lo que venga.',
+    'home.pullquote.src': '— discorgento, manifiesto',
+    'home.sign.substack': 'suscribirse a la newsletter →',
+    'home.terminal.lastEp': 'último episodio',
+    'home.capa.tag': 'artículo de portada',
+    'home.capa.deck':
+      'Otro episodio del podcast de discorgento — entrevistas con quienes viven el e-commerce y la tecnología en la práctica.',
+    'home.capa.published': 'publicado el',
+    'home.capa.medium': 'medio',
+    'home.capa.by': 'por',
+    'home.subs.eyebrow': 'suscripciones',
+    'home.featuredEp.eyebrow': 'podcast',
+    'home.featuredEp.title': 'último episodio',
+    'home.featuredEp.play': 'ver ahora',
+    'home.featuredEp.watch': 'ver en youtube',
+    'home.featuredEp.all': 'ver todos los episodios',
+    'home.join.eyebrow': 'comunidad',
+    'home.join.title': '¡te queremos en nuestra comunidad!',
+    'home.join.desc':
+      'Entra al Discord y participa de la conversación — artículos, podcast e intercambio de conocimiento todos los días.',
+    'home.hosts.eyebrow': 'equipo',
+    'home.hosts.title': 'quién hace discorgento',
+    'home.hosts.desc': 'Gente real detrás del podcast y del Discord — no un perfil de marca.',
+    'home.hosts.byline': 'con',
+    'home.hosts.label': 'personas',
+    'home.hosts.all': 'equipo completo',
+    'home.hosts.profile': 'ver perfil',
+    'home.hosts.role.host': 'Host',
+    'home.hosts.role.cohostCommunity': 'Co-Host & Community Manager',
+    'home.hosts.role.cohostAdmin': 'Co-Host & Admin',
+    'team.eyebrow': 'equipo',
+    'team.title': 'quién hace discorgento',
+    'team.desc':
+      'Las personas que sostienen el podcast, el Discord y la newsletter — cada una con página y perfil público.',
+    'team.bio.pending': '// bio en camino',
+    'player.title': 'Reproductor del episodio',
+    'player.close': 'Cerrar reproductor',
+    'share.copy': 'Copiar invitación',
+    'share.copied': 'Invitación copiada ✓',
+    'notFound.eyebrow': 'error 404',
+    'notFound.title': 'Página no encontrada',
+    'notFound.description': 'El contenido que buscas no existe o fue movido.',
+    'notFound.linksLabel': 'Secciones del sitio',
+    'podcast.title': 'Podcast',
+    'podcast.eyebrow': 'podcast · youtube · spotify',
+    'podcast.desc':
+      'Episodios con invitados sobre tecnología y e-commerce — directo de YouTube, con enlace para ver.',
+    'podcast.latest': 'últimos episodios',
+    'podcast.spotify': 'también en spotify',
+    'podcast.channel': 'abrir canal en youtube',
+    'podcast.seeAllTitle': '¿quieres ver todos los episodios?',
+    'podcast.seeAllDesc': 'aquí listamos los últimos — el archivo completo vive en el canal de youtube.',
+    'podcast.spotifyTitle': '¿quieres escuchar en spotify?',
+    'podcast.spotifyDesc': 'esta es nuestra selección — la playlist completa está en spotify.',
+    'podcast.spotifyChannel': 'abrir playlist en spotify',
+    'podcast.spotifyEmbedTitle': 'discorgento en Spotify',
+    'podcast.empty': '// todavía sin episodios',
+    'episodes.stamp': 'en youtube',
     'site.title': 'discorgento',
   },
 } as const;
 
 export type Locale = keyof typeof locales;
+
+export const LOCALES = ['pt-BR', 'en', 'es'] as const;
+
+/**
+ * Locale metadata used for the language switcher and Intl formatting. The
+ * endonym (`name`) is deliberately written in each language's own script: a
+ * reader who cannot understand the current page still recognises "English" or
+ * "Español" in a way "Switch to…" never delivers.
+ */
+export const LOCALE_META: Record<Locale, { code: string; name: string; intl: string }> = {
+  'pt-BR': { code: 'PT', name: 'Português', intl: 'pt-BR' },
+  en: { code: 'EN', name: 'English', intl: 'en-US' },
+  es: { code: 'ES', name: 'Español', intl: 'es-ES' },
+};
+
+/**
+ * Strips a non-default locale prefix ('/en', '/es') off a pathname. The default
+ * locale (pt-BR) is unprefixed, so nothing is stripped for it.
+ */
+export function stripLocale(pathname: string): string {
+  return pathname.replace(/^\/(en|es)(?=\/|$)/, '') || '/';
+}
+
+/** BCP-47 tag for `Intl`, mapped so 'en' resolves to 'en-US' rather than the generic 'en'. */
+export function intlLocale(locale: string): string {
+  return LOCALE_META[locale as Locale]?.intl ?? 'pt-BR';
+}
 
 export type TranslationKey = keyof (typeof locales)['pt-BR'];
 

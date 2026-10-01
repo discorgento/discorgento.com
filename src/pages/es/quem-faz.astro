@@ -4,7 +4,7 @@ import TeamPage from '~/components/TeamPage.astro';
 import { useTranslations } from '~/lib/i18n';
 import { buildTeamJsonLd } from '~/lib/team';
 
-const locale = Astro.currentLocale ?? 'pt-BR';
+const locale = Astro.currentLocale ?? 'es';
 const t = useTranslations(locale);
 const site = Astro.site ?? new URL('https://discorgento.com/');
 ---

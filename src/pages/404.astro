@@ -1,12 +1,23 @@
 ---
 import MainLayout from '~/layouts/MainLayout.astro';
-import { useTranslations } from '~/lib/i18n';
+import { LOCALES, LOCALE_META, useTranslations } from '~/lib/i18n';
+import { getRelativeLocaleUrl } from 'astro:i18n';
 
 const locale = Astro.currentLocale ?? 'pt-BR';
 const t = useTranslations(locale);
+const homeUrl = getRelativeLocaleUrl(locale, '/');
+const switchLinks = LOCALES.filter((l) => l !== locale).map((l) => ({
+  locale: l,
+  href: getRelativeLocaleUrl(l, '/'),
+  ...LOCALE_META[l],
+}));
 ---
 
-<MainLayout title={t('notFound.title')} description={t('notFound.description')}>
+<MainLayout
+  title={t('notFound.title')}
+  description={t('notFound.description')}
+  robots="noindex, follow"
+>
   <section class="mx-auto max-w-xl py-24">
     <div class="border-y-2 border-on-background py-16 text-center">
       <p class="eyebrow">
@@ -16,13 +27,34 @@ const t = useTranslations(locale);
         404
       </h1>
       <p class="mx-auto mt-5 max-w-sm leading-relaxed text-muted">{t('notFound.description')}</p>
-      <p class="mt-6 font-mono text-xs text-muted/60">{Astro.url.pathname}</p>
+      <p class="mt-6 font-mono text-xs text-muted/85">{Astro.url.pathname}</p>
       <a
-        href="/"
-        class="mt-10 inline-block bg-brand-500 px-6 py-3 font-semibold text-white transition hover:bg-brand-400"
+        href={homeUrl}
+        class="mt-10 inline-block bg-brand-500 px-6 py-3 font-semibold text-background transition hover:bg-brand-400"
       >
         ← {t('nav.home')}
       </a>
+      {/* A single "back home" link strands an agent that landed on a dead URL:
+          it has to guess a new path and burn a crawl step guessing wrong. These
+          are the real sections, so offer them directly. */}
+      <nav aria-label={t('notFound.linksLabel')} class="mt-10 border-t border-border pt-6">
+        <ul class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 font-mono text-xs uppercase tracking-wider">
+          <li><a class="text-muted transition hover:text-brand-500" href={getRelativeLocaleUrl(locale, '/podcast')}>{t('nav.podcast')}</a></li>
+          <li><a class="text-muted transition hover:text-brand-500" href={getRelativeLocaleUrl(locale, '/quem-faz')}>{t('nav.team')}</a></li>
+          {switchLinks.map((l) => (
+            <li>
+              <a
+                class="text-muted transition hover:text-brand-500"
+                href={l.href}
+                hreflang={l.locale}
+                lang={l.locale}
+              >
+                {l.name}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
     </div>
   </section>
 </MainLayout>
