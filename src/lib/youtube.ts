@@ -10,7 +10,7 @@ import { intlLocale } from '~/lib/i18n';
 // Ids we have on disk, emitted at build time by plugins/thumb-cache.mjs. Reading
 // the filesystem from here is not an option: prerendering runs inside workerd,
 // where no path base resolves to the real project.
-import { CACHED_THUMBS, WEBP_THUMBS } from 'virtual:discorgento-thumb-cache';
+import { AVIF_THUMBS, CACHED_THUMBS, WEBP_THUMBS } from 'virtual:discorgento-thumb-cache';
 
 const CHANNEL_ID = 'UChJitnyFtNOoCe6cu-rHcow';
 const FEED_URL = `https://www.youtube.com/feeds/videos.xml?channel_id=${CHANNEL_ID}`;
@@ -177,6 +177,26 @@ export function webpSrcset(id: string, sizes: ThumbSize[]): string | null {
     const path = webpThumb(id, size);
     if (!path) return null;
     parts.push(`${path} ${size}w`);
+  }
+  return parts.length ? parts.join(', ') : null;
+}
+
+/**
+ * Full AVIF srcset for a <source>, or null when any tier is missing.
+ *
+ * Same all-or-nothing rule as webpSrcset, and for a sharper reason: AVIF is only
+ * ever emitted as the *first* <source> in the <picture>, so it is the branch every
+ * modern browser actually takes. A hole in this srcset is invisible to the JPEG
+ * fallback — it would simply be the file the browser settles on.
+ *
+ * The remote fallback cannot be expressed here at all. YouTube serves no AVIF, so
+ * there is nothing to point a <source type="image/avif"> at on i.ytimg.com.
+ */
+export function avifSrcset(id: string, sizes: ThumbSize[]): string | null {
+  const parts: string[] = [];
+  for (const size of sizes) {
+    if (!AVIF_THUMBS[id]?.includes(size)) return null;
+    parts.push(`/img/episodes/${id}-${size}.avif ${size}w`);
   }
   return parts.length ? parts.join(', ') : null;
 }
