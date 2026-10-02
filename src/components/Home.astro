@@ -126,14 +126,14 @@ const twitterUrl = 'https://twitter.com/discorgento';
               <source
                 type="image/webp"
                 srcset={webpSrcset(firstVideo.id, [320, 1024, 1280]) ?? undefined}
-                sizes="(min-width: 768px) 1184px, 100vw"
+                sizes="(min-width: 768px) 1184px, 84vw"
               />
             )}
             <img
               class="still"
               src={thumb(firstVideo.id, 320)}
               srcset={`${thumb(firstVideo.id, 320)} 320w, ${thumb(firstVideo.id, 1280)} 1280w`}
-              sizes="(min-width: 768px) 1184px, 100vw"
+              sizes="(min-width: 768px) 1184px, 84vw"
               alt={`discorgento — episódio ${epTag}: ${firstVideo.title}`}
               width="1280"
               height="720"
