@@ -57,7 +57,6 @@ const youtubeUrl = 'https://www.youtube.com/@discorgento';
 const spotifyUrl = 'https://open.spotify.com/playlist/4pU2Abae7J8vdY4yqPCXRc';
 const substackUrl = 'https://discorgento.substack.com';
 const discordUrl = 'https://discorgento.com/discord';
-const githubUrl = 'https://github.com/discorgento';
 const twitterUrl = 'https://twitter.com/discorgento';
 ---
 
@@ -128,27 +127,36 @@ const twitterUrl = 'https://twitter.com/discorgento';
               ~52 kB as AVIF. <source> order *is* the browser's preference order, so
               AVIF has to sit above WebP or it will never be chosen. The <img> keeps
               the JPEG so a browser that supports neither still paints. 320 stays listed
-              for DPR-1 phones; the browser skips it whenever the slot is wider. */}
+              for DPR-1 phones; the browser skips it whenever the slot is wider.
+
+              The sizes() has three branches because the cover has three layouts, and all
+              three were measured in the browser rather than derived from the CSS — the
+              grid arithmetic does not predict the number. Below 900px the hero stacks and
+              the cover is 84vw. From 900px .zine .front becomes a 1.1fr/1fr grid and the
+              cover lands near 42vw. From 1232px the container hits its 74rem max and the
+              cover stops at 506px. The old single 1184px branch was the container's full
+              width, not the cover's, so every desktop pulled the 1280 tier where the 640
+              is the one that fits: 66 kB of AVIF for a 506 px slot. */}
           <picture>
-            {avifSrcset(firstVideo.id, [320, 1024, 1280]) && (
+            {avifSrcset(firstVideo.id, [320, 640, 1024, 1280]) && (
               <source
                 type="image/avif"
-                srcset={avifSrcset(firstVideo.id, [320, 1024, 1280]) ?? undefined}
-                sizes="(min-width: 768px) 1184px, 84vw"
+                srcset={avifSrcset(firstVideo.id, [320, 640, 1024, 1280]) ?? undefined}
+                sizes="(min-width: 1232px) 506px, (min-width: 900px) 42vw, 84vw"
               />
             )}
-            {webpSrcset(firstVideo.id, [320, 1024, 1280]) && (
+            {webpSrcset(firstVideo.id, [320, 640, 1024, 1280]) && (
               <source
                 type="image/webp"
-                srcset={webpSrcset(firstVideo.id, [320, 1024, 1280]) ?? undefined}
-                sizes="(min-width: 768px) 1184px, 84vw"
+                srcset={webpSrcset(firstVideo.id, [320, 640, 1024, 1280]) ?? undefined}
+                sizes="(min-width: 1232px) 506px, (min-width: 900px) 42vw, 84vw"
               />
             )}
             <img
               class="still"
               src={thumb(firstVideo.id, 320)}
-              srcset={`${thumb(firstVideo.id, 320)} 320w, ${thumb(firstVideo.id, 1280)} 1280w`}
-              sizes="(min-width: 768px) 1184px, 84vw"
+              srcset={`${thumb(firstVideo.id, 320)} 320w, ${thumb(firstVideo.id, 640)} 640w, ${thumb(firstVideo.id, 1024)} 1024w, ${thumb(firstVideo.id, 1280)} 1280w`}
+              sizes="(min-width: 1232px) 506px, (min-width: 900px) 42vw, 84vw"
               alt={`discorgento — episódio ${epTag}: ${firstVideo.title}`}
               width="1280"
               height="720"
