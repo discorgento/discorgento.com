@@ -58,7 +58,7 @@ export const team: TeamMember[] = [
       'pt-BR': 'Desenvolvedora Magento e Host do discorgento.',
       en: 'Magento Developer and Host at discorgento.',
     },
-    fallback: 'https://avatars.githubusercontent.com/u/80163994?s=400&v=4',
+    fallback: null,
     socials: [
       { label: 'linkedin', url: 'https://www.linkedin.com/in/maria-ferro/' },
       { label: 'github', url: 'https://github.com/maria-axe' },
@@ -73,7 +73,7 @@ export const team: TeamMember[] = [
         'Co-Host do podcast e cuidador da comunidade discorgento. Atua com desenvolvimento frontend e backend.',
       en: 'Co-Host of the discorgento podcast and steward of the community. Works on frontend and backend development.',
     },
-    fallback: 'https://avatars.githubusercontent.com/u/2486808?s=400&v=4',
+    fallback: null,
     socials: [
       { label: 'linkedin', url: 'https://www.linkedin.com/in/jonatanaxe/' },
       { label: 'github', url: 'https://github.com/jonatanaxe' },
@@ -102,7 +102,7 @@ export const team: TeamMember[] = [
       'pt-BR': 'Apaixonado por programação, sem medo de ser um eterno Young Padawan.',
       en: 'Passionate about programming, without fear of being an eternal Young Padawan.',
     },
-    fallback: 'https://avatars.githubusercontent.com/u/26583101?s=400&v=4',
+    fallback: null,
     socials: [
       { label: 'linkedin', url: 'https://www.linkedin.com/in/vitor-coutinho-fernandes/' },
       { label: 'github', url: 'https://github.com/coutodev' },
