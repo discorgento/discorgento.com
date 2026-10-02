@@ -114,7 +114,10 @@ export async function getLatestVideos(): Promise<Video[]> {
 //   640  →  the same strip on a 3x phone, and desktop cards at 1x. YouTube has
 //          no 16:9 asset this wide, so this one is derived from the 1280 by
 //          scripts/sync-thumbs.mjs rather than downloaded.
-//   1280 →  the cover, and cards on a 2x tablet, where 320 was drawing at 0.47x
+//   1024 →  the cover on a phone. A 346 CSS px slot at DPR 2.625 needs 908 real
+//          px, so the browser was jumping straight from 640 to 1280 and pulling
+//          41% more pixels than the screen can show. Also derived from the 1280.
+//   1280 →  the cover on desktop (1184 CSS px, ~2368 real px) and 2x tablets
 //
 // Do not add a downloaded mid tier without re-measuring the file it produces;
 // `sddefault` is 640x480, not 640x360.
@@ -126,11 +129,16 @@ export async function getLatestVideos(): Promise<Video[]> {
 // of a broken image. Run `npm run thumbs:sync` to pull the new files in.
 
 /**
- * Fallback for each size when there is no local copy. 640 has no YouTube variant
- * of its own, so it falls back to the 1280 — never to sddefault, which would hand
- * back a 4:3 frame to a 16:9 box.
+ * Fallback for each size when there is no local copy. 640 and 1024 have no YouTube
+ * variant of their own, so they fall back to the 1280 — never to sddefault, which
+ * would hand back a 4:3 frame to a 16:9 box.
  */
-const REMOTE_VARIANT = { 320: 'mqdefault', 640: 'maxresdefault', 1280: 'maxresdefault' } as const;
+const REMOTE_VARIANT = {
+  320: 'mqdefault',
+  640: 'maxresdefault',
+  1024: 'maxresdefault',
+  1280: 'maxresdefault',
+} as const;
 export type ThumbSize = keyof typeof REMOTE_VARIANT;
 
 export function thumb(id: string, size: ThumbSize = 320): string {

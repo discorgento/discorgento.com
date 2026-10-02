@@ -41,14 +41,23 @@ export function thumbCache() {
        * @type {Record<string, number[]>}
        */
       const webp = {};
+      /* Sizes are read off the filenames instead of being listed here. A hardcoded
+         alternation is a trap: adding a tier to sync-thumbs.mjs without editing this
+         regex leaves the new files invisible, webpSrcset() goes null, and every
+         <source> silently disappears from the built page — which looks like a
+         regression in the WebP work rather than a stale regex. The set of sizes the
+         site will ever ask for is the ThumbSize union in src/lib/youtube.ts, so an
+         unexpected width on disk is inert rather than harmful. */
+      const anySize = /^(.+)-(\d+)\.jpg$/;
+      const anyWebp = /^(.+)-(\d+)\.webp$/;
       try {
         for (const file of readdirSync(dir)) {
-          const jpg = /^(.+)-(320|640|1280)\.jpg$/.exec(file);
+          const jpg = anySize.exec(file);
           if (jpg) {
             (sizes[jpg[1]] ??= []).push(Number(jpg[2]));
             continue;
           }
-          const w = /^(.+)-(320|640|1280)\.webp$/.exec(file);
+          const w = anyWebp.exec(file);
           if (w) (webp[w[1]] ??= []).push(Number(w[2]));
         }
       } catch {
