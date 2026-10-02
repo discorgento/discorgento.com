@@ -279,14 +279,12 @@ body::after {
   }
 }
 
-/* View transitions must not animate for the motion-sensitive */
-@media (prefers-reduced-motion: reduce) {
-  ::view-transition-group(*),
-  ::view-transition-old(*),
-  ::view-transition-new(*) {
-    animation: none !important;
-  }
-}
+/* The view-transition pseudo-elements used to be guarded here for
+     prefers-reduced-motion, back when MainLayout mounted <ClientRouter />. There is
+     no router and no cross-document transition on this site, so those rules matched
+     nothing. If a transition is reintroduced, its reduced-motion guard belongs in
+     that change — not left behind here as dead CSS that reads as if it still
+     governs something. */
 
 /* ---- Prose (post content) safe on narrow screens ----
    Code blocks, images and tables must never overflow the viewport

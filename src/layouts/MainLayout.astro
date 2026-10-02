@@ -1,6 +1,5 @@
 ---
 import '~/styles/global.css';
-import { ClientRouter } from 'astro:transitions';
 import Navbar from '~/components/Navbar.astro';
 import Footer from '~/components/Footer.astro';
 import { LOCALES, stripLocale, useTranslations, type Locale } from '~/lib/i18n';
@@ -161,10 +160,9 @@ const structuredData = {
     <meta name="twitter:image:alt" content={pageTitle} />
     <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
     {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
-    <ClientRouter />
   </head>
   <body class="flex min-h-screen flex-col bg-background text-on-background antialiased">
-    <div class="read-progress" transition:persist aria-hidden="true"><span></span></div>
+    <div class="read-progress" aria-hidden="true"><span></span></div>
     {/* WCAG 2.4.1 Bypass Blocks. Off-screen until focused, then pinned to the
         top-left. The target needs tabindex="-1": without it, following the
         fragment scrolls the page but leaves keyboard focus behind on the link,
@@ -180,7 +178,6 @@ const structuredData = {
       <main
         id="main"
         tabindex="-1"
-        transition:animate="fade"
         class="mx-auto w-full max-w-[74rem] flex-1 px-5 sm:px-6 focus:outline-none"
       >
         <slot />

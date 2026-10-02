@@ -30,14 +30,6 @@ export default defineConfig({
       },
     }),
   ],
-  // Prefetch every internal link as it enters the viewport. `hover` (the
-  // previous strategy) never fires on touch devices, so mobile got no prefetch
-  // at all; `viewport` works everywhere and, with only a handful of static
-  // pages, costs almost nothing.
-  prefetch: {
-    prefetchAll: true,
-    defaultStrategy: 'viewport',
-  },
   // Ship the CSS inside each document instead of as three separate files.
   //
   // Lighthouse flags all three as render-blocking, and the number it quotes is
@@ -47,10 +39,14 @@ export default defineConfig({
   // ride along in a request already on the critical path, so the transfer total
   // barely moves and the request count drops from four to one.
   //
-  // The one real trade-off is that the CSS stops being cacheable on its own. With
-  // seven routes sharing this layout that would matter, but there is no
-  // ClientRouter here — every navigation is a full document load, which pulls the
-  // HTML again regardless, so the CSS was never being reused between them.
+  // This was a bad trade while <ClientRouter /> was in use, and is a good one now
+  // that it is gone. A client-side navigation re-fetched the destination's HTML,
+  // which then carried 82 kB of inline CSS instead of a cached stylesheet link —
+  // so inlining won on the first document load and lost on every one after it.
+  // With plain full-page navigation the CSS rides along in the document that page
+  // needs anyway, and nothing is fetched twice. Do not reintroduce a client router
+  // without re-reading the "critical request chains" audit; that is what made this
+  // decision flip.
   build: {
     inlineStylesheets: 'always',
   },
