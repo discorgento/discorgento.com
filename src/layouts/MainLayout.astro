@@ -103,10 +103,11 @@ const structuredData = {
     <link rel="icon" type="image/svg+xml" href="/img/logo.svg" />
     <link rel="apple-touch-icon" sizes="180x180" href="/img/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
-    {/* Episode thumbnails are self-hosted now, so only the host avatars are
-        still a third-party origin. Open that socket during head parsing to keep
-        the DNS + TLS round trip off the first images. */}
-    <link rel="preconnect" href="https://avatars.githubusercontent.com" crossorigin />
+    {/* No preconnect to avatars.githubusercontent.com any more: the host photos are
+        self-hosted under /time/ like the episode thumbnails, so no page opens a
+        third-party socket for an image. Preconnecting an origin the page never
+        requests just spends a DNS lookup and a TLS handshake on every load. Add one
+        back only alongside the photo that needs it, not ahead of time. */}
     <link rel="dns-prefetch" href="https://www.youtube-nocookie.com" />
     <meta name="theme-color" content="#16130f" />
     {/* Fonts are declared in CSS, so the browser only finds them after the
