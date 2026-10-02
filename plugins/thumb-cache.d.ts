@@ -5,4 +5,5 @@
     export const CACHED_THUMBS: Record<string, number[]>;
     export const WEBP_THUMBS: Record<string, number[]>;
     export const AVIF_THUMBS: Record<string, number[]>;
+    export const THUMB_VERSION: string;
   }

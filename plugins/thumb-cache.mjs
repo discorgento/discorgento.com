@@ -10,7 +10,8 @@
 // It emits a virtual module holding the ids we have on disk, so the page code does a
 // plain Set lookup with no I/O and no path guessing.
 
-import { readdirSync } from 'node:fs';
+import { createHash } from 'node:crypto';
+import { readdirSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
 const VIRTUAL_ID = 'virtual:discorgento-thumb-cache';
@@ -70,9 +71,24 @@ export function thumbCache() {
           `[thumbs] ${count} cached thumbnail id(s), ${webpCount} with webp, ${avifCount} with avif`
         );
       }
+      /* A content version for the cacheable episode assets, so the immutable
+         Cache-Control in public/_headers is provably safe.
+         The files are named <id>-<size>.<ext>, not content-hashed, so a re-encode
+         at different encoder settings produces different bytes behind an unchanged
+         URL. With immutable that is a trap: browsers would keep the old encoding for
+         a year. Hashing the directory and threading it through as ?v= turns any byte
+         change into a new URL, which is the same trick Astro already uses for
+         /_astro — and the reason those get max-age=31536000 while these images
+         shipped max-age=0. */
+      const version = createHash('sha256');
+      for (const file of readdirSync(dir).sort()) {
+        version.update(file).update(readFileSync(resolve(dir, file)));
+      }
+
       return `export const CACHED_THUMBS = ${JSON.stringify(sizes)};
 export const WEBP_THUMBS = ${JSON.stringify(webp)};
-export const AVIF_THUMBS = ${JSON.stringify(avif)};`;
+export const AVIF_THUMBS = ${JSON.stringify(avif)};
+export const THUMB_VERSION = ${JSON.stringify(version.digest('hex').slice(0, 8))};`;
     },
   };
 }

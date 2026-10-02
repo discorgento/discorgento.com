@@ -10,7 +10,12 @@ import { intlLocale } from '~/lib/i18n';
 // Ids we have on disk, emitted at build time by plugins/thumb-cache.mjs. Reading
 // the filesystem from here is not an option: prerendering runs inside workerd,
 // where no path base resolves to the real project.
-import { AVIF_THUMBS, CACHED_THUMBS, WEBP_THUMBS } from 'virtual:discorgento-thumb-cache';
+import {
+  AVIF_THUMBS,
+  CACHED_THUMBS,
+  THUMB_VERSION,
+  WEBP_THUMBS,
+} from 'virtual:discorgento-thumb-cache';
 
 const CHANNEL_ID = 'UChJitnyFtNOoCe6cu-rHcow';
 const FEED_URL = `https://www.youtube.com/feeds/videos.xml?channel_id=${CHANNEL_ID}`;
@@ -143,7 +148,9 @@ export type ThumbSize = keyof typeof REMOTE_VARIANT;
 
 export function thumb(id: string, size: ThumbSize = 320): string {
   const has = CACHED_THUMBS[id]?.includes(size) ?? false;
-  return has ? `/img/episodes/${id}-${size}.jpg` : `https://i.ytimg.com/vi/${id}/${REMOTE_VARIANT[size]}.jpg`;
+  return has
+    ? `/img/episodes/${id}-${size}.jpg?v=${THUMB_VERSION}`
+    : `https://i.ytimg.com/vi/${id}/${REMOTE_VARIANT[size]}.jpg`;
 }
 
 /**
@@ -160,7 +167,9 @@ export function thumb(id: string, size: ThumbSize = 320): string {
  * so a browser without WebP still gets a picture.
  */
 export function webpThumb(id: string, size: ThumbSize = 320): string | null {
-  return WEBP_THUMBS[id]?.includes(size) ? `/img/episodes/${id}-${size}.webp` : null;
+  return WEBP_THUMBS[id]?.includes(size)
+    ? `/img/episodes/${id}-${size}.webp?v=${THUMB_VERSION}`
+    : null;
 }
 
 /**
@@ -196,7 +205,7 @@ export function avifSrcset(id: string, sizes: ThumbSize[]): string | null {
   const parts: string[] = [];
   for (const size of sizes) {
     if (!AVIF_THUMBS[id]?.includes(size)) return null;
-    parts.push(`/img/episodes/${id}-${size}.avif ${size}w`);
+    parts.push(`/img/episodes/${id}-${size}.avif?v=${THUMB_VERSION} ${size}w`);
   }
   return parts.length ? parts.join(', ') : null;
 }
