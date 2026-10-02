@@ -19,10 +19,11 @@
 // frame to the 16:9 object-fit: cover.
 //
 // So there is no mid tier to download, and there is no reason not to have one.
-// The 1280 is already 16:9, so the 640 is derived from it locally with sharp: an
-// exact 2:1 downscale, no crop, ~46 kB against the 1280's ~146 kB. Without it the
-// browser jumps from 320 straight to 1280 on a 3x phone, which is ~870 kB for six
-// 120px thumbnails instead of ~276 kB.
+// The 1280 is already 16:9, so the 640 and the 1024 are derived from it locally
+// with sharp: exact 2:1 and 4:5 downscales, no crop, ~46 kB and ~103 kB against
+// the 1280's ~146 kB. Without the 640 the browser jumps from 320 straight to
+// 1280 on a 3x phone, which is ~870 kB for six 120px thumbnails instead of
+// ~276 kB. Without the 1024 the cover on a phone pulls the full 1280.
 
 import { existsSync } from 'node:fs';
 import { mkdir, readFile, stat, writeFile } from 'node:fs/promises';
@@ -36,8 +37,18 @@ const TIMEOUT_MS = 15_000;
 
 /** Downloaded straight from YouTube. Both are 16:9. */
 const SOURCES = [['mqdefault', 320], ['maxresdefault', 1280]];
-/** Derived locally from the 1280. YouTube has no 16:9 asset at this width. */
-const DERIVED = [[1280, 640]];
+/**
+ * Derived locally from the 1280. YouTube has no 16:9 asset at these widths.
+ *
+ * 640 covers the mobile card strip; 1024 covers the cover on a phone, where a
+ * 346 CSS px slot at DPR 2.625 needs 908 real px. Without 1024 the browser jumps
+ * from 640 to 1280 there and pulls 41% more pixels than the screen can show,
+ * which is ~104 kB of WebP where ~74 kB would do.
+ */
+const DERIVED = [
+  [1280, 640],
+  [1280, 1024],
+];
 
 /* YouTube video ids are [A-Za-z0-9_-]. Validating here is what keeps an id from
    the feed out of the download URL and out of the write path below: the feed
@@ -139,7 +150,7 @@ const main = async () => {
     ids = await snapshotIds();
   }
 
-const snap = await snapshotIds();
+  const snap = await snapshotIds();
   const all = [...new Set([...ids, ...snap])];
   let downloaded = 0;
   let derived = 0;

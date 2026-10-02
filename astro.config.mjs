@@ -38,6 +38,22 @@ export default defineConfig({
     prefetchAll: true,
     defaultStrategy: 'viewport',
   },
+  // Ship the CSS inside each document instead of as three separate files.
+  //
+  // Lighthouse flags all three as render-blocking, and the number it quotes is
+  // inflated — they sit adjacent in <head> and are fetched in parallel, so the
+  // cost is one round-trip group, not three serial waits. But 18 kB brotli'd
+  // across three files is small enough that inlining is close to free: the bytes
+  // ride along in a request already on the critical path, so the transfer total
+  // barely moves and the request count drops from four to one.
+  //
+  // The one real trade-off is that the CSS stops being cacheable on its own. With
+  // seven routes sharing this layout that would matter, but there is no
+  // ClientRouter here — every navigation is a full document load, which pulls the
+  // HTML again regardless, so the CSS was never being reused between them.
+  build: {
+    inlineStylesheets: 'always',
+  },
   vite: {
     plugins: [tailwindcss(), thumbCache()],
     // Keep assets as real files. Small inlined assets become `data:` URIs,

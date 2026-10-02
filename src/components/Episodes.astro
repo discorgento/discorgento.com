@@ -67,17 +67,17 @@ function isoDate(published: string): string {
               {/* contents: the <picture> is only a <source> carrier. Tailwind's
                   `contents` drops it from layout so the <img> lays out unchanged. */}
               <picture class="contents">
-                {webpSrcset(v.id, [320, 640, 1280]) && (
+                {webpSrcset(v.id, [320, 640, 1024, 1280]) && (
                   <source
                     type="image/webp"
-                    srcset={webpSrcset(v.id, [320, 640, 1280]) ?? undefined}
-                    sizes="(min-width: 768px) 8rem, 100vw"
+                    srcset={webpSrcset(v.id, [320, 640, 1024, 1280]) ?? undefined}
+                    sizes="(min-width: 768px) 8rem, 90vw"
                   />
                 )}
                 <img
                   src={thumb(v.id)}
                   srcset={`${thumb(v.id, 320)} 320w, ${thumb(v.id, 640)} 640w, ${thumb(v.id, 1280)} 1280w`}
-                  sizes="(min-width: 768px) 8rem, 100vw"
+                  sizes="(min-width: 768px) 8rem, 90vw"
                   alt=""
                   loading="lazy"
                   decoding="async"

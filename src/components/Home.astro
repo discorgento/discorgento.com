@@ -122,18 +122,18 @@ const twitterUrl = 'https://twitter.com/discorgento';
               the JPEG so a browser without WebP still paints. 320 stays listed for
               DPR-1 phones; the browser skips it whenever the slot is wider. */}
           <picture>
-            {webpSrcset(firstVideo.id, [320, 1280]) && (
+            {webpSrcset(firstVideo.id, [320, 1024, 1280]) && (
               <source
                 type="image/webp"
-                srcset={webpSrcset(firstVideo.id, [320, 1280]) ?? undefined}
-                sizes="(min-width: 768px) 1184px, 100vw"
+                srcset={webpSrcset(firstVideo.id, [320, 1024, 1280]) ?? undefined}
+                sizes="(min-width: 768px) 1184px, 84vw"
               />
             )}
             <img
               class="still"
               src={thumb(firstVideo.id, 320)}
               srcset={`${thumb(firstVideo.id, 320)} 320w, ${thumb(firstVideo.id, 1280)} 1280w`}
-              sizes="(min-width: 768px) 1184px, 100vw"
+              sizes="(min-width: 768px) 1184px, 84vw"
               alt={`discorgento — episódio ${epTag}: ${firstVideo.title}`}
               width="1280"
               height="720"
@@ -352,10 +352,10 @@ const twitterUrl = 'https://twitter.com/discorgento';
                       srcset the 320 asset was the only choice, so every tablet card
                       drew ~344 CSS px of frame from 320 px of pixels. */}
                     <picture>
-                      {webpSrcset(ep.id, [320, 640, 1280]) && (
+                      {webpSrcset(ep.id, [320, 640, 1024, 1280]) && (
                         <source
                           type="image/webp"
-                          srcset={webpSrcset(ep.id, [320, 640, 1280]) ?? undefined}
+                          srcset={webpSrcset(ep.id, [320, 640, 1024, 1280]) ?? undefined}
                           sizes="(min-width: 768px) 24rem, 7.5rem"
                         />
                       )}
