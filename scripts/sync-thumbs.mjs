@@ -25,7 +25,7 @@
 // 120px thumbnails instead of ~276 kB.
 
 import { existsSync } from 'node:fs';
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, stat, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import sharp from 'sharp';
 
@@ -102,6 +102,31 @@ const derive = async (id, from, to) => {
   return true;
 };
 
+/* WebP twin of an already-present .jpg.
+ *
+ * YouTube only serves JPEG, and its JPEGs are not well compressed: the 1280 cover
+ * that carries the LCP on a phone lands at ~170 kB, while the same frame as WebP
+ * is ~104 kB. Every browser that matters supports WebP, so the pages serve it
+ * through <picture> and keep the .jpg as the <img> fallback.
+ *
+ * Derived from the file already on disk rather than downloaded again — the
+ * source is local, so this costs one encode and no network. */
+const toWebp = async (id, size) => {
+  const src = resolve(OUT_DIR, `${id}-${size}.jpg`);
+  const out_path = resolve(OUT_DIR, `${id}-${size}.webp`);
+  if (!existsSync(src)) return false;
+  if (existsSync(out_path)) return false;
+  const out = await sharp(await readFile(src))
+    .webp({ quality: 78, effort: 5 })
+    .toBuffer();
+  await writeFile(out_path, out);
+  const before = (await stat(src)).size;
+  console.log(
+    `  webp ${id}-${size}.webp  ${(out.length / 1024).toFixed(1)} kB  (jpg era ${(before / 1024).toFixed(1)} kB)`
+  );
+  return true;
+};
+
 const main = async () => {
   await mkdir(OUT_DIR, { recursive: true });
 
@@ -118,8 +143,10 @@ const snap = await snapshotIds();
   const all = [...new Set([...ids, ...snap])];
   let downloaded = 0;
   let derived = 0;
+  let encoded = 0;
   let skipped = 0;
 
+  const sizes = SOURCES.map(([, size]) => size).concat(DERIVED.map(([, to]) => to));
   for (const id of all) {
     for (const [variant, size] of SOURCES) {
       if (existsSync(resolve(OUT_DIR, `${id}-${size}.jpg`))) {
@@ -135,10 +162,13 @@ const snap = await snapshotIds();
       }
       if (await derive(id, from, to)) derived++;
     }
+    for (const size of sizes) {
+      if (await toWebp(id, size)) encoded++;
+    }
   }
 
   console.log(
-    `\ndone: ${downloaded} downloaded, ${derived} derived, ${skipped} already present`
+    `\ndone: ${downloaded} downloaded, ${derived} derived, ${encoded} webp, ${skipped} already present`
   );
   if (downloaded) console.log('review the new files, then commit them with the episode');
 };

@@ -1,5 +1,5 @@
 ---
-import { getLatestVideos, episodeNum, formatEpDate, thumb } from '~/lib/youtube';
+import { getLatestVideos, episodeNum, formatEpDate, thumb, webpSrcset } from '~/lib/youtube';
 import { getDiscordStats } from '~/lib/discord';
 import { getLatestSubstackPosts } from '~/lib/substack';
 import { getRelativeLocaleUrl } from 'astro:i18n';
@@ -117,17 +117,30 @@ const twitterUrl = 'https://twitter.com/discorgento';
               scale — the byte saving was paid for in blur. Resolving width *and*
               density hands a DPR-3 phone the 1280 it needs and a DPR-1 one the
               320 it needs. */}
-          <img
-            class="still"
-            src={thumb(firstVideo.id, 320)}
-            srcset={`${thumb(firstVideo.id, 320)} 320w, ${thumb(firstVideo.id, 1280)} 1280w`}
-            sizes="(min-width: 768px) 1184px, 100vw"
-            alt={`discorgento — episódio ${epTag}: ${firstVideo.title}`}
-            width="1280"
-            height="720"
-            fetchpriority="high"
-            decoding="async"
-          />
+          {/* WebP first: this is the LCP element, and the 1280 JPEG straight off
+              YouTube is ~170 kB against ~104 kB for the same frame. The <img> keeps
+              the JPEG so a browser without WebP still paints. 320 stays listed for
+              DPR-1 phones; the browser skips it whenever the slot is wider. */}
+          <picture>
+            {webpSrcset(firstVideo.id, [320, 1280]) && (
+              <source
+                type="image/webp"
+                srcset={webpSrcset(firstVideo.id, [320, 1280]) ?? undefined}
+                sizes="(min-width: 768px) 1184px, 100vw"
+              />
+            )}
+            <img
+              class="still"
+              src={thumb(firstVideo.id, 320)}
+              srcset={`${thumb(firstVideo.id, 320)} 320w, ${thumb(firstVideo.id, 1280)} 1280w`}
+              sizes="(min-width: 768px) 1184px, 100vw"
+              alt={`discorgento — episódio ${epTag}: ${firstVideo.title}`}
+              width="1280"
+              height="720"
+              fetchpriority="high"
+              decoding="async"
+            />
+          </picture>
           <span class="n">{epTag}</span>
           {/* One action for the episode, not three. The badge used to stretch an
               ::after across the whole artwork, so the entire 1072px cover was a
@@ -198,15 +211,17 @@ const twitterUrl = 'https://twitter.com/discorgento';
               aria-label={`${person.name} — ${t('home.hosts.profile')}`}
             >
               {person.photo ? (
-                <img
-                  class="face"
-                  src={person.photo}
-                  alt={person.name}
-                  width="36"
-                  height="36"
-                  loading="lazy"
-                  decoding="async"
-                />
+                  <img
+                    class="face"
+                    src={person.photo}
+                    srcset={person.photoSrcset ?? undefined}
+                    sizes="2.25rem"
+                    alt={person.name}
+                    width="36"
+                    height="36"
+                    loading="lazy"
+                    decoding="async"
+                  />
               ) : (
                 <span class="face monogram" aria-hidden="true">{person.initials}</span>
               )}
@@ -336,17 +351,26 @@ const twitterUrl = 'https://twitter.com/discorgento';
                   {/* 7.5rem strip on mobile, the full card from 768px up. Without a
                       srcset the 320 asset was the only choice, so every tablet card
                       drew ~344 CSS px of frame from 320 px of pixels. */}
-                  <img
-                    class="art"
-                    src={thumb(ep.id)}
-                    srcset={`${thumb(ep.id, 320)} 320w, ${thumb(ep.id, 640)} 640w, ${thumb(ep.id, 1280)} 1280w`}
-                    sizes="(min-width: 768px) 24rem, 7.5rem"
-                    alt={ep.title}
-                    width={320}
-                    height={180}
-                    loading="lazy"
-                    decoding="async"
-                  />
+                    <picture>
+                      {webpSrcset(ep.id, [320, 640, 1280]) && (
+                        <source
+                          type="image/webp"
+                          srcset={webpSrcset(ep.id, [320, 640, 1280]) ?? undefined}
+                          sizes="(min-width: 768px) 24rem, 7.5rem"
+                        />
+                      )}
+                      <img
+                        class="art"
+                        src={thumb(ep.id)}
+                        srcset={`${thumb(ep.id, 320)} 320w, ${thumb(ep.id, 640)} 640w, ${thumb(ep.id, 1280)} 1280w`}
+                        sizes="(min-width: 768px) 24rem, 7.5rem"
+                        alt={ep.title}
+                        width={320}
+                        height={180}
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    </picture>
                 <YouTubeStamp uid={`home-${ep.id}`} />
               </div>
               <div class="body">
@@ -950,7 +974,16 @@ const twitterUrl = 'https://twitter.com/discorgento';
     z-index: 0;
     display: block;
   }
-  .zine .cover-art .still {
+    /* The WebP <picture> wrappers exist only to hold a <source>. A <picture> is
+       inline by default, and an inline box around a block-level <img> adds a
+       baseline line box — the cover would sit a few px low inside .cover-art and
+       the hover scale would clip against it. display:contents removes the wrapper
+       from layout entirely, so the <img> is laid out exactly as it was before. */
+    .zine .cover-art picture,
+    .zine .art-wrap picture {
+      display: contents;
+    }
+    .zine .cover-art .still {
     display: block;
     width: 100%;
     height: 100%;

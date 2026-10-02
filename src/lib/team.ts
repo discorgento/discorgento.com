@@ -19,10 +19,34 @@ export interface TeamMember {
 
 export interface ResolvedMember extends Omit<TeamMember, 'bio'> {
   photo: string | null;
+  /**
+   * srcset for the 36px byline slot, or null when the photo has no cheaper form.
+   *
+   * The same photo is used twice: the byline draws it at 2.25rem and the host grid
+   * at 166px and up. Lighthouse flagged the byline for downloading 400px of avatar
+   * into a 36px box, and it is right — but the fix is not to shrink the file, since
+   * the grid needs the big one. It is to let the two slots ask for different sizes.
+   *
+   * GitHub serves any dimension through `?s=`, so the byline can simply ask for
+   * 96w and let the grid keep 400w. A local file cannot be rewritten, so it needs a
+   * real small copy on disk (public/time/<slug>-96.*); without one the byline keeps
+   * the full image rather than pretending otherwise.
+   */
+  photoSrcset: string | null;
   profile: string;
   initials: string;
   role: string;
   bio: string | null;
+}
+
+/** Widths a browser should pick for the byline, smallest first. */
+const BYLINE_WIDTH = 96;
+
+/** GitHub avatars are resized server-side by the `s` query parameter. */
+function avatarSrcset(url: string): string | null {
+  const m = /^(https:\/\/avatars\.githubusercontent\.com\/[^?]+)\?s=(\d+)/.exec(url);
+  if (!m) return null;
+  return `${m[1]}?s=${BYLINE_WIDTH} ${BYLINE_WIDTH}w, ${m[1]}?s=${m[2]} ${m[2]}w`;
 }
 
 export const team: TeamMember[] = [
@@ -108,19 +132,34 @@ export function buildTeamJsonLd(locale: string, site: URL) {
   };
 }
 
-/** Resolves photos (public/time/<slug>.{jpg,png,webp} wins), initials, role and bio for a locale. */
-export function getTeam(locale: string): ResolvedMember[] {
-  const t = useTranslations(locale);
-  const localPhotos = Object.keys(import.meta.glob('../../public/time/*.{jpg,png,webp}'));
-  const extensions = ['jpg', 'png', 'webp'];
+  /** Resolves photos (public/time/<slug>.{jpg,png,webp} wins), initials, role and bio for a locale. */
+  export function getTeam(locale: string): ResolvedMember[] {
+    const t = useTranslations(locale);
+    const localPhotos = Object.keys(import.meta.glob('../../public/time/*.{jpg,png,webp}'));
+    const extensions = ['jpg', 'png', 'webp'];
 
-  return team.map((person) => {
-    const localPhoto = extensions
-      .map((extension) => localPhotos.find((file) => file.endsWith(`/${person.slug}.${extension}`)))
-      .find(Boolean);
-    return {
-      ...person,
-      photo: localPhoto ? `/time/${localPhoto.split('/').pop()}` : person.fallback,
+    /** Small byline copy, named <slug>-96.<ext> so it cannot shadow the main photo. */
+    const bylineCopy = (slug: string): string | null =>
+      extensions
+        .map((extension) =>
+          localPhotos.find((file) => file.endsWith(`/${slug}-${BYLINE_WIDTH}.${extension}`))
+        )
+        .find(Boolean);
+
+    return team.map((person) => {
+      const localPhoto = extensions
+        .map((extension) => localPhotos.find((file) => file.endsWith(`/${person.slug}.${extension}`)))
+        .find(Boolean);
+      const photo = localPhoto ? `/time/${localPhoto.split('/').pop()}` : person.fallback;
+      const small = bylineCopy(person.slug);
+      return {
+        ...person,
+        photo,
+        photoSrcset: small
+          ? `${`/time/${small.split('/').pop()}`} ${BYLINE_WIDTH}w`
+          : photo
+            ? avatarSrcset(photo)
+            : null,
       /* the photo links to the person's own page — first social (linkedin) */
       profile: person.socials[0].url,
       initials: person.name

@@ -31,19 +31,35 @@ export function thumbCache() {
       const dir = resolve(process.cwd(), 'public/img/episodes');
       /** @type {Record<string, number[]>} */
       const sizes = {};
+      /**
+       * WebP twins, tracked separately rather than assumed from the JPEG list. The
+       * pages emit a <picture> with a WebP <source>, and a <source> pointing at a
+       * missing file is worse than no <source> at all: the browser commits to the
+       * WebP, gets a 404, and paints nothing. Deriving this map from `sizes` would
+       * make that a silent failure the day one file is deleted or a sync is
+       * interrupted.
+       * @type {Record<string, number[]>}
+       */
+      const webp = {};
       try {
         for (const file of readdirSync(dir)) {
-          const m = /^(.+)-(320|640|1280)\.jpg$/.exec(file);
-          if (!m) continue;
-          (sizes[m[1]] ??= []).push(Number(m[2]));
+          const jpg = /^(.+)-(320|640|1280)\.jpg$/.exec(file);
+          if (jpg) {
+            (sizes[jpg[1]] ??= []).push(Number(jpg[2]));
+            continue;
+          }
+          const w = /^(.+)-(320|640|1280)\.webp$/.exec(file);
+          if (w) (webp[w[1]] ??= []).push(Number(w[2]));
         }
       } catch {
         // No cache directory yet: every id resolves to the remote CDN.
       }
 
       const count = Object.keys(sizes).length;
-      if (count) this.info?.(`[thumbs] ${count} cached thumbnail id(s) available`);
-      return `export const CACHED_THUMBS = ${JSON.stringify(sizes)};`;
+      const webpCount = Object.keys(webp).length;
+      if (count) this.info?.(`[thumbs] ${count} cached thumbnail id(s), ${webpCount} with webp`);
+      return `export const CACHED_THUMBS = ${JSON.stringify(sizes)};
+export const WEBP_THUMBS = ${JSON.stringify(webp)};`;
     },
   };
 }

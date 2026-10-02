@@ -10,7 +10,7 @@ import { intlLocale } from '~/lib/i18n';
 // Ids we have on disk, emitted at build time by plugins/thumb-cache.mjs. Reading
 // the filesystem from here is not an option: prerendering runs inside workerd,
 // where no path base resolves to the real project.
-import { CACHED_THUMBS } from 'virtual:discorgento-thumb-cache';
+import { CACHED_THUMBS, WEBP_THUMBS } from 'virtual:discorgento-thumb-cache';
 
 const CHANNEL_ID = 'UChJitnyFtNOoCe6cu-rHcow';
 const FEED_URL = `https://www.youtube.com/feeds/videos.xml?channel_id=${CHANNEL_ID}`;
@@ -136,6 +136,41 @@ export type ThumbSize = keyof typeof REMOTE_VARIANT;
 export function thumb(id: string, size: ThumbSize = 320): string {
   const has = CACHED_THUMBS[id]?.includes(size) ?? false;
   return has ? `/img/episodes/${id}-${size}.jpg` : `https://i.ytimg.com/vi/${id}/${REMOTE_VARIANT[size]}.jpg`;
+}
+
+/**
+ * WebP twin of a cached thumbnail, or null when there is no local copy.
+ *
+ * YouTube serves no WebP, so the remote fallback cannot be expressed here: a
+ * <source type="image/webp"> pointing at i.ytimg.com would hand the browser a
+ * JPEG to decode as WebP and paint nothing. Returning null makes the caller drop
+ * the <source> entirely and fall back to the <img>, which is the only correct
+ * behaviour for an id that was never synced.
+ *
+ * Exists because the LCP cover is a 1280 JPEG straight off YouTube at ~170 kB;
+ * the same frame as WebP is ~104 kB. The .jpg files stay as the <img> fallback
+ * so a browser without WebP still gets a picture.
+ */
+export function webpThumb(id: string, size: ThumbSize = 320): string | null {
+  return WEBP_THUMBS[id]?.includes(size) ? `/img/episodes/${id}-${size}.webp` : null;
+}
+
+/**
+ * Full WebP srcset for a <source>, or null when any tier is missing.
+ *
+ * All-or-nothing on purpose. A srcset with a hole in it is not a graceful
+ * degradation: if 320 is listed but 1280 is not, the browser happily picks the
+ * 320 for a 1184px slot and the cover renders soft on desktop. Emitting nothing
+ * falls back to the <img>, which is the JPEG and always correct.
+ */
+export function webpSrcset(id: string, sizes: ThumbSize[]): string | null {
+  const parts: string[] = [];
+  for (const size of sizes) {
+    const path = webpThumb(id, size);
+    if (!path) return null;
+    parts.push(`${path} ${size}w`);
+  }
+  return parts.length ? parts.join(', ') : null;
 }
 
 export function episodeNum(title: string): string | null {
