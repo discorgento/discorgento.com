@@ -47,10 +47,14 @@ export default defineConfig({
   // ride along in a request already on the critical path, so the transfer total
   // barely moves and the request count drops from four to one.
   //
-  // The one real trade-off is that the CSS stops being cacheable on its own. With
-  // seven routes sharing this layout that would matter, but there is no
-  // ClientRouter here — every navigation is a full document load, which pulls the
-  // HTML again regardless, so the CSS was never being reused between them.
+  // The trade-off is not free, though, and it is worth stating precisely because
+  // this site does use <ClientRouter /> (src/layouts/MainLayout.astro). A client-side
+  // navigation still fetches the destination's HTML, and that HTML now carries 82 kB
+  // of CSS inline instead of a cached stylesheet link. So inlining wins on the first
+  // document load and loses on every subsequent one. For seven mostly-static routes
+  // it is a reasonable trade, but if the CSS ever grows or the route count does,
+  // re-check this against the "critical request chains" audit before assuming it still
+  // wins.
   build: {
     inlineStylesheets: 'always',
   },
