@@ -30,14 +30,6 @@ export default defineConfig({
       },
     }),
   ],
-  // Prefetch every internal link as it enters the viewport. `hover` (the
-  // previous strategy) never fires on touch devices, so mobile got no prefetch
-  // at all; `viewport` works everywhere and, with only a handful of static
-  // pages, costs almost nothing.
-  prefetch: {
-    prefetchAll: true,
-    defaultStrategy: 'viewport',
-  },
   // Ship the CSS inside each document instead of as three separate files.
   //
   // Lighthouse flags all three as render-blocking, and the number it quotes is
@@ -47,14 +39,14 @@ export default defineConfig({
   // ride along in a request already on the critical path, so the transfer total
   // barely moves and the request count drops from four to one.
   //
-  // The trade-off is not free, though, and it is worth stating precisely because
-  // this site does use <ClientRouter /> (src/layouts/MainLayout.astro). A client-side
-  // navigation still fetches the destination's HTML, and that HTML now carries 82 kB
-  // of CSS inline instead of a cached stylesheet link. So inlining wins on the first
-  // document load and loses on every subsequent one. For seven mostly-static routes
-  // it is a reasonable trade, but if the CSS ever grows or the route count does,
-  // re-check this against the "critical request chains" audit before assuming it still
-  // wins.
+  // This was a bad trade while <ClientRouter /> was in use, and is a good one now
+  // that it is gone. A client-side navigation re-fetched the destination's HTML,
+  // which then carried 82 kB of inline CSS instead of a cached stylesheet link —
+  // so inlining won on the first document load and lost on every one after it.
+  // With plain full-page navigation the CSS rides along in the document that page
+  // needs anyway, and nothing is fetched twice. Do not reintroduce a client router
+  // without re-reading the "critical request chains" audit; that is what made this
+  // decision flip.
   build: {
     inlineStylesheets: 'always',
   },
