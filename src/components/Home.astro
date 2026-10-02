@@ -1,5 +1,12 @@
 ---
-import { getLatestVideos, episodeNum, formatEpDate, thumb, webpSrcset } from '~/lib/youtube';
+import {
+  getLatestVideos,
+  episodeNum,
+  formatEpDate,
+  thumb,
+  webpSrcset,
+  avifSrcset,
+} from '~/lib/youtube';
 import { getDiscordStats } from '~/lib/discord';
 import { getLatestSubstackPosts } from '~/lib/substack';
 import { getRelativeLocaleUrl } from 'astro:i18n';
@@ -116,11 +123,20 @@ const twitterUrl = 'https://twitter.com/discorgento';
               scale — the byte saving was paid for in blur. Resolving width *and*
               density hands a DPR-3 phone the 1280 it needs and a DPR-1 one the
               320 it needs. */}
-          {/* WebP first: this is the LCP element, and the 1280 JPEG straight off
-              YouTube is ~170 kB against ~104 kB for the same frame. The <img> keeps
-              the JPEG so a browser without WebP still paints. 320 stays listed for
-              DPR-1 phones; the browser skips it whenever the slot is wider. */}
+          {/* Modern formats first, best first: this is the LCP element, and the same
+              frame is ~170 kB as the JPEG straight off YouTube, ~104 kB as WebP and
+              ~52 kB as AVIF. <source> order *is* the browser's preference order, so
+              AVIF has to sit above WebP or it will never be chosen. The <img> keeps
+              the JPEG so a browser that supports neither still paints. 320 stays listed
+              for DPR-1 phones; the browser skips it whenever the slot is wider. */}
           <picture>
+            {avifSrcset(firstVideo.id, [320, 1024, 1280]) && (
+              <source
+                type="image/avif"
+                srcset={avifSrcset(firstVideo.id, [320, 1024, 1280]) ?? undefined}
+                sizes="(min-width: 768px) 1184px, 84vw"
+              />
+            )}
             {webpSrcset(firstVideo.id, [320, 1024, 1280]) && (
               <source
                 type="image/webp"
@@ -351,6 +367,13 @@ const twitterUrl = 'https://twitter.com/discorgento';
                       srcset the 320 asset was the only choice, so every tablet card
                       drew ~344 CSS px of frame from 320 px of pixels. */}
                     <picture>
+                      {avifSrcset(ep.id, [320, 640, 1024, 1280]) && (
+                        <source
+                          type="image/avif"
+                          srcset={avifSrcset(ep.id, [320, 640, 1024, 1280]) ?? undefined}
+                          sizes="(min-width: 768px) 24rem, 7.5rem"
+                        />
+                      )}
                       {webpSrcset(ep.id, [320, 640, 1024, 1280]) && (
                         <source
                           type="image/webp"

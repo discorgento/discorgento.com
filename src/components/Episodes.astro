@@ -1,6 +1,6 @@
 ---
 import type { Video } from '~/lib/youtube';
-import { episodeNum, thumb, webpSrcset } from '~/lib/youtube';
+import { episodeNum, thumb, webpSrcset, avifSrcset } from '~/lib/youtube';
 import { useTranslations, intlLocale } from '~/lib/i18n';
 import YouTubeStamp from '~/components/YouTubeStamp.astro';
 
@@ -67,6 +67,13 @@ function isoDate(published: string): string {
               {/* contents: the <picture> is only a <source> carrier. Tailwind's
                   `contents` drops it from layout so the <img> lays out unchanged. */}
               <picture class="contents">
+                {avifSrcset(v.id, [320, 640, 1024, 1280]) && (
+                  <source
+                    type="image/avif"
+                    srcset={avifSrcset(v.id, [320, 640, 1024, 1280]) ?? undefined}
+                    sizes="(min-width: 768px) 8rem, 90vw"
+                  />
+                )}
                 {webpSrcset(v.id, [320, 640, 1024, 1280]) && (
                   <source
                     type="image/webp"

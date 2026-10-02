@@ -4,4 +4,5 @@
   declare module 'virtual:discorgento-thumb-cache' {
     export const CACHED_THUMBS: Record<string, number[]>;
     export const WEBP_THUMBS: Record<string, number[]>;
+    export const AVIF_THUMBS: Record<string, number[]>;
   }

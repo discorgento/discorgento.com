@@ -138,6 +138,34 @@ const toWebp = async (id, size) => {
   return true;
 };
 
+/* AVIF twin of an already-present .jpg, and the smallest one.
+ *
+ * WebP was the first win over YouTube's JPEG, but AVIF is the better codec and it
+ * shows: the same 1024 cover that lands at 74.9 kB as WebP is 52.2 kB here at
+ * quality 55 — which is roughly where AVIF q55 and WebP q78 meet in perceived
+ * quality. That file *is* the LCP on a phone, so it is the one place where a codec
+ * change moves the metric directly.
+ *
+ * Browsers that support AVIF also decode it faster than the equivalent WebP, which
+ * is the second half of why this helps: less time waiting on the bytes, and less
+ * time on the main thread turning them into pixels.
+ *
+ * effort 6 costs ~10 s per 1024 frame and ~15 s per 1280, so the skip-if-present
+ * guard below is load-bearing, not an optimisation. Re-running the sync must never
+ * re-encode the 40 files that are already committed. */
+const toAvif = async (id, size) => {
+  const src = resolve(OUT_DIR, `${id}-${size}.jpg`);
+  const out_path = resolve(OUT_DIR, `${id}-${size}.avif`);
+  if (!existsSync(src)) return false;
+  if (existsSync(out_path)) return false;
+  const out = await sharp(await readFile(src))
+    .avif({ quality: 55, effort: 6 })
+    .toBuffer();
+  await writeFile(out_path, out);
+  console.log(`  avif ${id}-${size}.avif  ${(out.length / 1024).toFixed(1)} kB`);
+  return true;
+};
+
 const main = async () => {
   await mkdir(OUT_DIR, { recursive: true });
 
@@ -155,6 +183,7 @@ const main = async () => {
   let downloaded = 0;
   let derived = 0;
   let encoded = 0;
+  let avifEncoded = 0;
   let skipped = 0;
 
   const sizes = SOURCES.map(([, size]) => size).concat(DERIVED.map(([, to]) => to));
@@ -175,11 +204,12 @@ const main = async () => {
     }
     for (const size of sizes) {
       if (await toWebp(id, size)) encoded++;
+      if (await toAvif(id, size)) avifEncoded++;
     }
   }
 
   console.log(
-    `\ndone: ${downloaded} downloaded, ${derived} derived, ${encoded} webp, ${skipped} already present`
+    `\ndone: ${downloaded} downloaded, ${derived} derived, ${encoded} webp, ${avifEncoded} avif, ${skipped} already present`
   );
   if (downloaded) console.log('review the new files, then commit them with the episode');
 };
