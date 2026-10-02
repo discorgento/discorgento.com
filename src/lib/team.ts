@@ -144,7 +144,7 @@ export function buildTeamJsonLd(locale: string, site: URL) {
         .map((extension) =>
           localPhotos.find((file) => file.endsWith(`/${slug}-${BYLINE_WIDTH}.${extension}`))
         )
-        .find(Boolean);
+        .find(Boolean) ?? null;
 
     return team.map((person) => {
       const localPhoto = extensions
