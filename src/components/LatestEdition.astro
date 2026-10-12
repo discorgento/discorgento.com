@@ -1,0 +1,49 @@
+---
+import { getLatestSubstackPosts } from '~/lib/substack';
+import { LOCALES, useTranslations } from '~/lib/i18n';
+import { formatEpDate } from '~/lib/youtube';
+
+const SUBSTACK_URL = 'https://discorgento.substack.com';
+
+/* A server island renders outside the page request: Astro.url here is
+   /_server-islands/LatestEdition, not the page the visitor is on, so the locale has
+   to come from somewhere else. The page's own address survives in the Referer header,
+   which our Referrer-Policy (strict-origin-when-cross-origin) sends in full for a
+   same-origin request. Anything unrecognised falls back to pt-BR, the site default. */
+function localeFromReferer(referer: string | null): string {
+  const first =
+    (referer ? new URL(referer, 'https://discorgento.com/').pathname : '/')
+      .split('/')
+      .filter(Boolean)[0] ?? '';
+  return (LOCALES as readonly string[]).includes(first) ? first : 'pt-BR';
+}
+
+const locale = localeFromReferer(Astro.request.headers.get('referer'));
+const t = useTranslations(locale);
+
+/* no-store is deliberate. This island takes no props, so its URL is byte-identical
+   for every locale — a cached copy would serve the pt-BR card to /en/ and /es/
+   readers. The Substack side stays cheap because the feed request is edge-cached
+   (cf.cacheTtl in substack.ts), not because this response is. */
+Astro.response.headers.set('Cache-Control', 'no-store');
+
+/* Read at request time. A post published on Substack shows up here on the next
+   (uncached) view, with no redeploy. */
+const [latestPost] = await getLatestSubstackPosts(1);
+---
+
+<a
+  href={latestPost ? latestPost.url : SUBSTACK_URL}
+  target="_blank"
+  rel="noopener noreferrer"
+  class="edition"
+>
+  <p class="meta">
+    <span class="tag">{t('home.newsletter.tag')}</span>
+    {latestPost && <span class="date">{formatEpDate(latestPost.published, locale)}</span>}
+  </p>
+  <h3>{latestPost ? latestPost.title : t('home.newsletter.empty')}</h3>
+  <p class="go">
+    {latestPost ? `${t('home.newsletter.read')} →` : t('home.sign.substack')}
+  </p>
+</a>

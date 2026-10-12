@@ -1,0 +1,327 @@
+---
+import { getLatestVideos, episodeNum, formatEpDate, thumb, webpSrcset, avifSrcset } from '~/lib/youtube';
+import type { Video } from '~/lib/youtube';
+import { useTranslations } from '~/lib/i18n';
+import YouTubeStamp from '~/components/YouTubeStamp.astro';
+
+interface Props {
+  locale: string;
+  videos?: Video[];
+}
+
+/* The home episodes grid (indexes 1..7 — index 0 is the cover island above),
+   rendered two ways by the same component:
+ *
+ *  - The `server:defer` island render: `Astro.props.videos` is absent, so this
+ *    fetches the channel live at request time and slices — new episodes appear
+ *    without a redeploy.
+ *  - The `slot="fallback"` render (with `videos`): the build-time stand-in, the
+ *    committed snapshot slice supplied by Home so the build never talks to
+ *    YouTube.
+ *
+ * `.eps` is wrapped in the `server:defer` island only; the section head above
+ * it stays static in Home. Styles live here, not in Home, because an island
+ * renders outside the page's component scope — and since the fallback is this
+ * same component, one copy styles both renders.
+ */
+const { locale, videos } = Astro.props;
+const t = useTranslations(locale);
+
+const episodes = videos ?? (await getLatestVideos()).slice(1, 7);
+
+if (videos === undefined) {
+  /* Deliberate no-store, matching LatestEdition: the island is per-view data,
+     not a cacheable asset. The YouTube feed request is edge-cached
+     (cf.cacheTtl in youtube.ts), so this does not hammer the publication. */
+  Astro.response.headers.set('Cache-Control', 'no-store');
+}
+---
+
+{episodes.length > 0 && (
+  /* Scoped styles are compiled against this component's own attribute, so the
+     island needs its own `.zine` ancestor to match the `.zine .x` rules below
+     (Home's `.zine` carries Home's hash, not ours). The wrapper is a plain
+     block inside Home's `.wrap`. */
+  <div class="zine">
+    <div class="eps">
+      {episodes.map((ep) => (
+        <a href={ep.url} target="_blank" rel="noopener noreferrer" class="ep">
+        <div class="art-wrap">
+          <picture>
+            {avifSrcset(ep.id, [320, 640, 1024, 1280]) && (
+              <source
+                type="image/avif"
+                srcset={avifSrcset(ep.id, [320, 640, 1024, 1280]) ?? undefined}
+                sizes="(min-width: 768px) 24rem, 7.5rem"
+              />
+            )}
+            {webpSrcset(ep.id, [320, 640, 1024, 1280]) && (
+              <source
+                type="image/webp"
+                srcset={webpSrcset(ep.id, [320, 640, 1024, 1280]) ?? undefined}
+                sizes="(min-width: 768px) 24rem, 7.5rem"
+              />
+            )}
+            <img
+              class="art"
+              src={thumb(ep.id)}
+              srcset={`${thumb(ep.id, 320)} 320w, ${thumb(ep.id, 640)} 640w, ${thumb(ep.id, 1280)} 1280w`}
+              sizes="(min-width: 768px) 24rem, 7.5rem"
+              alt={ep.title}
+              width={320}
+              height={180}
+              loading="lazy"
+              decoding="async"
+            />
+          </picture>
+          <YouTubeStamp uid={`home-${ep.id}`} />
+        </div>
+        <div class="body">
+          <p class="meta">
+            <span class="num">{episodeNum(ep.title) ? `#${episodeNum(ep.title)}` : t('home.featuredEp.eyebrow')}</span>
+            <span class="date">{formatEpDate(ep.published, locale)}</span>
+          </p>
+          <h3 class="title">{ep.title}</h3>
+          <p class="go">{t('home.toc.watch')}</p>
+        </div>
+      </a>
+      ))}
+    </div>
+  </div>
+)}
+
+<style>
+  /* These rules were scoped in Home.astro; they live here now so the island
+     output (rendered at request time, outside Home's scope) is styled. The
+     build-time fallback is this same component, so one copy styles both. */
+
+  .zine a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .zine .eps {
+    display: grid;
+    gap: 1.25rem;
+  }
+  @media (min-width: 768px) {
+    .zine .eps {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 1100px) {
+    .zine .eps {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    .zine .ep .art-wrap {
+      max-height: 13.5rem;
+    }
+  }
+  .zine .ep {
+    position: relative;
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 5px 5px 0 var(--color-brand-500);
+    transition: background 0.15s, transform 0.2s, box-shadow 0.2s;
+  }
+  .zine .ep:hover {
+    background: var(--color-background);
+    transform: translate(-2px, -2px);
+    box-shadow: 8px 8px 0 var(--color-brand-500);
+  }
+  /* Phone: the card lies down, side by side with the thumb as a list instead
+     of a gallery. Desktop keeps the grid. */
+  @media (max-width: 767px) {
+    .zine .ep {
+      flex-direction: row;
+      box-shadow: 3px 3px 0 var(--color-brand-500);
+    }
+    .zine .ep:hover {
+      transform: translate(-1px, -1px);
+      box-shadow: 5px 5px 0 var(--color-brand-500);
+    }
+    .zine .ep .art-wrap {
+      flex: 0 0 7.5rem;
+      align-self: center;
+      aspect-ratio: 16/9;
+    }
+    .zine .ep .body {
+      flex: 1;
+      min-width: 0;
+    }
+    .zine .ep .art {
+      border-bottom: 0;
+      border-right: 1px solid var(--color-border);
+    }
+  }
+  .zine .ep::before {
+    content: '';
+    position: absolute;
+    top: 0.55rem;
+    left: 0.9rem;
+    z-index: 1;
+    width: 3.25rem;
+    height: 1.05rem;
+    background: rgb(236 103 55 / 0.55);
+    transform: rotate(-4deg);
+    pointer-events: none;
+  }
+  .zine .ep .art-wrap {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 16/9;
+  }
+  .zine .ep .art-wrap :global(.yt-pill) {
+    position: absolute;
+    top: 0.55rem;
+    right: 0.55rem;
+    z-index: 2;
+  }
+  .zine .ep .art {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-bottom: 1px solid var(--color-border);
+    transition: transform 0.45s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  .zine .ep:hover .art {
+    transform: scale(1.04);
+  }
+  /* The WebP <picture> wrapper only carries a <source>; display:contents drops
+     it from layout so the <img> lays out exactly as before. */
+  .zine .art-wrap picture {
+    display: contents;
+  }
+  .zine .ep .body {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    flex: 1;
+  }
+  .zine .ep .meta {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--color-muted);
+  }
+  .zine .ep .meta .num {
+    color: var(--color-brand-500);
+    font-weight: 700;
+  }
+  .zine .ep .title {
+    font-weight: 600;
+    font-size: 1.05rem;
+    line-height: 1.35;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .zine .ep .go {
+    margin-top: auto;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--color-brand-400);
+    transition: color 0.2s ease;
+  }
+  .zine .ep:hover .go {
+    color: var(--color-brand-500);
+  }
+  /* Tear on hover: same clip-path band as the host photos in Home. */
+  .zine .ep .art-wrap::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background-color: var(--color-on-background);
+    opacity: 0;
+    clip-path: inset(30% 0 44% 0);
+    will-change: transform, clip-path, opacity;
+  }
+  .zine .ep:hover .art-wrap::after {
+    animation: 0.42s steps(3, end) dg-tear both;
+  }
+  @keyframes dg-tear {
+    0% {
+      opacity: 0;
+      transform: none;
+      clip-path: inset(30% 0 44% 0);
+    }
+    33% {
+      opacity: 0.85;
+      transform: translateX(-0.5rem);
+      clip-path: inset(42% 0 30% 0);
+    }
+    66% {
+      opacity: 0.6;
+      transform: translateX(0.35rem);
+      clip-path: inset(18% 0 56% 0);
+    }
+    100% {
+      opacity: 0;
+      transform: none;
+      clip-path: inset(30% 0 44% 0);
+    }
+  }
+
+  /* Grid cascade on reveal — the `.eps` lives inside Home's .reveal band; the
+     island's cards are inserted after .in, so the animation fires on insert.
+     The ancestors (.js .zine .reveal.in) belong to Home's markup, so they must
+     stay inside :global() or the island's own hash would be required on them
+     and the gate would never match. */
+  :global(.js .zine .reveal.in) .eps > * {
+    animation: dg-rise 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+  :global(.js .zine .reveal.in) .eps > *:nth-child(1) {
+    animation-delay: 0.06s;
+  }
+  :global(.js .zine .reveal.in) .eps > *:nth-child(2) {
+    animation-delay: 0.13s;
+  }
+  :global(.js .zine .reveal.in) .eps > *:nth-child(3) {
+    animation-delay: 0.2s;
+  }
+  :global(.js .zine .reveal.in) .eps > *:nth-child(4) {
+    animation-delay: 0.27s;
+  }
+  @keyframes dg-rise {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :global(.js .zine .reveal.in) .eps > * {
+      animation: none;
+    }
+    .zine .ep .go,
+    .zine .ep .art {
+      transition: none;
+    }
+    .zine .ep:hover .go,
+    .zine .ep:hover .art {
+      transform: none;
+    }
+    .zine .ep {
+      animation: none;
+      transition: none;
+      transform: none;
+    }
+  }
+</style>

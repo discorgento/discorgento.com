@@ -299,3 +299,94 @@ body::after {
   height: auto;
 }
 
+/* ---- Newsletter edition card ----
+   Lives here, not in a component, because the card is rendered in two places: the
+   LatestEdition server island and the fallback slot in Home.astro. Astro's scoped
+   styles tag every compound selector with the owning component's cid, so a rule
+   written for one of them would never match the other — and the island's markup is
+   not part of Home's scope. The `.zine` prefix namespaces these the way it did when
+   they sat inside Home.
+*/
+.zine .edition {
+  position: relative;
+  display: block;
+  border: 1px solid var(--color-border);
+  border-left: 6px solid var(--color-brand-500);
+  background: var(--color-surface);
+  padding: 2rem;
+  transition: background 0.15s;
+  overflow: hidden;
+}
+/* A letterpress mark sweeps across the card on hover. Kept off the text flow
+   (aria-hidden on the markup side) and out of the tab order. */
+.zine .edition::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    100deg,
+    transparent 42%,
+    rgb(236 103 55 / 0.14) 50%,
+    transparent 58%
+  );
+  transform: translateX(-100%);
+  pointer-events: none;
+  transition: transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.zine .edition:hover::after,
+.zine .edition:focus-visible::after {
+  transform: translateX(100%);
+}
+.zine .edition:hover {
+  background: var(--color-background);
+}
+.zine .edition .meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--color-muted);
+}
+.zine .edition .meta .tag {
+  background: var(--color-brand-700);
+  color: #fff;
+  padding: 0.15rem 0.55rem;
+}
+.zine .edition h3 {
+  margin-top: 1rem;
+  font-weight: 600;
+  font-size: clamp(1.15rem, 3vw, 2.1rem);
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+  max-width: 42rem;
+  text-wrap: balance;
+}
+.zine .edition .go {
+  margin-top: 1.25rem;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--color-brand-400);
+}
+/* Cards inside the paper block stay ink-dark, so they flip the tokens back
+   and set their own color (the section's black is inherited, not a var). */
+.zine section.block.inverted .edition {
+  --color-on-background: #f3efe9;
+  --color-on-surface: #e7e2da;
+  --color-muted: #a49c90;
+  --color-border: #2e2923;
+  color: var(--color-on-background);
+}
+@media (prefers-reduced-motion: reduce) {
+  .zine .edition::after {
+    display: none;
+  }
+  .zine .edition:hover::after,
+  .zine .edition:focus-visible::after {
+    transform: none;
+  }
+}
+
