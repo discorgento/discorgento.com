@@ -1,16 +1,32 @@
 ---
 import type { Video } from '~/lib/youtube';
-import { episodeNum, thumb, webpSrcset, avifSrcset } from '~/lib/youtube';
+import { getLatestVideos, episodeNum, thumb, webpSrcset, avifSrcset } from '~/lib/youtube';
 import { useTranslations, intlLocale } from '~/lib/i18n';
 import YouTubeStamp from '~/components/YouTubeStamp.astro';
 
 interface Props {
   locale: string;
-  videos: Video[];
+  videos?: Video[];
 }
 
-const { locale, videos } = Astro.props;
+/* The podcast page episode list, rendered two ways by the same component:
+ *
+ *  - The `server:defer` island render: `Astro.props.videos` is absent, so this
+ *    fetches the channel live at request time — new episodes appear without a
+ *    redeploy.
+ *  - The `slot="fallback"` render (with `videos`): the build-time videos from
+ *    PodcastPage (which still needs them for the PodcastSeries JSON-LD).
+ */
+const { locale } = Astro.props;
+const videos = Astro.props.videos ?? (await getLatestVideos());
 const t = useTranslations(locale);
+
+if (Astro.props.videos === undefined) {
+  /* Deliberate no-store, matching LatestEdition: the island is per-view data,
+     not a cacheable asset. The YouTube feed request is edge-cached
+     (cf.cacheTtl in youtube.ts), so this does not hammer the publication. */
+  Astro.response.headers.set('Cache-Control', 'no-store');
+}
 
 // UTC so the visible date and the machine-readable datetime below can never
 // disagree: the build machine's timezone otherwise decides which day "22:30Z"

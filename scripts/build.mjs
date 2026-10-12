@@ -48,6 +48,15 @@ function astro(...args) {
   return r.status === 0;
 }
 
+function runScript(file) {
+  const r = spawnSync(process.execPath, [file], {
+    cwd: root,
+    stdio: 'inherit',
+    shell: false,
+  });
+  return r.status === 0;
+}
+
 const keepDown = process.argv.includes('--keep-server');
 const pid = devServerRunning();
 
@@ -61,6 +70,18 @@ if (!astro('dev', 'stop')) log('nothing to stop');
 // guarantees the restored server re-optimizes from scratch.
 rmSync(viteCache, { recursive: true, force: true });
 log('cleared node_modules/.vite');
+
+// Refresh the self-hosted media before the build so the fresh files land in
+// dist/client and ship with the deploy. Both steps are best-effort on purpose:
+// gen-og keeps the previous og.jpg on failure, and sync-thumbs degrades to the
+// committed thumbnails / the YouTube CDN, so a network blip on the feed must not
+// fail the build gate.
+if (!runScript(join(root, 'scripts', 'gen-og.mjs'))) {
+  log('warn: og:generate failed — keeping the current og.jpg');
+}
+if (!runScript(join(root, 'scripts', 'sync-thumbs.mjs'))) {
+  log('warn: thumbs:sync failed — remote thumbnails stay in use');
+}
 
 let ok = false;
 try {

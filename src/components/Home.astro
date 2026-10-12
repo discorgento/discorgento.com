@@ -1,19 +1,15 @@
 ---
-import {
-  getLatestVideos,
-  episodeNum,
-  formatEpDate,
-  thumb,
-  webpSrcset,
-  avifSrcset,
-} from '~/lib/youtube';
+import { episodeNum, formatEpDate } from '~/lib/youtube';
+import type { Video } from '~/lib/youtube';
+import snapshot from '~/data/episodes.json';
 import { getDiscordStats } from '~/lib/discord';
-import { getLatestSubstackPosts } from '~/lib/substack';
 import { getRelativeLocaleUrl } from 'astro:i18n';
 import { useTranslations, intlLocale } from '~/lib/i18n';
 import { getTeam } from '~/lib/team';
 import Navbar from '~/components/Navbar.astro';
-import YouTubeStamp from '~/components/YouTubeStamp.astro';
+import LatestEdition from '~/components/LatestEdition.astro';
+import LatestEpisode from '~/components/LatestEpisode.astro';
+import HomeEpisodes from '~/components/HomeEpisodes.astro';
 
 interface Props {
   locale: string;
@@ -22,18 +18,18 @@ interface Props {
 const { locale } = Astro.props;
 const t = useTranslations(locale);
 
-const [youtubeVideos, discord, substackPosts] = await Promise.all([
-  getLatestVideos(),
-  getDiscordStats(),
-  getLatestSubstackPosts(1),
-]);
-const latestPost = substackPosts[0] ?? null;
+const videos = snapshot as Video[];
+const discord = await getDiscordStats();
 
-const firstVideo = youtubeVideos[0] ?? null;
+// The cover and the episodes grid are server islands that fetch YouTube live at
+// request time — a new episode shows up without a redeploy. The build ships the
+// committed snapshot as their static fallback instead of hitting the (flaky)
+// feed during the build, and the residuals below (terminal, toc, pull quote)
+// read the same snapshot by design: the site must never fail over a news feed.
+const firstVideo = videos[0] ?? null;
 const epNum = firstVideo ? (episodeNum(firstVideo.title) ?? '') : '';
 const epTag = epNum ? `#${epNum}` : 'podcast';
 const epDate = firstVideo ? formatEpDate(firstVideo.published, locale) : '';
-const stampText = `${epTag} · ${t('home.toc.watch')} · youtube · `;
 
 const hosts = getTeam(locale);
 
@@ -107,117 +103,11 @@ const twitterUrl = 'https://twitter.com/discorgento';
 >
   <div class="zine -mx-5 sm:-mx-6">
     <!-- CAPA -->
-    <div class="wrap front">
     {firstVideo && (
-      <figure class="cover">
-        <div class="cover-art">
-          {/* Real <img>, not a background-image: the preload scanner only finds
-              the LCP candidate in markup, so a CSS-only still cannot carry
-              fetchpriority and starts at Low priority. Self-hosted, so the LCP
-              never waits on a third-party handshake.
-
-              srcset, not a media query. The old `media="(min-width: 768px)"` was
-              reasoned as "phones only need the 320", but a 375px viewport at DPR 3
-              asks the browser for ~1125 device pixels, so the 320 landed at 0.32
-              scale — the byte saving was paid for in blur. Resolving width *and*
-              density hands a DPR-3 phone the 1280 it needs and a DPR-1 one the
-              320 it needs. */}
-          {/* Modern formats first, best first: this is the LCP element, and the same
-              frame is ~170 kB as the JPEG straight off YouTube, ~104 kB as WebP and
-              ~52 kB as AVIF. <source> order *is* the browser's preference order, so
-              AVIF has to sit above WebP or it will never be chosen. The <img> keeps
-              the JPEG so a browser that supports neither still paints. 320 stays listed
-              for DPR-1 phones; the browser skips it whenever the slot is wider.
-
-              The sizes() has three branches because the cover has three layouts, and all
-              three were measured in the browser rather than derived from the CSS — the
-              grid arithmetic does not predict the number. Below 900px the hero stacks and
-              the cover is 84vw. From 900px .zine .front becomes a 1.1fr/1fr grid and the
-              cover lands near 42vw. From 1232px the container hits its 74rem max and the
-              cover stops at 506px. The old single 1184px branch was the container's full
-              width, not the cover's, so every desktop pulled the 1280 tier where the 640
-              is the one that fits: 66 kB of AVIF for a 506 px slot. */}
-          <picture>
-            {avifSrcset(firstVideo.id, [320, 640, 1024, 1280]) && (
-              <source
-                type="image/avif"
-                srcset={avifSrcset(firstVideo.id, [320, 640, 1024, 1280]) ?? undefined}
-                sizes="(min-width: 1232px) 506px, (min-width: 900px) 42vw, 84vw"
-              />
-            )}
-            {webpSrcset(firstVideo.id, [320, 640, 1024, 1280]) && (
-              <source
-                type="image/webp"
-                srcset={webpSrcset(firstVideo.id, [320, 640, 1024, 1280]) ?? undefined}
-                sizes="(min-width: 1232px) 506px, (min-width: 900px) 42vw, 84vw"
-              />
-            )}
-            <img
-              class="still"
-              src={thumb(firstVideo.id, 320)}
-              srcset={`${thumb(firstVideo.id, 320)} 320w, ${thumb(firstVideo.id, 640)} 640w, ${thumb(firstVideo.id, 1024)} 1024w, ${thumb(firstVideo.id, 1280)} 1280w`}
-              sizes="(min-width: 1232px) 506px, (min-width: 900px) 42vw, 84vw"
-              alt={`discorgento — episódio ${epTag}: ${firstVideo.title}`}
-              width="1280"
-              height="720"
-              fetchpriority="high"
-              decoding="async"
-            />
-          </picture>
-          <span class="n">{epTag}</span>
-          {/* One action for the episode, not three. The badge used to stretch an
-              ::after across the whole artwork, so the entire 1072px cover was a
-              button, the seal added a 120x120 target on top of it, and the CTA
-              below said "assistir agora" a third time. The CTA button in the
-              write-up is the single affordance now, and the artwork is art. The
-              seal stays as decoration, so the fanzine look survives. */}
-          <span class="stamp" aria-hidden="true">
-            <YouTubeStamp variant="seal" uid="cover" label={stampText}>
-              <text slot="text" font-size="9.5"><textPath href="#yt-stamp-path-cover">{stampText}</textPath></text>
-            </YouTubeStamp>
-          </span>
-        </div>
-        <figcaption class="figcap">
-          fig. 01 — {t('home.featuredEp.title')} ·{' '}
-          <a href={firstVideo.url} target="_blank" rel="noopener noreferrer">
-            {t('home.featuredEp.watch')}
-          </a>
-        </figcaption>
-      </figure>
+      <LatestEpisode server:defer locale={locale}>
+        <LatestEpisode slot="fallback" locale={locale} video={firstVideo} />
+      </LatestEpisode>
     )}
-
-    {firstVideo && (
-      <article class="lead">
-        <p class="kicker">
-          <span class="o">●</span> {t('home.featuredEp.eyebrow')} — {t('home.capa.tag')}
-        </p>
-        <h2>{firstVideo.title}</h2>
-        <p class="deck">{t('home.capa.deck')}</p>
-        <div class="facts">
-          <span>{t('home.capa.published')} <b>{epDate}</b></span>
-          <span>{t('home.capa.medium')} <b>youtube</b></span>
-          <span>{t('home.capa.by')} <b>@discorgento</b></span>
-        </div>
-        <div class="ctas">
-          <a
-            href={firstVideo.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="btn"
-            data-ep-open
-            data-ep-id={firstVideo.id}
-            data-ep-title={firstVideo.title}
-          >
-            ▶ {t('home.featuredEp.play')}
-          </a>
-          <a href={getRelativeLocaleUrl(locale, '/podcast')} class="link-arrow">
-            {t('home.featuredEp.all')} →
-          </a>
-        </div>
-      </article>
-    )}
-
-    </div>
 
   <!-- BYLINE (as caras logo abaixo da capa) -->
   <div class="byline reveal">
@@ -353,7 +243,7 @@ const twitterUrl = 'https://twitter.com/discorgento';
   </section>
 
   <!-- EPISÓDIOS -->
-  {youtubeVideos.length > 0 && (
+  {videos.length > 0 && (
     <section class="block reveal band-eps">
       <div class="wrap">
         <div class="sec-head">
@@ -365,55 +255,13 @@ const twitterUrl = 'https://twitter.com/discorgento';
             {t('home.featuredEp.all')} →
           </a>
         </div>
-        <div class="eps">
-          {/* Skip index 0: that episode is already the cover above, and showing
-              it again made the latest episode appear twice on the home page. */}
-          {youtubeVideos.slice(1, 7).map((ep) => (
-            <a href={ep.url} target="_blank" rel="noopener noreferrer" class="ep">
-              <div class="art-wrap">
-                  {/* 7.5rem strip on mobile, the full card from 768px up. Without a
-                      srcset the 320 asset was the only choice, so every tablet card
-                      drew ~344 CSS px of frame from 320 px of pixels. */}
-                    <picture>
-                      {avifSrcset(ep.id, [320, 640, 1024, 1280]) && (
-                        <source
-                          type="image/avif"
-                          srcset={avifSrcset(ep.id, [320, 640, 1024, 1280]) ?? undefined}
-                          sizes="(min-width: 768px) 24rem, 7.5rem"
-                        />
-                      )}
-                      {webpSrcset(ep.id, [320, 640, 1024, 1280]) && (
-                        <source
-                          type="image/webp"
-                          srcset={webpSrcset(ep.id, [320, 640, 1024, 1280]) ?? undefined}
-                          sizes="(min-width: 768px) 24rem, 7.5rem"
-                        />
-                      )}
-                      <img
-                        class="art"
-                        src={thumb(ep.id)}
-                        srcset={`${thumb(ep.id, 320)} 320w, ${thumb(ep.id, 640)} 640w, ${thumb(ep.id, 1280)} 1280w`}
-                        sizes="(min-width: 768px) 24rem, 7.5rem"
-                        alt={ep.title}
-                        width={320}
-                        height={180}
-                        loading="lazy"
-                        decoding="async"
-                      />
-                    </picture>
-                <YouTubeStamp uid={`home-${ep.id}`} />
-              </div>
-              <div class="body">
-                <p class="meta">
-                  <span class="num">{episodeNum(ep.title) ? `#${episodeNum(ep.title)}` : t('home.featuredEp.eyebrow')}</span>
-                  <span class="date">{formatEpDate(ep.published, locale)}</span>
-                </p>
-                <h3 class="title">{ep.title}</h3>
-                <p class="go">{t('home.toc.watch')}</p>
-              </div>
-            </a>
-          ))}
-        </div>
+        {/* The grid is a server island: it is re-rendered on the Worker at
+            request time, so the episodes here follow the channel without a
+            redeploy. The fallback below is the committed snapshot slice (skipping
+            index 0, already the cover above). */}
+        <HomeEpisodes server:defer locale={locale}>
+          <HomeEpisodes slot="fallback" locale={locale} videos={videos.slice(1, 7)} />
+        </HomeEpisodes>
       </div>
     </section>
   )}
@@ -430,24 +278,27 @@ const twitterUrl = 'https://twitter.com/discorgento';
           {t('home.newsletter.read')} →
         </a>
       </div>
-      {latestPost ? (
-        <a href={latestPost.url} target="_blank" rel="noopener noreferrer" class="edition">
-          <p class="meta">
-            <span class="tag">{t('home.newsletter.tag')}</span>
-            <span class="date">{formatEpDate(latestPost.published, locale)}</span>
-          </p>
-          <h3>{latestPost.title}</h3>
-          <p class="go">{t('home.newsletter.read')} →</p>
-        </a>
-      ) : (
-        <a href={substackUrl} target="_blank" rel="noopener noreferrer" class="edition">
+      {/* The card is a server island. It is rendered on the Worker at request time,
+          so a post published on Substack shows up without a redeploy — the build no
+          longer carries the post at all. The fallback is what a visitor sees for the
+          instant before the island lands, and what a reader without JavaScript keeps;
+          it is deliberately the generic card, since there is no build-time post to
+          show any more. */}
+      <LatestEdition server:defer>
+        <a
+          href={substackUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="edition"
+          slot="fallback"
+        >
           <p class="meta">
             <span class="tag">{t('home.newsletter.tag')}</span>
           </p>
           <h3>{t('home.newsletter.empty')}</h3>
           <p class="go">{t('home.sign.substack')}</p>
         </a>
-      )}
+      </LatestEdition>
     </div>
   </section>
 
@@ -865,104 +716,20 @@ const twitterUrl = 'https://twitter.com/discorgento';
     background: var(--color-on-background);
   }
 
-  /* ---- capa ---- */
-  .zine .front {
-    display: grid;
-    gap: 2.5rem;
-    padding-block: 1.75rem 2.5rem;
-    position: relative;
-    /* The hero gets its own plane so the top of the page reads as a printed
-       cover sheet rather than text on flat black. Diagonal hatch, deliberately
-       unlike the team's orange halftone dots and the newsletter's notebook
-       grid, so each textured band is identifiable at a glance. Alpha stays low
-       because the cover art and the deck sit on top of it. */
-    background-color: var(--color-surface);
-    background-image: repeating-linear-gradient(
-      -45deg,
-      rgb(243 239 233 / 0.035) 0 1px,
-      transparent 1px 10px
-    );
-  }
-  /* Side by side from 900px up. Stacked, the still took the full 1072px of
-     content width and 591px of height by itself, which pushed the kicker,
-     title, deck, facts and CTAs below the fold on a 900px-tall screen. Two
-     columns let the hero read as one unit: cover art left, episode write-up
-     right. Phones keep the stack, which is the right order there anyway. */
-  @media (min-width: 900px) {
-    .zine .front {
-      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
-      align-items: start;
-      gap: 2.75rem;
-    }
-  }
-  /* Ambient depth: a soft brand bloom behind the cover, so the risograph
-     art sits in light instead of floating on flat black. */
-  .zine .front::before {
-    content: '';
-    position: absolute;
-    inset: 0 -6% auto;
-    height: 26rem;
-    background: radial-gradient(
-      58% 62% at 50% 22%,
-      rgb(236 103 55 / 0.16),
-      transparent 72%
-    );
-    pointer-events: none;
-  }
-  @media (min-width: 1024px) {
-    .zine .front {
-      gap: 3rem;
-    }
-  }
-  .zine .cover-art {
-    position: relative;
-    aspect-ratio: 16/7.5;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: space-between;
-    /* 2rem of inline padding is 64px of a 375px screen, which is where the
-       cramped feeling came from. Mobile gets half that; the roomier value only
-       applies once there is a viewport to spend. */
-    padding: 1.1rem 1.25rem;
-    background-color: var(--color-background);
-    /* Cover prints itself in from the left on load. */
-    animation: 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both dg-wipe;
-  }
-  @media (min-width: 640px) {
-    .zine .cover-art {
-      padding: 1.5rem 2rem;
-    }
-  }
-  @keyframes dg-wipe {
-    from {
-      clip-path: inset(0 100% 0 0);
-    }
-    to {
-      clip-path: inset(0);
-    }
-  }
+  /* ---- capa ----
+     The cover and its write-up moved with the markup into
+     src/components/LatestEpisode.astro (the server island): its scoped styles
+     render the cover on both the build fallback and the live island. */
+
   /* ---- parallax: CSS scroll-driven, progressive enhancement ----
-     Browsers without animation-timeline simply don't move anything. */
+     Browsers without animation-timeline simply don't move anything.
+     The quote drifts while the cover (in LatestEpisode) lags the other way,
+     so the two layers read as depth. */
   @supports (animation-timeline: view()) {
     @media (prefers-reduced-motion: no-preference) {
-      /* The cover lags behind the page while crossing the viewport. */
-      .zine .cover {
-        animation: dg-drift linear both;
-        animation-timeline: view();
-      }
-      /* The quote drifts the other way, so the two layers read as depth. */
       .zine .pullquote {
         animation: dg-drift-quote linear both;
         animation-timeline: view();
-      }
-      @keyframes dg-drift {
-        from {
-          transform: translateY(-1.25rem);
-        }
-        to {
-          transform: translateY(1.25rem);
-        }
       }
       @keyframes dg-drift-quote {
         from {
@@ -986,159 +753,6 @@ const twitterUrl = 'https://twitter.com/discorgento';
   .zine .block:not(.in) {
     content-visibility: auto;
     contain-intrinsic-size: auto 800px;
-  }
-  /* 21/7 is a 3:1 strip: at the 74rem wrap it is only ~390px tall, which crops
-     the thumbnail hard. A 16:9 cover shows the frame and still leaves the lead
-     text above the fold. */
-  @media (min-width: 1024px) {
-    .zine .cover-art {
-      aspect-ratio: 16/9;
-    }
-  }
-  /* Cover: the still keeps its own colours. The scrim is a sibling layer on
-     top, so the episode numeral and the badge stay legible against any
-     thumbnail. */
-  .zine .cover-art picture {
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-    display: block;
-  }
-    /* The WebP <picture> wrappers exist only to hold a <source>. A <picture> is
-       inline by default, and an inline box around a block-level <img> adds a
-       baseline line box — the cover would sit a few px low inside .cover-art and
-       the hover scale would clip against it. display:contents removes the wrapper
-       from layout entirely, so the <img> is laid out exactly as it was before. */
-    .zine .cover-art picture,
-    .zine .art-wrap picture {
-      display: contents;
-    }
-    .zine .cover-art .still {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.6s ease;
-  }
-  .zine .cover-art::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    z-index: 1;
-    background-image: linear-gradient(
-      to bottom,
-      rgba(13, 10, 5, 0.72),
-      rgba(13, 10, 5, 0.18) 45%,
-      rgba(13, 10, 5, 0.55)
-    );
-    pointer-events: none;
-  }
-  .zine .cover:hover .cover-art .still {
-    transform: scale(1.04);
-  }
-  /* The picture is positioned by its own rule above; everything else in the
-     cover stacks over it. */
-  .zine .cover-art > *:not(picture) {
-    position: relative;
-    z-index: 2;
-  }
-  /* ---- carimbo (selo rotacionado) ---- */
-  /* The seal itself lives in YouTubeStamp.astro; here it is only positioned.
-     Decorative now: the episode's one affordance is the CTA button below. */
-  .zine .cover-art .stamp {
-    position: absolute;
-    top: 1.25rem;
-    right: 1.25rem;
-    z-index: 2;
-    line-height: 0;
-  }
-  .zine .cover-art .n {
-    font-family: var(--font-sans);
-    font-weight: 900;
-    font-size: clamp(1.9rem, 8vw, 8.5rem);
-    letter-spacing: -0.03em;
-    line-height: 1;
-    color: #fff;
-    text-shadow: 0 1px 2px rgba(13, 10, 5, 0.55), 0 2px 14px rgba(13, 10, 5, 0.55);
-  }
-  .zine .cover .figcap {
-    margin-top: 0.5rem;
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    color: var(--color-muted);
-  }
-  /* The caption is the deliberate way out to YouTube, so it reads as a link. */
-  .zine .cover .figcap a {
-    color: var(--color-on-background);
-    text-decoration: underline;
-    text-decoration-color: var(--color-brand-500);
-    text-underline-offset: 0.25rem;
-    transition: color 0.15s;
-  }
-  .zine .cover .figcap a:hover {
-    color: var(--color-brand-500);
-  }
-  .zine .lead {
-    border-bottom: 1px solid var(--color-border);
-    padding-bottom: 2rem;
-  }
-  .zine .lead .kicker {
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.18em;
-    color: var(--color-muted);
-    margin-bottom: 0.35rem;
-  }
-  .zine .lead h2 {
-    font-weight: 600;
-    letter-spacing: -0.02em;
-    line-height: 1.06;
-    font-size: clamp(1.25rem, 4vw, 3rem);
-    text-wrap: balance;
-  }
-  .zine .lead .deck {
-    margin-top: 1rem;
-    max-width: 38rem;
-    font-size: 1.05rem;
-    /* 1.7 set this block five lines deep on a phone. Leading that loose is for
-       long measure; on a four-line description it just pulls the lines apart and
-       opens rivers between them, which reads worse, not better. */
-    line-height: 1.5;
-    color: var(--color-muted);
-    text-wrap: pretty;
-  }
-  /* drop cap (detalhe de impresso) */
-  .zine .lead .deck::first-letter {
-    font-family: var(--font-display);
-    font-weight: 700;
-    font-size: 3.2em;
-    line-height: 0.8;
-    float: left;
-    padding: 0.06em 0.1em 0 0;
-    color: var(--color-brand-400);
-  }
-  .zine .lead .facts {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem 1.5rem;
-    margin-top: 1.25rem;
-    padding-top: 1rem;
-    border-top: 1px dotted var(--color-border);
-    font-family: var(--font-mono);
-    font-size: 0.8rem;
-    color: var(--color-muted);
-  }
-  .zine .lead .facts b {
-    color: var(--color-on-background);
-    font-weight: 500;
-  }
-  .zine .lead .ctas {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem;
-    margin-top: 1.5rem;
-    align-items: center;
   }
   .zine .link-arrow {
     font-family: var(--font-mono);
@@ -1322,20 +936,21 @@ const twitterUrl = 'https://twitter.com/discorgento';
     clip-path: inset(0);
     transform: none;
   }
-  /* grids cascade in (animation, not transition: keeps the hover) */
-  :global(.js) .zine .reveal.in :is(.eps, .hosts-grid) > * {
+  /* grids cascade in (animation, not transition: keeps the hover) — the
+     episodes grid running the same cascade lives in HomeEpisodes.astro now */
+  :global(.js) .zine .reveal.in .hosts-grid > * {
     animation: dg-rise 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both;
   }
-  :global(.js) .zine .reveal.in :is(.eps, .hosts-grid) > *:nth-child(1) {
+  :global(.js) .zine .reveal.in .hosts-grid > *:nth-child(1) {
     animation-delay: 0.06s;
   }
-  :global(.js) .zine .reveal.in :is(.eps, .hosts-grid) > *:nth-child(2) {
+  :global(.js) .zine .reveal.in .hosts-grid > *:nth-child(2) {
     animation-delay: 0.13s;
   }
-  :global(.js) .zine .reveal.in :is(.eps, .hosts-grid) > *:nth-child(3) {
+  :global(.js) .zine .reveal.in .hosts-grid > *:nth-child(3) {
     animation-delay: 0.2s;
   }
-  :global(.js) .zine .reveal.in :is(.eps, .hosts-grid) > *:nth-child(4) {
+  :global(.js) .zine .reveal.in .hosts-grid > *:nth-child(4) {
     animation-delay: 0.27s;
   }
   @keyframes dg-rise {
@@ -1450,15 +1065,6 @@ const twitterUrl = 'https://twitter.com/discorgento';
       repeating-linear-gradient(to right, rgb(13 10 5 / 0.06) 0 1px, transparent 1px 2rem),
       repeating-linear-gradient(to bottom, rgb(13 10 5 / 0.06) 0 1px, transparent 1px 2rem);
     color: var(--color-background);
-  }
-  /* Cards inside the paper block stay ink-dark, so they flip the tokens back
-     and set their own color (the section's black is inherited, not a var). */
-  .zine section.block.inverted .edition {
-    --color-on-background: #f3efe9;
-    --color-on-surface: #e7e2da;
-    --color-muted: #a49c90;
-    --color-border: #2e2923;
-    color: var(--color-on-background);
   }
 
   /* ---- table of contents ---- */
@@ -1607,258 +1213,6 @@ const twitterUrl = 'https://twitter.com/discorgento';
   }
   .zine .pullquote .pick a:hover {
     color: var(--color-brand-500);
-  }
-
-  /* ---- episodes ---- */
-  .zine .eps {
-    display: grid;
-    gap: 1.25rem;
-  }
-  @media (min-width: 768px) {
-    .zine .eps {
-      /* Even cells, no bento spans: the old 3+3 / 2+4 spans made the wide card
-         read as oversized and the narrow one stretch to the row height. */
-      grid-template-columns: repeat(2, 1fr);
-    }
-  }
-  @media (min-width: 1100px) {
-    .zine .eps {
-      /* Two 1fr columns have no ceiling, so the card grew with the viewport:
-         441px tall at 1440, making the section *longer* on a bigger screen than
-         on a tablet. A third column plus a capped art width keeps the card
-         around 360px and puts the six episodes in two rows instead of three. */
-      grid-template-columns: repeat(3, 1fr);
-    }
-    .zine .ep .art-wrap {
-      max-height: 13.5rem;
-    }
-  }
-  .zine .ep {
-    position: relative;
-    border: 1px solid var(--color-border);
-    background: var(--color-surface);
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    /* Hard offset shadow reads as a sticker stuck on the page. */
-    box-shadow: 5px 5px 0 var(--color-brand-500);
-    transition: background 0.15s, transform 0.2s, box-shadow 0.2s;
-  }
-  .zine .ep:hover {
-    background: var(--color-background);
-    transform: translate(-2px, -2px);
-    box-shadow: 8px 8px 0 var(--color-brand-500);
-  }
-  /* Phone: the card lies down. Stacked full-bleed 16:9 art cost ~280px per
-     episode, so four of them were over a screen of scrolling and the art read as
-     an oversized square rather than a thumbnail. Side by side it is ~100px, the
-     frame becomes a list instead of a gallery, and more of them fit. Desktop
-     keeps the 2x2 grid. */
-  @media (max-width: 767px) {
-    .zine .ep {
-      flex-direction: row;
-      box-shadow: 3px 3px 0 var(--color-brand-500);
-    }
-    .zine .ep:hover {
-      transform: translate(-1px, -1px);
-      box-shadow: 5px 5px 0 var(--color-brand-500);
-    }
-    .zine .ep .art-wrap {
-      /* 16:9 has to survive. Stretching the art to the card height turned the
-         frame into a near-square and threw away half the thumbnail, which is
-         what the previous attempt did wrong. */
-      flex: 0 0 7.5rem;
-      align-self: center;
-      aspect-ratio: 16/9;
-    }
-    .zine .ep .body {
-      flex: 1;
-      min-width: 0;
-    }
-    .zine .ep .art {
-      border-bottom: 0;
-      border-right: 1px solid var(--color-border);
-    }
-    /* Hero compaction. Stacked, the CTAs ended 75px below the fold on a 375x812
-       screen, so the only action in the hero was invisible without scrolling.
-       The savings are all in padding, gaps and leading, not content: the deck
-       keeps every word and the art keeps its cinematic 16/7.5 crop. */
-    .zine .cover-art {
-      padding: 0.6rem 0.8rem;
-    }
-    .zine .front {
-      /* Dead space above the artwork, not content. The cover-art padding barely
-         moves it: aspect-ratio does not drive the height there, because the
-         still's height:100% inside a flex column wins over it. */
-      padding-block: 0.35rem 1.5rem;
-    }
-    .zine .cover .figcap {
-      font-size: 0.7rem;
-      line-height: 1.35;
-      margin-top: 0.4rem;
-    }
-    .zine .lead .deck {
-      line-height: 1.42;
-    }
-    .zine .lead .facts {
-      margin-top: 0.8rem;
-      padding-top: 0.65rem;
-      gap: 0.25rem 0.85rem;
-    }
-    .zine .lead .ctas {
-      margin-top: 0.75rem;
-    }
-  }
-  /* Washi tape over the thumb. It lives inside the card because the card
-     clips its own overflow. */
-  .zine .ep::before {
-    content: '';
-    position: absolute;
-    top: 0.55rem;
-    left: 0.9rem;
-    z-index: 1;
-    width: 3.25rem;
-    height: 1.05rem;
-    background: rgb(236 103 55 / 0.55);
-    transform: rotate(-4deg);
-    pointer-events: none;
-  }
-  /* Wraps the thumbnail so the mark can sit over it without disturbing the
-     card's own flex layout. The 16/9 ratio lives here, so the <img> fills the
-     box and the HTML width/height attrs reserve the space before it loads. */
-  .zine .ep .art-wrap {
-    position: relative;
-    overflow: hidden;
-    aspect-ratio: 16/9;
-  }
-  .zine .ep .art-wrap :global(.yt-pill) {
-    position: absolute;
-    top: 0.55rem;
-    right: 0.55rem;
-    z-index: 2;
-  }
-  .zine .ep .art {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-bottom: 1px solid var(--color-border);
-    /* Slow push-in on hover: the thumbnail is the only thing allowed to move,
-       so the eye lands on the frame before the title. */
-    transition: transform 0.45s cubic-bezier(0.2, 0.7, 0.2, 1);
-  }
-  .zine .ep:hover .art {
-    transform: scale(1.04);
-  }
-  .zine .ep .body {
-    padding: 1rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
-    flex: 1;
-  }
-  .zine .ep .meta {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 0.75rem;
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    color: var(--color-muted);
-  }
-  .zine .ep .meta .num {
-    color: var(--color-brand-500);
-    font-weight: 700;
-  }
-  .zine .ep .title {
-    font-weight: 600;
-    font-size: 1.05rem;
-    line-height: 1.35;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-  .zine .ep .go {
-    margin-top: auto;
-    font-family: var(--font-mono);
-    font-size: 0.78rem;
-    color: var(--color-brand-400);
-    transition: color 0.2s ease;
-  }
-  /* The link used to slide 4px to the right on hover. A nudge like that reads as
-     a glitch once the whole card is already lifting; brightening the label is
-     the same signal without moving the type. */
-  .zine .ep:hover .go {
-    color: var(--color-brand-500);
-  }
-
-  /* ---- newsletter ---- */
-  .zine .edition {
-    position: relative;
-    display: block;
-    border: 1px solid var(--color-border);
-    border-left: 6px solid var(--color-brand-500);
-    background: var(--color-surface);
-    padding: 2rem;
-    transition: background 0.15s;
-    overflow: hidden;
-  }
-  /* A letterpress mark sweeps across the card on hover. Kept off the text flow
-     (aria-hidden on the markup side) and out of the tab order. */
-  .zine .edition::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-      100deg,
-      transparent 42%,
-      rgb(236 103 55 / 0.14) 50%,
-      transparent 58%
-    );
-    transform: translateX(-100%);
-    pointer-events: none;
-    transition: transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
-  }
-  .zine .edition:hover::after,
-  .zine .edition:focus-visible::after {
-    transform: translateX(100%);
-  }
-  .zine .edition:hover {
-    background: var(--color-background);
-  }
-  .zine .edition .meta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem 1rem;
-    align-items: center;
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    color: var(--color-muted);
-  }
-  .zine .edition .meta .tag {
-    background: var(--color-brand-700);
-    color: #fff;
-    padding: 0.15rem 0.55rem;
-  }
-  .zine .edition h3 {
-    margin-top: 1rem;
-    font-weight: 600;
-    font-size: clamp(1.15rem, 3vw, 2.1rem);
-    letter-spacing: -0.01em;
-    line-height: 1.25;
-    max-width: 42rem;
-    text-wrap: balance;
-  }
-  .zine .edition .go {
-    margin-top: 1.25rem;
-    font-family: var(--font-mono);
-    font-size: 0.8rem;
-    color: var(--color-brand-400);
   }
 
   /* ---- assinatura (CTA) ---- */
@@ -2134,8 +1488,8 @@ const twitterUrl = 'https://twitter.com/discorgento';
      The logo needs a masked ghost because the mark is one SVG. Everywhere else
      the same read comes from a clip-path band laid over the content. This only
      works on real elements, not replaced ones — pseudo-elements on an <img> are
-     unreliable in Firefox, which is why the logo markup uses sibling spans. */
-  .zine .ep .art-wrap::after,
+     unreliable in Firefox, which is why the logo markup uses sibling spans.
+     (The episodes grid runs the same tear inside HomeEpisodes.astro.) */
   .zine .host .ph::after {
     content: '';
     position: absolute;
@@ -2147,7 +1501,6 @@ const twitterUrl = 'https://twitter.com/discorgento';
     clip-path: inset(30% 0 44% 0);
     will-change: transform, clip-path, opacity;
   }
-  .zine .ep:hover .art-wrap::after,
   .zine .host:hover .ph::after {
     animation: 0.42s steps(3, end) dg-tear both;
   }
@@ -2368,7 +1721,7 @@ const twitterUrl = 'https://twitter.com/discorgento';
       transform: none;
       transition: none;
     }
-    :global(.js) .zine .reveal.in :is(.eps, .hosts-grid) > * {
+    :global(.js) .zine .reveal.in .hosts-grid > * {
       animation: none;
     }
     /* The drawn rule and the quote mark are motion, not decoration: land them
@@ -2386,39 +1739,24 @@ const twitterUrl = 'https://twitter.com/discorgento';
       transform: translate(-50%, 0);
       transition: opacity 0.2s ease, visibility 0.2s;
     }
-    .zine .cover-art .still,
-    .zine .ep .go,
-    .zine .cover-art .stamp,
     .zine .host .rule,
     .zine .host .s,
     .zine .host .see,
-    .zine .edition::after,
-    .zine .ep .art,
     .zine .host .ph .face,
     .zine .byline .face-link,
     .zine .toc-big .row::before,
     .zine .toc-big .num {
       transition: none;
     }
-    .zine .cover:hover .cover-art .still,
-    .zine .ep:hover .go,
-    .zine .ep:hover .art,
     .zine .host:hover .ph .face,
     .zine .byline .face-link:hover,
     .zine .toc-big .row:hover::before,
-    .zine .toc-big .row:hover .num,
-    .zine .edition:hover::after {
+    .zine .toc-big .row:hover .num {
       transform: none;
     }
-    /* Sweeps and slides land somewhere specific; drop the offset instead of
-       freezing a half-played animation. */
-    .zine .edition::after {
-      display: none;
-    }
-    /* The load-in choreography (cover wipe) is motion, so it goes. */
-    .zine .cover-art,
-    .zine .btn:not(.ghost),
-    .zine .ep {
+    /* The load-in choreography is motion, so it goes. (The cover wipe and the
+       card animations live in LatestEpisode / HomeEpisodes.) */
+    .zine .btn:not(.ghost) {
       animation: none;
       transition: none;
       transform: none;
@@ -2441,7 +1779,6 @@ const twitterUrl = 'https://twitter.com/discorgento';
   @media (max-width: 639px) {
     .zine .link-arrow,
     .zine .byline .all,
-    .zine .cover .figcap a,
     .zine .colophon .b .ep a,
     .zine .subs a,
     .zine .host .s {
@@ -2449,7 +1786,6 @@ const twitterUrl = 'https://twitter.com/discorgento';
     }
     .zine .link-arrow::after,
     .zine .byline .all::after,
-    .zine .cover .figcap a::after,
     .zine .colophon .b .ep a::after,
     .zine .subs a::after,
     .zine .host .s::after {
@@ -2463,7 +1799,8 @@ const twitterUrl = 'https://twitter.com/discorgento';
     }
     /* .face-link is handled above. The hero badge used to be listed here too,
        because its stretched ::after covered the whole artwork, but the badge is
-       gone: the CTA button is the episode's single affordance now. */
+       gone: the CTA button is the episode's single affordance now. (The cover
+       caption keeps its own touch target inside LatestEpisode.) */
   }
 </style>
 

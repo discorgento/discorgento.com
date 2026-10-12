@@ -100,7 +100,9 @@ const podcastJsonLd = {
       <span class="text-brand-500">●</span> {t('podcast.latest')}
     </p>
     <div class="border-b-2 border-on-background">
-      <Episodes locale={locale} videos={videos} />
+      <Episodes server:defer locale={locale}>
+        <Episodes slot="fallback" locale={locale} videos={videos} />
+      </Episodes>
     </div>
   </section>
 

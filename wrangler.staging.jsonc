@@ -1,8 +1,13 @@
 {
   "name": "staging",
+  // Astro 6+ unified entrypoint: handles both `astro dev` (workerd) and the
+  // production Worker. Do not point this at dist/server/entry.mjs.
+  "main": "@astrojs/cloudflare/entrypoints/server",
   "compatibility_date": "2026-09-09",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
   "assets": {
     "directory": "./dist/client",
+    "binding": "ASSETS",
     "not_found_handling": "404-page",
     "html_handling": "auto-trailing-slash"
   },
