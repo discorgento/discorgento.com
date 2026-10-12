@@ -9,10 +9,39 @@ export default defineConfig({
   site: 'https://discorgento.com',
   output: 'static',
   adapter: cloudflare({
-    platformProxy: {
-      enabled: true,
-    },
+    // Nothing in this project uses astro:assets, so the adapter's default
+    // `cloudflare-binding` image service would only auto-provision a Cloudflare
+    // Images binding that nothing ever calls. `passthrough` skips it.
+    imageService: 'passthrough',
   }),
+  // No sessions here. `false` keeps the adapter from auto-provisioning a KV
+  // namespace and drops the session runtime from the Worker bundle.
+  session: false,
+  // Astro hashes the inline scripts it emits and ships the strict CSP as a
+  // <meta http-equiv="content-security-policy"> on every page. This is the only
+  // way to keep `server:defer` islands: their bootstrap script is inline and
+  // its content ends with a per-page encrypted prop payload, so a static hash in
+  // public/_headers can never match it. The meta walks the same tightrope a hash
+  // in the header would, and the policy travels with the document no matter how
+  // Cloudflare serves it.
+  //
+  // public/_headers still carries the non-script directives (frame-ancestors
+  // cannot live in a meta tag) — see there for the split.
+  security: {
+    csp: {
+      styleDirective: {
+        // The site ships static inline style attributes (e.g. `--i` on the logo
+        // letters, the dialog positioners) — not element styles, which Astro
+        // already hashes. `style-src-attr 'unsafe-inline'` keeps the attributes
+        // working while the <style> elements stay hash-locked under
+        // style-src-elem.
+        resources: [
+          { resource: "'self'", kind: 'element' },
+          { resource: "'unsafe-inline'", kind: 'attribute' },
+        ],
+      },
+    },
+  },
   i18n: {
     locales: ['pt-BR', 'en', 'es'],
     defaultLocale: 'pt-BR',
