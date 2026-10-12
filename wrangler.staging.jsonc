@@ -1,7 +1,12 @@
 {
   "name": "staging",
-  // Astro 6+ unified entrypoint: handles both `astro dev` (workerd) and the
-  // production Worker. Do not point this at dist/server/entry.mjs.
+  // Build-time source of truth. `main` stays on the unified package entrypoint
+  // because the @cloudflare/vite-plugin that runs inside astro build validates
+  // it against an existing file — dist/server doesn't exist yet during the
+  // config phase. Deployment does NOT use this file: the adapter resolves the
+  // final Worker config (physical entry, assets, no_bundle) into
+  // dist/server/wrangler.json at the end of the build, and that is what the CI
+  // deploy passes to wrangler. See AGENTS.md.
   "main": "@astrojs/cloudflare/entrypoints/server",
   "compatibility_date": "2026-09-09",
   "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
