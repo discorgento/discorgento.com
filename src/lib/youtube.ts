@@ -72,7 +72,11 @@ export async function getLatestVideos(): Promise<Video[]> {
       const res = await fetch(FEED_URL, {
         headers: { 'user-agent': 'discorgento-site' },
         signal: AbortSignal.timeout(TIMEOUT_MS),
-      });
+        // Caches the feed at the Cloudflare edge so every page view does not hit
+        // the publication. A new episode is visible within this window. Node
+        // ignores `cf`, so the build-time path is unaffected.
+        cf: { cacheTtl: 1_800, cacheEverything: true },
+      } as RequestInit & { cf: { cacheTtl: number; cacheEverything: boolean } });
 
       if (res.ok) {
         const videos = parseFeed(await res.text());
