@@ -64,6 +64,43 @@ function parseFeed(xml: string): Video[] {
     .filter((v): v is Video => v !== null);
 }
 
+function isVideo(value: unknown): value is Video {
+  if (typeof value !== 'object' || value === null) return false;
+  const v = value as Record<string, unknown>;
+  return (
+    typeof v.id === 'string' &&
+    v.id.length > 0 &&
+    typeof v.title === 'string' &&
+    typeof v.published === 'string' &&
+    !Number.isNaN(Date.parse(v.published)) &&
+    typeof v.url === 'string'
+  );
+}
+
+/**
+ * The committed snapshot in src/data/episodes.json, validated.
+ *
+ * The file is hand-maintained next to the live feed, so a typo there is a
+ * failure with a bad default: mined as `Video` it silently renders broken dates
+ * and missing text. Validating every entry throws precisely — entry index and
+ * contents — and Home always calls this at build, so a malformed snapshot
+ * fails `npm run build` instead of shipping.
+ */
+export function getSnapshotVideos(): Video[] {
+  if (!Array.isArray(snapshot)) {
+    throw new Error('[episodes] src/data/episodes.json must be an array of episodes');
+  }
+  return snapshot.map((entry, i) => {
+    if (!isVideo(entry)) {
+      throw new Error(
+        `[episodes] src/data/episodes.json entry ${i} is not a valid episode: ` +
+          JSON.stringify(entry)
+      );
+    }
+    return entry;
+  });
+}
+
 export async function getLatestVideos(): Promise<Video[]> {
   // The feed answers 500 under load and 404 from datacenter IPs. Retry, and shout in the
   // build log: an empty list silently ships a site with no episodes at all.
@@ -104,7 +141,7 @@ export async function getLatestVideos(): Promise<Video[]> {
   }
 
   console.warn('[youtube] falling back to the committed snapshot in src/data/episodes.json');
-  return snapshot as Video[];
+  return getSnapshotVideos();
 }
 
 // Thumbnail URLs, self-hosted under public/img/episodes/ instead of i.ytimg.com.

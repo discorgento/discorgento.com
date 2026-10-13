@@ -1,7 +1,5 @@
 ---
-import { episodeNum, formatEpDate } from '~/lib/youtube';
-import type { Video } from '~/lib/youtube';
-import snapshot from '~/data/episodes.json';
+import { getSnapshotVideos, episodeNum, formatEpDate } from '~/lib/youtube';
 import { getDiscordStats } from '~/lib/discord';
 import { getRelativeLocaleUrl } from 'astro:i18n';
 import { useTranslations, intlLocale } from '~/lib/i18n';
@@ -19,7 +17,9 @@ interface Props {
 const { locale } = Astro.props;
 const t = useTranslations(locale);
 
-const videos = snapshot as Video[];
+// Validated against the Video shape: a malformed hand-maintained snapshot must
+// fail the build, never ship silently. getLatestVideos() uses the same gate.
+const videos = getSnapshotVideos();
 const discord = await getDiscordStats();
 
 // The cover and the episodes grid are server islands that fetch YouTube live at
