@@ -1,8 +1,10 @@
 // Fetches the Discorgento Discord server stats via the public invite API.
-// Runs at build time — no token, no CORS. Falls back to null on failure.
+// Runs at request time from the DiscordStats server island and at build time
+// from Home (its fallback) — no token, no CORS. Falls back to null on failure.
 //
-// The timeout is not optional: this fetch runs inside `astro build`, so an API that
-// accepts the connection and then stalls hangs the build with no error to read.
+// The timeout is not optional: Home still calls this inside `astro build`, so an
+// API that accepts the connection and then stalls hangs the build with no error
+// to read.
 
 const INVITE_CODE = 'amfwybm3yj'; // resolved from discorgento.com/discord → discord.gg/amfwybm3yj
 const API_URL = `https://discord.com/api/v10/invites/${INVITE_CODE}?with_counts=true`;

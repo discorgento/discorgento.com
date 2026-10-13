@@ -7,6 +7,7 @@ import { getRelativeLocaleUrl } from 'astro:i18n';
 import { useTranslations, intlLocale } from '~/lib/i18n';
 import { getTeam } from '~/lib/team';
 import Navbar from '~/components/Navbar.astro';
+import DiscordStats from '~/components/DiscordStats.astro';
 import LatestEdition from '~/components/LatestEdition.astro';
 import LatestEpisode from '~/components/LatestEpisode.astro';
 import HomeEpisodes from '~/components/HomeEpisodes.astro';
@@ -190,15 +191,12 @@ const twitterUrl = 'https://twitter.com/discorgento';
           <li><a href={twitterUrl} target="_blank" rel="noopener noreferrer">twitter.com/discorgento <span class="go">→</span></a></li>
           <li><a href={discordUrl} target="_blank" rel="noopener noreferrer">discorgento.com/discord <span class="go">→</span></a></li>
         </ul>
-        <div class="stats">
-          {discord && (
-            <>
-              <span><b>{discord.members}</b> {t('home.stats.members')}</span>
-              <span><b>{discord.online}</b> {t('home.stats.online')}</span>
-            </>
-          )}
-          <span><b>{t('home.stats.since')}</b></span>
-        </div>
+        {/* The counters are a server island: re-fetched on the Worker at
+            request time, so they follow the guild without a redeploy. The
+            fallback below is the build-time value Home fetched above. */}
+        <DiscordStats server:defer locale={locale}>
+          <DiscordStats slot="fallback" locale={locale} stats={discord} />
+        </DiscordStats>
       </div>
     </div>
   </div>
@@ -893,20 +891,6 @@ const twitterUrl = 'https://twitter.com/discorgento';
   }
   .zine .subs a .go {
     color: var(--color-brand-500);
-  }
-  .zine .subs .stats {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.4rem 1.25rem;
-    margin-top: 1rem;
-    padding-top: 0.9rem;
-    border-top: 1px solid var(--color-border);
-    font-family: var(--font-mono);
-    font-size: 0.78rem;
-    color: var(--color-muted);
-  }
-  .zine .subs .stats b {
-    color: var(--color-on-background);
   }
 
   /* ---- sections ---- */
