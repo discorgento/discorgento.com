@@ -1,0 +1,67 @@
+---
+import { avifSrcset, webpSrcset, thumb } from '~/lib/youtube';
+import type { ThumbSize } from '~/lib/youtube';
+
+/* The episode thumbnail as a <picture> with AVIF/WebP <source> twins and the
+   JPEG <img> fallback, shared by the cover (LatestEpisode), the home grid
+   (HomeEpisodes) and the /podcast/ list (Episodes).
+
+   The wrapper is always display: contents — set here via Tailwind's `contents`
+   class, not by a scoped rule in each parent, because the rule's own component
+   hash would never match an element rendered by this component. The <img> class
+   (and the layout styles that class owns, object-fit etc.) still belongs to the
+   parent, which keeps styling it through :global() so the island-offloaded
+   element is reachable.
+*/
+interface Props {
+  id: string;
+  alt: string;
+  /** CSS `sizes` for the sources and the img — the slot's real width, never
+      `100vw` (see the `sizes` gotcha in AGENTS.md). */
+  sizes: string;
+  /** Class on the <img>: the cover's `still`, the grid's `art`, or Tailwind
+      utilities on the /podcast/ list. */
+  imgClass?: string;
+  pictureClass?: string;
+  width?: number;
+  height?: number;
+  fetchpriority?: 'high';
+  /** <img> srcset ladder. Defaults to the tier set the card slots ask for; the
+      cover passes all four. The <source> files always offer the full ladder. */
+  tiers?: ThumbSize[];
+}
+
+const {
+  id,
+  alt,
+  sizes,
+  imgClass,
+  pictureClass = 'contents',
+  width = 320,
+  height = 180,
+  fetchpriority,
+  tiers = [320, 640, 1280],
+} = Astro.props;
+
+const srcset = tiers.map((size) => `${thumb(id, size)} ${size}w`).join(', ');
+const sourceTiers: ThumbSize[] = [320, 640, 1024, 1280];
+const avif = avifSrcset(id, sourceTiers);
+const webp = webpSrcset(id, sourceTiers);
+---
+
+<picture class={pictureClass}>
+  {avif && <source type="image/avif" srcset={avif} sizes={sizes} />}
+  {webp && <source type="image/webp" srcset={webp} sizes={sizes} />}
+  <img
+    src={thumb(id, 320)}
+    srcset={srcset}
+    sizes={sizes}
+    alt={alt}
+    width={width}
+    height={height}
+    fetchpriority={fetchpriority}
+    loading={fetchpriority === 'high' ? undefined : 'lazy'}
+    decoding="async"
+    class={imgClass}
+  />
+</picture>

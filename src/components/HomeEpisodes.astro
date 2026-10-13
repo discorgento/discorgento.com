@@ -1,8 +1,9 @@
 ---
-import { getLatestVideos, episodeNum, formatEpDate, thumb, webpSrcset, avifSrcset } from '~/lib/youtube';
+import { getLatestVideos, episodeNum, formatEpDate } from '~/lib/youtube';
 import type { Video } from '~/lib/youtube';
 import { useTranslations } from '~/lib/i18n';
 import YouTubeStamp from '~/components/YouTubeStamp.astro';
+import EpisodeArt from '~/components/EpisodeArt.astro';
 
 interface Props {
   locale: string;
@@ -47,33 +48,13 @@ if (videos === undefined) {
       {episodes.map((ep) => (
         <a href={ep.url} target="_blank" rel="noopener noreferrer" class="ep">
         <div class="art-wrap">
-          <picture>
-            {avifSrcset(ep.id, [320, 640, 1024, 1280]) && (
-              <source
-                type="image/avif"
-                srcset={avifSrcset(ep.id, [320, 640, 1024, 1280]) ?? undefined}
-                sizes="(min-width: 768px) 24rem, 7.5rem"
-              />
-            )}
-            {webpSrcset(ep.id, [320, 640, 1024, 1280]) && (
-              <source
-                type="image/webp"
-                srcset={webpSrcset(ep.id, [320, 640, 1024, 1280]) ?? undefined}
-                sizes="(min-width: 768px) 24rem, 7.5rem"
-              />
-            )}
-            <img
-              class="art"
-              src={thumb(ep.id)}
-              srcset={`${thumb(ep.id, 320)} 320w, ${thumb(ep.id, 640)} 640w, ${thumb(ep.id, 1280)} 1280w`}
-              sizes="(min-width: 768px) 24rem, 7.5rem"
-              alt={ep.title}
-              width={320}
-              height={180}
-              loading="lazy"
-              decoding="async"
-            />
-          </picture>
+          <EpisodeArt
+            id={ep.id}
+            alt={ep.title}
+            pictureClass="contents"
+            imgClass="art"
+            sizes="(min-width: 768px) 24rem, 7.5rem"
+          />
           <YouTubeStamp uid={`home-${ep.id}`} />
         </div>
         <div class="body">
@@ -152,7 +133,7 @@ if (videos === undefined) {
       flex: 1;
       min-width: 0;
     }
-    .zine .ep .art {
+    .zine .ep .art-wrap :global(.art) {
       border-bottom: 0;
       border-right: 1px solid var(--color-border);
     }
@@ -180,7 +161,11 @@ if (videos === undefined) {
     right: 0.55rem;
     z-index: 2;
   }
-  .zine .ep .art {
+  /* The <picture> wrapper is display: contents via EpisodeArt's Tailwind
+     `contents` class (a scoped rule here cannot match an element rendered by
+     another component); the <img> is styled through :global() for the same
+     reason. */
+  .zine .ep .art-wrap :global(.art) {
     display: block;
     width: 100%;
     height: 100%;
@@ -188,13 +173,8 @@ if (videos === undefined) {
     border-bottom: 1px solid var(--color-border);
     transition: transform 0.45s cubic-bezier(0.2, 0.7, 0.2, 1);
   }
-  .zine .ep:hover .art {
+  .zine .ep:hover .art-wrap :global(.art) {
     transform: scale(1.04);
-  }
-  /* The WebP <picture> wrapper only carries a <source>; display:contents drops
-     it from layout so the <img> lays out exactly as before. */
-  .zine .art-wrap picture {
-    display: contents;
   }
   .zine .ep .body {
     padding: 1rem;
@@ -311,11 +291,11 @@ if (videos === undefined) {
       animation: none;
     }
     .zine .ep .go,
-    .zine .ep .art {
+    .zine .ep .art-wrap :global(.art) {
       transition: none;
     }
     .zine .ep:hover .go,
-    .zine .ep:hover .art {
+    .zine .ep:hover .art-wrap :global(.art) {
       transform: none;
     }
     .zine .ep {
