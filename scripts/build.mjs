@@ -17,8 +17,8 @@
 
 import { spawnSync } from 'node:child_process';
 import { existsSync, readFileSync, rmSync } from 'node:fs';
-import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const lockFile = join(root, '.astro', 'dev.json');
@@ -90,7 +90,10 @@ try {
   if (pid && !keepDown) {
     rmSync(viteCache, { recursive: true, force: true });
     if (astro('dev', '--background')) log('dev server restarted');
-    else log('build finished but the dev server failed to restart — run npm run dev:start');
+    else
+      log(
+        'build finished but the dev server failed to restart — run npm run dev:start',
+      );
   }
 }
 
