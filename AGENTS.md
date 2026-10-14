@@ -19,8 +19,11 @@ All commands run from the repo root.
 - `npm run dev:reset` — full clean cycle in one command: stop the old server, clear `node_modules/.vite`, production-build, start a fresh server. Use it when the dev server has gone stale.
 - `npm run build` — production build to `dist/` (only meaningful verification). Safe to run with the dev server up: it stops the server, clears `node_modules/.vite`, builds, and restores the server exactly as it was. As pre-build steps it also regenerates `public/img/og.jpg` and syncs any missing episode thumbnails (both best-effort — see Architecture).
 - `npm run build -- --keep-server` — same, but leaves the dev server **down** on purpose
+- `npm run check` (alias `typecheck`) — `astro check`; type-checks the project and templates
+- `npm run lint` — `biome check`; lint + format check across the repo, no writes
+- `npm run format` — `biome check --write`; applies Biome's fixes in place
 
-No lint, typecheck, or test commands exist. `npm run build` is the only meaningful verification.
+There is no test runner. `check` and `lint` are the fast gates and both run in CI before the build; `npm run build` is still the only meaningful verification of the built output.
 
 > `build` is a wrapper (`scripts/build.mjs`), not `astro build`. Don't "simplify" it back — see the gotcha below for why the dance is necessary, and never run bare `astro build` locally while the dev server is up.
 
@@ -96,7 +99,7 @@ For an ordinary check this is **not** needed: `npm run build` alone already stop
 ## Deploy
 
 - **Fully automated via GitHub Actions** — `.github/workflows/deploy.yml`:
-  - `build` job runs on every push/PR (gate: `npm run build`).
+  - `build` job runs on every push/PR (gate: `npm run check` + `npm run lint` + `npm run build`).
   - `deploy` job runs on push to `main` only, via `cloudflare/wrangler-action@v4` (`wrangler deploy --config ./dist/server/wrangler.json`) — production Worker `discorgento` (first deploy creates it; then attach the `discorgento.com` custom domain).
   - `deploy-staging` job runs on push to `develop` only, via `wrangler deploy --config ./dist/server/wrangler.json --name staging` — staging Worker `staging`, served at `staging.jonatanaxe.workers.dev`. Both jobs rebuild before deploying, so the generated `dist/server/wrangler.json` is always fresh.
   - Requires two repo secrets: `CLOUDFLARE_API_TOKEN` (scoped: Workers Scripts Edit, Workers Routes Edit) and `CLOUDFLARE_ACCOUNT_ID`. Never use a full-account token. Trigger `workflow_dispatch` for manual deploys.
