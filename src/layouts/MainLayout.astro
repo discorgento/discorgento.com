@@ -1,8 +1,5 @@
 ---
 import '~/styles/global.css';
-import Navbar from '~/components/Navbar.astro';
-import Footer from '~/components/Footer.astro';
-import { LOCALES, stripLocale, useTranslations, type Locale } from '~/lib/i18n';
 // Vite resolves these to the hashed filenames emitted into /_astro, so the
 // preload points at the exact file the stylesheet will request — no guessing,
 // no 404 if the hash changes between builds.
@@ -11,6 +8,10 @@ import interUrl from '@fontsource-variable/inter/files/inter-latin-wght-normal.w
 import monoUrl from '@fontsource-variable/jetbrains-mono/files/jetbrains-mono-latin-wght-normal.woff2?url';
 // Wordmark face. On the home page this is the h1, so it is LCP-relevant.
 import brandUrl from '@fontsource-variable/outfit/files/outfit-latin-wght-normal.woff2?url';
+import CookieConsent from '~/components/CookieConsent.astro';
+import Footer from '~/components/Footer.astro';
+import Navbar from '~/components/Navbar.astro';
+import { LOCALES, type Locale, stripLocale, useTranslations } from '~/lib/i18n';
 
 const PRELOAD_FONTS = [frauncesUrl, interUrl, monoUrl, brandUrl];
 
@@ -50,7 +51,9 @@ const ogLocale = OG_LOCALE[locale as Locale] ?? 'pt_BR';
 const sharedPath = stripLocale(Astro.url.pathname);
 const alternateUrl = (target: Locale) => {
   const base =
-    target === 'pt-BR' ? sharedPath : `/${target}${sharedPath === '/' ? '/' : sharedPath}`;
+    target === 'pt-BR'
+      ? sharedPath
+      : `/${target}${sharedPath === '/' ? '/' : sharedPath}`;
   return new URL(base, site).href;
 };
 
@@ -103,6 +106,21 @@ const structuredData = {
     <link rel="icon" type="image/svg+xml" href="/img/logo.svg" />
     <link rel="apple-touch-icon" sizes="180x180" href="/img/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title={siteTitle}
+      href="/podcast.xml"
+    />
+    <script type="speculationrules" set:html={JSON.stringify({
+      prefetch: [
+        {
+          where: { href_matches: '/*' },
+          eagerness: 'moderate',
+        },
+      ],
+      prerender: [],
+    })}></script>
     {/* No preconnect to avatars.githubusercontent.com any more: the host photos are
         self-hosted under /time/ like the episode thumbnails, so no page opens a
         third-party socket for an image. Preconnecting an origin the page never
@@ -185,6 +203,7 @@ const structuredData = {
       </main>
     )}
     <Footer />
+    <CookieConsent />
 
     <script>
       // Where animation-timeline: scroll() is supported the compositor drives
