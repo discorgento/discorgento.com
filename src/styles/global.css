@@ -34,49 +34,49 @@
      Original brand colors, taken from the original site:
      primary #ec6737 | light #f4774f | lighter #f99072 | lightest #fca79f
      dark #d25930 | darker #b84b29 | darkest #a03d21
-  */
-  --color-brand-100: #fde8e0;
-  --color-brand-200: #fca79f;
-  --color-brand-300: #f99072;
-  --color-brand-400: #f4774f;
-  --color-brand-500: #ec6737; /* official primary */
-  --color-brand-600: #d25930;
-  --color-brand-700: #b84b29;
-  --color-brand-800: #a03d21;
-  --color-brand-900: #7a2d18;
+     The OKLCH values below are those exact hexes, so the UI orange matches the
+     logo mark (its fill is #ec6737). An earlier ramp kept every step at hue 36
+     and landed brand-500 on a washed #ef8164 instead of the real primary. */
+  --color-brand-100: oklch(94% 0.03 30);
+  --color-brand-200: oklch(80.97% 0.102 25.45); /* lightest #fca79f */
+  --color-brand-300: oklch(75.86% 0.1345 36.78); /* lighter #f99072 */
+  --color-brand-400: oklch(70.8% 0.1635 38.27); /* light #f4774f */
+  --color-brand-500: oklch(67.11% 0.176 39.39); /* official primary #ec6737 */
+  --color-brand-600: oklch(61.22% 0.1628 38.54); /* dark #d25930 */
+  --color-brand-700: oklch(55.18% 0.1493 37.5); /* darker #b84b29 */
+  --color-brand-800: oklch(49.3% 0.138 36.33); /* darkest #a03d21 */
+  --color-brand-900: oklch(43% 0.12 36);
 
   /* YouTube red: used only where the UI explicitly points at YouTube (the
      cover stamp and the caption link), so the external destination reads as
      YouTube instead of blending into the orange brand. */
-  --color-youtube: #ff0033;
+  --color-youtube: oklch(62% 0.23 29);
 
   /* ---- Warm surfaces (dark theme with orange bias) ----
      No zinc: warm black, like ink on dark paper
   */
-  /* Shifted down 8 per channel from the previous #16130f / #1f1b15 / #262019
-     set. Moving all three by the same amount keeps their separation intact, so
-     hover states still read as hover states; only the floor under the warm white
-     text drops, which raises contrast rather than lowering it. */
-  --color-background: #0e0c0a;
-  --color-surface: #171410;      /* card/container hover */
-  --color-surface-raised: #1e1a14; /* footer, bars */
+  --color-background: oklch(17% 0.008 45);
+  --color-surface: oklch(23% 0.01 45); /* card/container hover */
+  --color-surface-raised: oklch(27% 0.011 45); /* footer, bars */
 
   /* ---- Text (warm white) ----
      Different from #f4f4f5 (zinc): paper instead of screen
   */
-  --color-on-background: #f3efe9;
-  --color-on-surface: #e7e2da;
-  --color-muted: #a49c90;
-  --color-border: #2e2923;
+  --color-on-background: oklch(95% 0.008 60);
+  --color-on-surface: oklch(92% 0.009 55);
+  --color-muted: oklch(75% 0.012 55);
+  --color-border: oklch(35% 0.012 50);
 
   /* ---- Fonts (self-hosted via Fontsource, no external request) ----
      Fraunces: editorial headings (print/fanzine DNA)
      Inter Variable: readable body
      JetBrains Mono: terminal, metadata, eyebrows
   */
-  --font-sans: "Inter Variable", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-sans:
+    "Inter Variable", system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-display: "Fraunces Variable", Georgia, serif;
-  --font-mono: "JetBrains Mono Variable", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-mono:
+    "JetBrains Mono Variable", ui-monospace, SFMono-Regular, Menlo, monospace;
 
   /* Brand wordmark face, used only on the "discorgento" lockup (masthead and
      nav), never on running copy. TypoGraphica v3.0 is the intended face, but it
@@ -87,7 +87,8 @@
   --font-brand: "Outfit Variable", var(--font-display);
 
   /* ---- Glow (sparingly: card hover, nav dropdown) ---- */
-  --shadow-glow-card: 0 0 0 1px rgb(236 103 55 / 0.4), 0 0 32px rgb(236 103 55 / 0.18);
+  --shadow-glow-card:
+    0 0 0 1px rgb(236 103 55 / 0.4), 0 0 32px rgb(236 103 55 / 0.18);
 }
 
 /* ---- Base ---- */
@@ -124,19 +125,19 @@ h3 {
    to be explicit so no click target ever reads as inert.
 */
 button:not(:disabled),
-input[type='button']:not(:disabled),
-input[type='submit']:not(:disabled),
-input[type='reset']:not(:disabled),
-input[type='checkbox']:not(:disabled),
-input[type='radio']:not(:disabled),
-input[type='file']:not(:disabled),
-input[type='range']:not(:disabled),
-input[type='color']:not(:disabled),
+input[type="button"]:not(:disabled),
+input[type="submit"]:not(:disabled),
+input[type="reset"]:not(:disabled),
+input[type="checkbox"]:not(:disabled),
+input[type="radio"]:not(:disabled),
+input[type="file"]:not(:disabled),
+input[type="range"]:not(:disabled),
+input[type="color"]:not(:disabled),
 select:not(:disabled),
 summary,
 label[for],
-[role='button']:not([aria-disabled='true']),
-[role='tab']:not([aria-disabled='true']),
+[role="button"]:not([aria-disabled="true"]),
+[role="tab"]:not([aria-disabled="true"]),
 a[href],
 area[href] {
   cursor: pointer;
@@ -147,25 +148,33 @@ button:disabled,
 input:disabled,
 select:disabled,
 textarea:disabled,
-[aria-disabled='true'] {
+[aria-disabled="true"] {
   cursor: not-allowed;
 }
 
 /* Ambient radial blur (warm background glow) */
 body::before {
-  content: '';
+  content: "";
   position: fixed;
   inset: 0;
   z-index: -1;
   pointer-events: none;
   background:
-    radial-gradient(700px 320px at 15% -10%, rgb(236 103 55 / 0.1), transparent 60%),
-    radial-gradient(900px 420px at 95% 5%, rgb(236 103 55 / 0.06), transparent 60%);
+    radial-gradient(
+      700px 320px at 15% -10%,
+      rgb(236 103 55 / 0.1),
+      transparent 60%
+    ),
+    radial-gradient(
+      900px 420px at 95% 5%,
+      rgb(236 103 55 / 0.06),
+      transparent 60%
+    );
 }
 
 /* Paper grain (editorial texture, subtle) */
 body::after {
-  content: '';
+  content: "";
   position: fixed;
   inset: 0;
   z-index: 100;
@@ -226,6 +235,25 @@ body::after {
   text-transform: uppercase;
   letter-spacing: 0.2em;
   color: var(--color-muted);
+}
+
+/* ---- Mobile tap targets (WCAG 2.5.8 / Apple 44px) ----
+   Grows an invisible 44px hit area centred on the control without moving the
+   layout or the type. Scoped to touch-sized widths: on a pointer device a 19px
+   link is normal to hit and a 44px one is just a fat row. */
+@media (max-width: 639px) {
+  .tap-44 {
+    position: relative;
+  }
+  .tap-44::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    height: 44px;
+    transform: translateY(-50%);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -320,7 +348,7 @@ body::after {
 /* A letterpress mark sweeps across the card on hover. Kept off the text flow
    (aria-hidden on the markup side) and out of the tab order. */
 .zine .edition::after {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   background: linear-gradient(
@@ -389,4 +417,3 @@ body::after {
     transform: none;
   }
 }
-

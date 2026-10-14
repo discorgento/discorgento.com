@@ -1,0 +1,33 @@
+---
+interface Props {
+  /** Accessible name. Visible text is only the burger, so this is required. */
+  label: string;
+}
+
+const { label } = Astro.props;
+---
+
+<button
+  type="button"
+  popovertarget="nav-sheet"
+  aria-label={label}
+  class="menu-trigger flex h-11 w-11 shrink-0 cursor-pointer items-center justify-center border border-border text-on-background transition hover:border-brand-500 hover:text-brand-400"
+>
+  <span class="menu-burger" aria-hidden="true">
+    <span></span><span></span><span></span>
+  </span>
+</button>
+
+<style>
+  .menu-burger {
+    display: inline-flex;
+    flex-direction: column;
+    gap: 3px;
+    width: 0.9rem;
+  }
+  .menu-burger span {
+    height: 2px;
+    width: 100%;
+    background-color: currentColor;
+  }
+</style>

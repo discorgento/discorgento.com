@@ -1,9 +1,9 @@
 ---
-import { getLatestVideos, episodeNum, formatEpDate } from '~/lib/youtube';
-import type { Video } from '~/lib/youtube';
-import { useTranslations } from '~/lib/i18n';
-import YouTubeStamp from '~/components/YouTubeStamp.astro';
 import EpisodeArt from '~/components/EpisodeArt.astro';
+import YouTubeStamp from '~/components/YouTubeStamp.astro';
+import { useTranslations } from '~/lib/i18n';
+import type { Video } from '~/lib/youtube';
+import { episodeNum, formatEpDate, getLatestVideos } from '~/lib/youtube';
 
 interface Props {
   locale: string;
@@ -30,6 +30,13 @@ const t = useTranslations(locale);
 
 const episodes = videos ?? (await getLatestVideos()).slice(1, 7);
 
+/* Cards 4-6 are `display:none` on phones (nth-child rule below), but a hidden
+   <img> still downloads, so those cards carry this 1x1 transparent GIF as a
+   max-width:767px <picture> source: the browser matches it and skips the ~45 kB
+   cover. It is a data: URI, so it costs no request. */
+const MOBILE_PLACEHOLDER =
+  'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+
 if (videos === undefined) {
   /* Deliberate no-store, matching LatestEdition: the island is per-view data,
      not a cacheable asset. The YouTube feed request is edge-cached
@@ -45,7 +52,7 @@ if (videos === undefined) {
      block inside Home's `.wrap`. */
   <div class="zine">
     <div class="eps">
-      {episodes.map((ep) => (
+      {episodes.map((ep, i) => (
         <a href={ep.url} target="_blank" rel="noopener noreferrer" class="ep">
         <div class="art-wrap">
           <EpisodeArt
@@ -53,7 +60,10 @@ if (videos === undefined) {
             alt={ep.title}
             pictureClass="contents"
             imgClass="art"
-            sizes="(min-width: 768px) 24rem, 7.5rem"
+            sizes="(min-width: 768px) 24rem, 90vw"
+            {...(i >= 3
+              ? { smallScreenSource: { media: '(max-width: 767px)', src: MOBILE_PLACEHOLDER } }
+              : {})}
           />
           <YouTubeStamp uid={`home-${ep.id}`} />
         </div>
@@ -113,29 +123,19 @@ if (videos === undefined) {
     transform: translate(-2px, -2px);
     box-shadow: 8px 8px 0 var(--color-brand-500);
   }
-  /* Phone: the card lies down, side by side with the thumb as a list instead
-     of a gallery. Desktop keeps the grid. */
+  /* Phone: the card stacks like desktop — a full-width cover so the art is
+     actually visible, with the body underneath. Single column, and only the
+     first three cards; desktop keeps all six in the grid. */
   @media (max-width: 767px) {
     .zine .ep {
-      flex-direction: row;
       box-shadow: 3px 3px 0 var(--color-brand-500);
     }
     .zine .ep:hover {
       transform: translate(-1px, -1px);
       box-shadow: 5px 5px 0 var(--color-brand-500);
     }
-    .zine .ep .art-wrap {
-      flex: 0 0 7.5rem;
-      align-self: center;
-      aspect-ratio: 16/9;
-    }
-    .zine .ep .body {
-      flex: 1;
-      min-width: 0;
-    }
-    .zine .ep .art-wrap :global(.art) {
-      border-bottom: 0;
-      border-right: 1px solid var(--color-border);
+    .zine .eps > *:nth-child(n + 4) {
+      display: none;
     }
   }
   .zine .ep::before {
@@ -283,6 +283,29 @@ if (videos === undefined) {
     to {
       opacity: 1;
       transform: none;
+    }
+  }
+
+  /* Mobile: the same slimming pass as the consent card and the privacy page —
+     tighter list gap, tighter cards, smaller type. Declared last so it wins
+     over the base sizes above. */
+  @media (max-width: 767px) {
+    .zine .eps {
+      gap: 0.75rem;
+    }
+    .zine .ep .body {
+      padding: 0.75rem;
+      gap: 0.3rem;
+    }
+    .zine .ep .meta {
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+    }
+    .zine .ep .title {
+      font-size: 0.95rem;
+    }
+    .zine .ep .go {
+      font-size: 0.72rem;
     }
   }
 
