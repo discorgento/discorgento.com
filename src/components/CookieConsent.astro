@@ -93,9 +93,13 @@ const privacyHref = getRelativeLocaleUrl(locale, '/privacidade');
     win.__dgGaLoaded = true;
 
     const dataLayer = (win.dataLayer = win.dataLayer ?? []);
-    const gtag = (...args: unknown[]): void => {
-      dataLayer.push(args);
-    };
+    // gtag.js only dispatches commands queued as an `arguments` object. A plain
+    // array — the natural `(...args) => dataLayer.push(args)` shape — is
+    // silently ignored: the tag loads and initializes, but the queue is never
+    // processed and no hit is ever sent. Keep the classic non-arrow push.
+    function gtag(..._args: unknown[]): void {
+      dataLayer.push(arguments as unknown as unknown[]);
+    }
     win.gtag = gtag;
 
     // Consent Mode v2. Denied first, then granted — the visitor has just opted
