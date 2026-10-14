@@ -1,4 +1,6 @@
 ---
+import { getRelativeLocaleUrl } from 'astro:i18n';
+import Episodes from '~/components/Episodes.astro';
 /**
  * The whole /podcast/ route body, shared by both locales.
  *
@@ -8,10 +10,8 @@
  * body lives here and the locale is the only input.
  */
 import MainLayout from '~/layouts/MainLayout.astro';
-import Episodes from '~/components/Episodes.astro';
-import { getLatestVideos, episodeNum } from '~/lib/youtube';
 import { useTranslations } from '~/lib/i18n';
-import { getRelativeLocaleUrl } from 'astro:i18n';
+import { episodeNum, getLatestVideos } from '~/lib/youtube';
 
 interface Props {
   locale: string;
@@ -70,18 +70,18 @@ const podcastJsonLd = {
 ---
 
 <MainLayout title={t('podcast.metaTitle')} description={t('podcast.desc')} jsonLd={podcastJsonLd}>
-  <section class="border-b-2 border-on-background py-16 sm:py-20">
-    <p class="eyebrow mb-4">
+  <section class="border-b-2 border-on-background py-10 sm:py-20">
+    <p class="eyebrow mb-3 sm:mb-4">
       <span class="text-brand-500">●</span> {t('podcast.eyebrow')}
     </p>
-    <h1 class="font-display text-4xl font-black tracking-tight text-on-background sm:text-5xl">
+    <h1 class="font-display text-3xl font-black tracking-tight text-on-background sm:text-5xl">
       {t('podcast.title')}
     </h1>
-    <p class="mt-4 max-w-2xl leading-relaxed text-muted">{t('podcast.desc')}</p>
+    <p class="mt-3 max-w-2xl leading-relaxed text-muted sm:mt-4">{t('podcast.desc')}</p>
   </section>
 
-  <section class="py-14">
-    <div class="mb-10 flex flex-col items-start justify-between gap-4 border-2 border-on-background bg-surface p-6 sm:flex-row sm:items-center">
+  <section class="py-10 sm:py-14">
+    <div class="mb-8 flex flex-col items-start justify-between gap-4 border-2 border-on-background bg-surface p-5 sm:mb-10 sm:flex-row sm:items-center sm:p-6">
       <div>
         <p class="font-mono text-xs uppercase tracking-wider text-muted">youtube</p>
         <h2 class="mt-2 font-display text-xl font-bold tracking-tight">{t('podcast.seeAllTitle')}</h2>
@@ -96,7 +96,7 @@ const podcastJsonLd = {
         {t('podcast.channel')} →
       </a>
     </div>
-    <p class="eyebrow mb-6">
+    <p class="eyebrow mb-5 sm:mb-6">
       <span class="text-brand-500">●</span> {t('podcast.latest')}
     </p>
     <div class="border-b-2 border-on-background">
@@ -106,11 +106,11 @@ const podcastJsonLd = {
     </div>
   </section>
 
-  <section class="pb-20">
-    <p class="eyebrow mb-6">
+  <section class="pb-14 sm:pb-20">
+    <p class="eyebrow mb-5 sm:mb-6">
       <span class="text-brand-500">●</span> {t('podcast.spotify')}
     </p>
-    <div class="mb-10 flex flex-col items-start justify-between gap-4 border-2 border-on-background bg-surface p-6 sm:flex-row sm:items-center">
+    <div class="mb-8 flex flex-col items-start justify-between gap-4 border-2 border-on-background bg-surface p-5 sm:mb-10 sm:flex-row sm:items-center sm:p-6">
       <div>
         <p class="font-mono text-xs uppercase tracking-wider text-muted">spotify</p>
         <h2 class="mt-2 font-display text-xl font-bold tracking-tight">{t('podcast.spotifyTitle')}</h2>
@@ -127,7 +127,7 @@ const podcastJsonLd = {
     </div>
     <iframe
       src="https://open.spotify.com/embed/playlist/4pU2Abae7J8vdY4yqPCXRc?utm_source=generator&theme=0"
-      class="min-h-[380px] w-full border-2 border-on-background bg-surface"
+      class="min-h-[320px] w-full border-2 border-on-background bg-surface sm:min-h-[380px]"
       allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
       loading="lazy"
       title={t('podcast.spotifyEmbedTitle')}

@@ -1,9 +1,10 @@
 ---
 import { getRelativeLocaleUrl } from 'astro:i18n';
-import { getLatestVideos, episodeNum, formatEpDate, thumb, webpSrcset, avifSrcset } from '~/lib/youtube';
-import type { Video } from '~/lib/youtube';
-import { useTranslations } from '~/lib/i18n';
+import EpisodeArt from '~/components/EpisodeArt.astro';
 import YouTubeStamp from '~/components/YouTubeStamp.astro';
+import { useTranslations } from '~/lib/i18n';
+import type { Video } from '~/lib/youtube';
+import { episodeNum, formatEpDate, getLatestVideos } from '~/lib/youtube';
 
 interface Props {
   locale: string;
@@ -51,38 +52,23 @@ const coverSizes: (320 | 640 | 1024 | 1280)[] = [320, 640, 1024, 1280];
   <div class="zine">
     <div class="wrap front">
     <figure class="cover">
-      <div class="cover-art" data-live={video === undefined ? 'true' : undefined}>
-        {/* Real <img>, not a background-image: the preload scanner only finds
-            the LCP candidate in markup, so a CSS-only still cannot carry
-            fetchpriority and starts at Low priority. Self-hosted, so the LCP
-            never waits on a third-party handshake. */}
-        <picture>
-          {avifSrcset(episode.id, coverSizes) && (
-            <source
-              type="image/avif"
-              srcset={avifSrcset(episode.id, coverSizes) ?? undefined}
-              sizes="(min-width: 1232px) 506px, (min-width: 900px) 42vw, 84vw"
-            />
-          )}
-          {webpSrcset(episode.id, coverSizes) && (
-            <source
-              type="image/webp"
-              srcset={webpSrcset(episode.id, coverSizes) ?? undefined}
-              sizes="(min-width: 1232px) 506px, (min-width: 900px) 42vw, 84vw"
-            />
-          )}
-          <img
-            class="still"
-            src={thumb(episode.id, 320)}
-            srcset={`${thumb(episode.id, 320)} 320w, ${thumb(episode.id, 640)} 640w, ${thumb(episode.id, 1024)} 1024w, ${thumb(episode.id, 1280)} 1280w`}
+<div class="cover-art" data-live={video === undefined ? 'true' : undefined}>
+          {/* Real <img>, not a background-image: the preload scanner only finds
+              the LCP candidate in markup, so a CSS-only still cannot carry
+              fetchpriority and starts at Low priority. Self-hosted, so the LCP
+              never waits on a third-party handshake. */}
+          <EpisodeArt
+            id={episode.id}
+            alt={`discorgento, episódio ${epTag}: ${episode.title}`}
+            pictureClass="contents"
+            imgClass="still"
             sizes="(min-width: 1232px) 506px, (min-width: 900px) 42vw, 84vw"
-            alt={`discorgento — episódio ${epTag}: ${episode.title}`}
-            width="1280"
-            height="720"
+            width={1280}
+            height={720}
             fetchpriority="high"
-            decoding="async"
+            loading="eager"
+            tiers={coverSizes}
           />
-        </picture>
         <span class="n">{epTag}</span>
         <span class="stamp" aria-hidden="true">
           <YouTubeStamp variant="seal" uid="cover" label={stampText}>
@@ -91,7 +77,7 @@ const coverSizes: (320 | 640 | 1024 | 1280)[] = [320, 640, 1024, 1280];
         </span>
       </div>
       <figcaption class="figcap">
-        fig. 01 — {t('home.featuredEp.title')} ·{' '}
+        fig. 01 · {t('home.featuredEp.title')} ·{' '}
         <a href={episode.url} target="_blank" rel="noopener noreferrer">
           {t('home.featuredEp.watch')}
         </a>
@@ -100,7 +86,7 @@ const coverSizes: (320 | 640 | 1024 | 1280)[] = [320, 640, 1024, 1280];
 
     <article class="lead">
       <p class="kicker">
-        <span class="o">●</span> {t('home.featuredEp.eyebrow')} — {t('home.capa.tag')}
+        <span class="o">●</span> {t('home.featuredEp.eyebrow')} · {t('home.capa.tag')}
       </p>
       <h2>{episode.title}</h2>
       <p class="deck">{t('home.capa.deck')}</p>
@@ -304,18 +290,19 @@ const coverSizes: (320 | 640 | 1024 | 1280)[] = [320, 640, 1024, 1280];
       aspect-ratio: 16/9;
     }
   }
-  .zine .cover-art picture {
+  /* The <picture> wrapper is rendered by EpisodeArt, so a scoped rule here
+     cannot match it — hence :global(). It keeps Tailwind's `contents` display,
+     but in the cover we ALSO need an absolute inset:0 box for the <img> to
+     fill (as it did before the extraction). Absolutely-positioned display:
+     contents computes to a real box (css-display-3), so the <img> flows into
+     it exactly as before. The <img> itself is styled through :global() for the
+     same scoping reason. */
+  .zine .cover-art :global(picture) {
     position: absolute;
     inset: 0;
     z-index: 0;
-    display: block;
   }
-  /* The WebP <picture> wrapper only carries a <source>; display:contents drops
-     it from layout so the <img> lays out exactly as before. */
-  .zine .cover-art picture {
-    display: contents;
-  }
-  .zine .cover-art .still {
+  .zine .cover-art :global(.still) {
     display: block;
     width: 100%;
     height: 100%;
@@ -335,7 +322,7 @@ const coverSizes: (320 | 640 | 1024 | 1280)[] = [320, 640, 1024, 1280];
     );
     pointer-events: none;
   }
-  .zine .cover:hover .cover-art .still {
+  .zine .cover:hover .cover-art :global(.still) {
     transform: scale(1.04);
   }
   .zine .cover-art > *:not(picture) {
@@ -468,11 +455,11 @@ const coverSizes: (320 | 640 | 1024 | 1280)[] = [320, 640, 1024, 1280];
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .zine .cover-art .still,
+    .zine .cover-art :global(.still),
     .zine .cover-art .stamp {
       transition: none;
     }
-    .zine .cover:hover .cover-art .still {
+    .zine .cover:hover .cover-art :global(.still) {
       transform: none;
     }
     .zine .cover-art,

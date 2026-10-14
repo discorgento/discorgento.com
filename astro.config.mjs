@@ -1,7 +1,7 @@
-import { defineConfig } from 'astro/config';
-import tailwindcss from '@tailwindcss/vite';
 import cloudflare from '@astrojs/cloudflare';
 import sitemap from '@astrojs/sitemap';
+import tailwindcss from '@tailwindcss/vite';
+import { defineConfig } from 'astro/config';
 import { thumbCache } from './plugins/thumb-cache.mjs';
 
 // https://astro.build/config
@@ -29,6 +29,14 @@ export default defineConfig({
   // cannot live in a meta tag) — see there for the split.
   security: {
     csp: {
+      // Google Analytics (gtag.js) is the one third-party script the site may
+      // load, and only after the visitor opts in — see CookieConsent.astro. The
+      // resource list replaces Astro's defaults, so 'self' has to be repeated.
+      // Astro still appends its own hashes to the directive (there is no
+      // 'unsafe-inline' here), so the bundled and inline scripts keep working.
+      scriptDirective: {
+        resources: ["'self'", 'https://www.googletagmanager.com'],
+      },
       styleDirective: {
         // The site ships static inline style attributes (e.g. `--i` on the logo
         // letters, the dialog positioners) — not element styles, which Astro

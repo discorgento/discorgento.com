@@ -1,6 +1,14 @@
 ---
 import { getRelativeLocaleUrl } from 'astro:i18n';
-import { LOCALES, LOCALE_META, stripLocale, useTranslations, type Locale } from '~/lib/i18n';
+import MenuTrigger from '~/components/MenuTrigger.astro';
+import {
+  intlLocale,
+  LOCALE_META,
+  LOCALES,
+  type Locale,
+  stripLocale,
+  useTranslations,
+} from '~/lib/i18n';
 
 interface Props {
   /** The home page renders its own big masthead, so it can drop this small lockup. */
@@ -42,9 +50,23 @@ const isActive = (href: string) => {
 
 // Numbered index: the sections of the zine, in reading order.
 const sections: Section[] = [
-  { n: '01', label: t('nav.podcast'), href: getRelativeLocaleUrl(locale, '/podcast') },
-  { n: '02', label: t('nav.team'), href: getRelativeLocaleUrl(locale, '/quem-faz') },
-  { n: '03', label: t('nav.discord'), href: discordUrl, external: true, brand: true },
+  {
+    n: '01',
+    label: t('nav.podcast'),
+    href: getRelativeLocaleUrl(locale, '/podcast'),
+  },
+  {
+    n: '02',
+    label: t('nav.team'),
+    href: getRelativeLocaleUrl(locale, '/quem-faz'),
+  },
+  {
+    n: '03',
+    label: t('nav.discord'),
+    href: discordUrl,
+    external: true,
+    brand: true,
+  },
 ];
 
 const outbound = [
@@ -61,10 +83,21 @@ const switchLinks = LOCALES.filter((l) => l !== locale).map((l) => ({
   href: getRelativeLocaleUrl(l, base),
   ...LOCALE_META[l],
 }));
+
+// The masthead's secondary line (tagline + build date). On mobile the masthead
+// drops it to stay a clean logo, so the panel carries it instead.
+const tagline = t('home.hero.eyebrow');
+const todayLabel = new Intl.DateTimeFormat(intlLocale(locale), {
+  weekday: 'long',
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+  timeZone: 'UTC',
+}).format(new Date());
 ---
 
 <NavRoot class="nav-plane bg-background">
-  <div class="mx-auto flex w-full max-w-[74rem] items-center justify-between gap-6 px-5 py-3 sm:px-6">
+  <div class:list={['mx-auto flex w-full max-w-[74rem] items-center justify-between gap-6 px-5 py-3 sm:px-6', !showLockup && 'max-md:hidden']}>
     <!-- Lockup + index share one left-aligned cluster -->
     <div class="flex min-w-0 items-center gap-8">
       {showLockup && (
@@ -153,7 +186,7 @@ const switchLinks = LOCALES.filter((l) => l !== locale).map((l) => ({
               href={l.href}
               hreflang={l.locale}
               lang={l.locale}
-              aria-label={`${l.code} — ${l.name}`}
+              aria-label={`${l.code}: ${l.name}`}
               class="locale-link text-muted transition hover:text-brand-400"
             >
               {l.code}
@@ -164,88 +197,118 @@ const switchLinks = LOCALES.filter((l) => l !== locale).map((l) => ({
       </nav>
     </div>
 
-    <div class="flex items-center gap-4">
-      <!-- Mobile: <details> toggle, no JS required -->
-      <details class="group relative md:hidden">
-        <summary
-          class="flex cursor-pointer list-none items-center gap-2 border border-border px-3 py-2 font-mono text-[0.7rem] tracking-[0.12em] uppercase text-on-background transition hover:border-brand-500 hover:text-brand-400 [&::-webkit-details-marker]:hidden"
-        >
-          {t('nav.menu')}
-          <span class="text-brand-500" aria-hidden="true">●</span>
-        </summary>
-        <div
-          data-nav-panel
-          class="absolute right-0 top-full z-50 mt-2 w-[min(20rem,calc(100vw-2.5rem))] border border-border bg-surface"
-        >
-          <div class="flex flex-col font-mono text-[0.8rem] tracking-[0.12em] uppercase">
-            {
-              sections.map((s) => (
-                <a
-                  href={s.href}
-                  target={s.external ? '_blank' : undefined}
-                  rel={s.external ? 'noopener noreferrer' : undefined}
-                  aria-current={!s.external && isActive(s.href) ? 'page' : undefined}
-                  class:list={[
-                    'flex items-baseline gap-2 border-b border-border px-3 py-3 transition hover:text-brand-400',
-                    s.brand ? 'font-bold text-brand-500' : 'text-on-background',
-                  ]}
-                >
-                  <span class="text-[0.65rem] opacity-90" aria-hidden="true">
-                    {s.n}
-                  </span>
-                  {s.label}
-                  {s.external && (
-                    <span class="ml-auto text-muted" aria-hidden="true">
-                      ↗
-                    </span>
-                  )}
-                </a>
-              ))
-            }
-            {
-              outbound.map((o) => (
-                <a
-                  href={o.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="flex items-baseline gap-2 border-b border-border px-3 py-3 text-muted transition hover:text-brand-400"
-                >
-                  {o.label}
-                  <span class="ml-auto" aria-hidden="true">
-                    ↗
-                  </span>
-                </a>
-              ))
-            }
-            <div class="flex items-center justify-end gap-3 px-3 py-3">
-              <span class="inline-flex items-center gap-1.5 border border-border px-2 py-1">
-                <span class="text-on-background" aria-hidden="true">{currentCode}</span>
-                <span class="text-border" aria-hidden="true">/</span>
-                {switchLinks.map((l, i) => (
-                  <>
-                    {i > 0 && <span class="text-border" aria-hidden="true">·</span>}
-                    <a
-                      href={l.href}
-                      hreflang={l.locale}
-                      lang={l.locale}
-                      aria-label={`${l.code} — ${l.name}`}
-                      class="locale-link text-muted transition hover:text-brand-400"
-                    >
-                      {l.code}
-                    </a>
-                  </>
-                ))}
-              </span>
-            </div>
-          </div>
-        </div>
-      </details>
+    <div class="flex items-center gap-4 md:hidden">
+      {/* Popover API trigger. popovertarget wires the toggle, light dismiss
+          (tap outside), Escape and focus-return with no JS; the script below
+          only adds scroll-lock and closes the sheet when a link is taken. */}
+      <MenuTrigger label={t('nav.menu')} />
+    </div>
+  </div>
+
+  {/* Mobile sheet: top-anchored, full-bleed, auto popover. Lives outside the flex
+      row so it can drop into the top layer unpinned to the trigger. */}
+  <div id="nav-sheet" popover data-nav-panel class="nav-sheet">
+    <div class="nav-sheet__bar">
+      <a href={homeUrl} class="lockup flex shrink-0 items-center gap-2">
+        <span class="logo" aria-hidden="true">
+          <img src="/img/logo.svg" alt="" width={28} height={28} />
+          <span class="logo-ghost"></span>
+        </span>
+        <span class="nav-sheet__word">discorgento</span>
+      </a>
+      <button
+        type="button"
+        popovertarget="nav-sheet"
+        popovertargetaction="hide"
+        class="nav-sheet__close"
+        aria-label={t('nav.close')}
+      >
+        <span class="nav-close" aria-hidden="true">
+          <span></span><span></span>
+        </span>
+      </button>
+    </div>
+
+    <nav class="nav-sheet__list" aria-label={t('nav.primary')}>
+      {
+        sections.map((s, i) => (
+          <a
+            href={s.href}
+            target={s.external ? '_blank' : undefined}
+            rel={s.external ? 'noopener noreferrer' : undefined}
+            aria-current={!s.external && isActive(s.href) ? 'page' : undefined}
+            style={`--i:${i}`}
+            class:list={[
+              'nav-sheet__item',
+              s.brand ? 'nav-sheet__item--brand' : undefined,
+            ]}
+          >
+            <span class="nav-sheet__n" aria-hidden="true">
+              {s.n}
+            </span>
+            <span class="nav-sheet__label">{s.label}</span>
+            <span class="nav-sheet__arrow" aria-hidden="true">
+              {s.external ? '↗' : '→'}
+            </span>
+          </a>
+        ))
+      }
+      {
+        outbound.map((o, i) => (
+          <a
+            href={o.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={`--i:${sections.length + i}`}
+            class="nav-sheet__item nav-sheet__item--out"
+          >
+            <span class="nav-sheet__label">{o.label}</span>
+            <span class="nav-sheet__arrow" aria-hidden="true">
+              ↗
+            </span>
+          </a>
+        ))
+      }
+    </nav>
+
+    <p class="nav-sheet__meta">
+      <span>{tagline}</span>
+      <span class="nav-sheet__dot" aria-hidden="true">●</span>
+      <span>{todayLabel}</span>
+    </p>
+
+    <div class="nav-sheet__foot">
+      <span class="nav-sheet__foot-label">{t('nav.language')}</span>
+      <span class="inline-flex items-center gap-1.5 border border-border px-2 py-1">
+        <span class="text-on-background" aria-hidden="true">{currentCode}</span>
+        <span class="text-border" aria-hidden="true">/</span>
+        {
+          switchLinks.map((l, i) => (
+            <>
+              {i > 0 && (
+                <span class="text-border" aria-hidden="true">
+                  ·
+                </span>
+              )}
+              <a
+                href={l.href}
+                hreflang={l.locale}
+                lang={l.locale}
+                aria-label={`${l.code}: ${l.name}`}
+                class="locale-link text-muted transition hover:text-brand-400"
+              >
+                {l.code}
+              </a>
+            </>
+          ))
+        }
+      </span>
     </div>
   </div>
 
   <!-- Double rule, same as the zine -->
-  <div class="h-0.5 bg-on-background"></div>
-  <div class="h-px bg-border"></div>
+  <div class:list={['h-0.5 bg-on-background', !showLockup && 'max-md:hidden']}></div>
+  <div class:list={['h-px bg-border', !showLockup && 'max-md:hidden']}></div>
 </NavRoot>
 
 <style>
@@ -357,14 +420,246 @@ const switchLinks = LOCALES.filter((l) => l !== locale).map((l) => ({
       transform: translate(-50%, -50%);
     }
   }
+
+  /* ---- Mobile sheet (Popover API) ----
+     A top-anchored, full-bleed sheet. It drops into the top layer, so no z-index
+     is needed and it is never clipped by an ancestor. The UA gives us light
+     dismiss, Escape and focus-return; we only own the look and the motion. */
+  .nav-sheet {
+    position: fixed;
+    inset: 0 0 auto;
+    width: 100%;
+    max-width: none;
+    max-height: 88vh;
+    margin: 0;
+    border: 0;
+    border-bottom: 1px solid var(--color-border);
+    padding: 0;
+    overflow: auto;
+    overscroll-behavior: contain;
+    background-color: var(--color-background);
+    color: var(--color-on-background);
+    /* Closed state seeds the enter/exit transition (see @starting-style). */
+    opacity: 0;
+    transform: translateY(-12px);
+    transition:
+      opacity 0.24s ease,
+      transform 0.24s ease,
+      overlay 0.24s allow-discrete,
+      display 0.24s allow-discrete;
+  }
+  .nav-sheet:popover-open {
+    display: flex;
+    flex-direction: column;
+    opacity: 1;
+    transform: none;
+  }
+  @starting-style {
+    .nav-sheet:popover-open {
+      opacity: 0;
+      transform: translateY(-12px);
+    }
+  }
+  .nav-sheet::backdrop {
+    background-color: rgb(20 12 8 / 0.45);
+    opacity: 0;
+    transition:
+      opacity 0.24s ease,
+      overlay 0.24s allow-discrete,
+      display 0.24s allow-discrete;
+  }
+  .nav-sheet:popover-open::backdrop {
+    opacity: 1;
+  }
+  @starting-style {
+    .nav-sheet:popover-open::backdrop {
+      opacity: 0;
+    }
+  }
+
+  .nav-sheet__bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.7rem 1.25rem;
+    border-bottom: 1px solid var(--color-border);
+    background-image: radial-gradient(
+      circle,
+      rgb(236 103 55 / 0.1) 1px,
+      transparent 1.2px
+    );
+    background-size: 10px 10px;
+    background-position: center;
+  }
+  .nav-sheet__word {
+    font-family: var(--font-brand);
+    font-size: 1.2rem;
+    font-weight: 800;
+    text-transform: lowercase;
+    letter-spacing: -0.02em;
+  }
+  /* The close control is a real 44px target; the glyph is two crossed bars so it
+     reads as an X without an icon font. */
+  .nav-sheet__close {
+    display: inline-flex;
+    height: 2.75rem;
+    width: 2.75rem;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--color-border);
+    background-color: transparent;
+    color: var(--color-on-background);
+    cursor: pointer;
+    transition: border-color 0.15s ease, color 0.15s ease;
+  }
+  .nav-sheet__close:hover {
+    border-color: var(--color-brand-500);
+    color: var(--color-brand-400);
+  }
+  .nav-close {
+    position: relative;
+    display: block;
+    height: 1rem;
+    width: 1rem;
+  }
+  .nav-close span {
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    height: 2px;
+    width: 1rem;
+    background-color: currentColor;
+  }
+  .nav-close span:first-child {
+    transform: rotate(45deg);
+  }
+  .nav-close span:last-child {
+    transform: rotate(-45deg);
+  }
+
+  .nav-sheet__list {
+    display: flex;
+    flex-direction: column;
+  }
+  /* Rows are full-width, 56px minimum, and hairline-separated like the zine
+     index. The number is decorative; the label carries the weight. */
+  .nav-sheet__item {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    min-height: 3.5rem;
+    padding: 1.05rem 1.25rem;
+    border-bottom: 1px solid var(--color-border);
+    font-family: var(--font-mono);
+    font-size: 1.05rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-on-background);
+    transition: color 0.15s ease, background-color 0.15s ease;
+  }
+  .nav-sheet__item:hover,
+  .nav-sheet__item:focus-visible {
+    color: var(--color-brand-400);
+  }
+  .nav-sheet__item[aria-current='page'] {
+    color: var(--color-brand-500);
+  }
+  .nav-sheet__item--brand {
+    font-weight: 700;
+    color: var(--color-brand-500);
+  }
+  .nav-sheet__item--out {
+    color: var(--color-muted);
+  }
+  .nav-sheet__n {
+    font-size: 0.72rem;
+    opacity: 0.75;
+  }
+  .nav-sheet__label {
+    flex: 1;
+  }
+  .nav-sheet__arrow {
+    font-size: 0.9rem;
+  }
+
+  /* Staggered entrance for the rows. The motion is decorative, so it is removed
+     entirely under reduced-motion (the rows then simply appear). */
+  .nav-sheet:popover-open .nav-sheet__item {
+    animation: nav-sheet-item 0.32s ease both;
+    animation-delay: calc(var(--i, 0) * 45ms + 70ms);
+  }
+  @keyframes nav-sheet-item {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .nav-sheet,
+    .nav-sheet::backdrop {
+      transition: none;
+    }
+    .nav-sheet:popover-open .nav-sheet__item {
+      animation: none;
+    }
+  }
+
+  .nav-sheet__foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+  }
+  .nav-sheet__foot-label {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+
+  /* The masthead's secondary line, carried here on mobile. */
+  .nav-sheet__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem 0.5rem;
+    padding: 0.9rem 1.25rem;
+    border-top: 1px solid var(--color-border);
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+  .nav-sheet__dot {
+    position: relative;
+    top: -0.105em;
+    color: var(--color-muted);
+  }
 </style>
 
 <script>
-// Close the mobile menu when a link inside the panel is tapped. Delegated on
-    // the document so one listener covers the panel whatever state it is in, and so
-    // no inline handler is needed (script-src 'self' blocks those).
+  // The Popover API already covers light dismiss, Escape and focus-return. This
+  // only adds two things it does not: lock the page scroll while the sheet is
+  // open, and close the sheet when a link inside it is followed. Both are
+  // progressive — without JS the sheet still opens, dismisses and closes on Esc.
+  const sheet = document.getElementById('nav-sheet');
+
+  sheet?.addEventListener('toggle', (event) => {
+    const open = (event as ToggleEvent).newState === 'open';
+    document.documentElement.style.overflow = open ? 'hidden' : '';
+  });
+
   document.addEventListener('click', (event) => {
     const panel = (event.target as HTMLElement | null)?.closest('[data-nav-panel]');
-    panel?.closest('details')?.removeAttribute('open');
+    if (panel instanceof HTMLElement) panel.hidePopover();
   });
 </script>

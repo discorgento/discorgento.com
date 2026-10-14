@@ -36,7 +36,10 @@ const OUT_DIR = resolve(process.cwd(), 'public/img/episodes');
 const TIMEOUT_MS = 15_000;
 
 /** Downloaded straight from YouTube. Both are 16:9. */
-const SOURCES = [['mqdefault', 320], ['maxresdefault', 1280]];
+const SOURCES = [
+  ['mqdefault', 320],
+  ['maxresdefault', 1280],
+];
 /**
  * Derived locally from the 1280. YouTube has no 16:9 asset at these widths.
  *
@@ -70,9 +73,12 @@ const feedIds = async () => {
 };
 
 const snapshotIds = async () => {
-  const { default: snap } = await import(resolve(process.cwd(), 'src/data/episodes.json'), {
-    with: { type: 'json' },
-  });
+  const { default: snap } = await import(
+    resolve(process.cwd(), 'src/data/episodes.json'),
+    {
+      with: { type: 'json' },
+    }
+  );
   return snap.map((v) => v.id).filter(isVideoId);
 };
 
@@ -89,7 +95,9 @@ const download = async (id, variant, size) => {
   }
   const bytes = Buffer.from(await res.arrayBuffer());
   await writeFile(resolve(OUT_DIR, `${id}-${size}.jpg`), bytes);
-  console.log(`  got  ${id}-${size}.jpg  ${(bytes.length / 1024).toFixed(1)} kB`);
+  console.log(
+    `  got  ${id}-${size}.jpg  ${(bytes.length / 1024).toFixed(1)} kB`,
+  );
   return true;
 };
 
@@ -133,7 +141,7 @@ const toWebp = async (id, size) => {
   await writeFile(out_path, out);
   const before = (await stat(src)).size;
   console.log(
-    `  webp ${id}-${size}.webp  ${(out.length / 1024).toFixed(1)} kB  (jpg era ${(before / 1024).toFixed(1)} kB)`
+    `  webp ${id}-${size}.webp  ${(out.length / 1024).toFixed(1)} kB  (jpg era ${(before / 1024).toFixed(1)} kB)`,
   );
   return true;
 };
@@ -162,7 +170,9 @@ const toAvif = async (id, size) => {
     .avif({ quality: 55, effort: 6 })
     .toBuffer();
   await writeFile(out_path, out);
-  console.log(`  avif ${id}-${size}.avif  ${(out.length / 1024).toFixed(1)} kB`);
+  console.log(
+    `  avif ${id}-${size}.avif  ${(out.length / 1024).toFixed(1)} kB`,
+  );
   return true;
 };
 
@@ -174,7 +184,9 @@ const main = async () => {
     ids = await feedIds();
     console.log(`feed: ${ids.length} episodes`);
   } catch (err) {
-    console.warn(`feed unavailable (${err.message}), falling back to the committed snapshot`);
+    console.warn(
+      `feed unavailable (${err.message}), falling back to the committed snapshot`,
+    );
     ids = await snapshotIds();
   }
 
@@ -186,7 +198,9 @@ const main = async () => {
   let avifEncoded = 0;
   let skipped = 0;
 
-  const sizes = SOURCES.map(([, size]) => size).concat(DERIVED.map(([, to]) => to));
+  const sizes = SOURCES.map(([, size]) => size).concat(
+    DERIVED.map(([, to]) => to),
+  );
   for (const id of all) {
     for (const [variant, size] of SOURCES) {
       if (existsSync(resolve(OUT_DIR, `${id}-${size}.jpg`))) {
@@ -209,9 +223,10 @@ const main = async () => {
   }
 
   console.log(
-    `\ndone: ${downloaded} downloaded, ${derived} derived, ${encoded} webp, ${avifEncoded} avif, ${skipped} already present`
+    `\ndone: ${downloaded} downloaded, ${derived} derived, ${encoded} webp, ${avifEncoded} avif, ${skipped} already present`,
   );
-  if (downloaded) console.log('review the new files, then commit them with the episode');
+  if (downloaded)
+    console.log('review the new files, then commit them with the episode');
 };
 
 main().catch((err) => {

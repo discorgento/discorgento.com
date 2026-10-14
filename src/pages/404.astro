@@ -1,7 +1,7 @@
 ---
-import MainLayout from '~/layouts/MainLayout.astro';
-import { LOCALES, LOCALE_META, useTranslations } from '~/lib/i18n';
 import { getRelativeLocaleUrl } from 'astro:i18n';
+import MainLayout from '~/layouts/MainLayout.astro';
+import { LOCALE_META, LOCALES, useTranslations } from '~/lib/i18n';
 
 const locale = Astro.currentLocale ?? 'pt-BR';
 const t = useTranslations(locale);
@@ -18,8 +18,8 @@ const switchLinks = LOCALES.filter((l) => l !== locale).map((l) => ({
   description={t('notFound.description')}
   robots="noindex, follow"
 >
-  <section class="mx-auto max-w-xl py-24">
-    <div class="border-y-2 border-on-background py-16 text-center">
+  <section class="mx-auto max-w-xl py-16 sm:py-24">
+    <div class="border-y-2 border-on-background py-12 text-center sm:py-16">
       <p class="eyebrow">
         <span class="text-brand-500">●</span> {t('notFound.eyebrow')}
       </p>
@@ -30,14 +30,14 @@ const switchLinks = LOCALES.filter((l) => l !== locale).map((l) => ({
       <p class="mt-6 font-mono text-xs text-muted/85">{Astro.url.pathname}</p>
       <a
         href={homeUrl}
-        class="mt-10 inline-block bg-brand-500 px-6 py-3 font-semibold text-background transition hover:bg-brand-400"
+        class="mt-8 inline-block bg-brand-500 px-6 py-3 font-semibold text-background transition hover:bg-brand-400 sm:mt-10"
       >
         ← {t('nav.home')}
       </a>
       {/* A single "back home" link strands an agent that landed on a dead URL:
           it has to guess a new path and burn a crawl step guessing wrong. These
           are the real sections, so offer them directly. */}
-      <nav aria-label={t('notFound.linksLabel')} class="mt-10 border-t border-border pt-6">
+      <nav aria-label={t('notFound.linksLabel')} class="mt-8 border-t border-border pt-6 sm:mt-10">
         <ul class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 font-mono text-xs uppercase tracking-wider">
           <li><a class="text-muted transition hover:text-brand-500" href={getRelativeLocaleUrl(locale, '/podcast')}>{t('nav.podcast')}</a></li>
           <li><a class="text-muted transition hover:text-brand-500" href={getRelativeLocaleUrl(locale, '/quem-faz')}>{t('nav.team')}</a></li>

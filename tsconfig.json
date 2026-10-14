@@ -7,6 +7,8 @@
     "paths": {
       "~/*": ["./src/*"],
       "virtual:discorgento-thumb-cache": ["./plugins/thumb-cache.d.ts"]
-    }
+    },
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true
   }
 }

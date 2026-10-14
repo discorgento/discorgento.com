@@ -1,0 +1,74 @@
+---
+import {
+  type DiscordStats as DiscordStatsData,
+  getDiscordStats,
+} from '~/lib/discord';
+import { useTranslations } from '~/lib/i18n';
+
+interface Props {
+  locale: string;
+  stats?: DiscordStatsData | null;
+}
+
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+
+/* The member/presence counters in the colophon, rendered two ways by the same
+   component:
+ *
+ *  - The `server:defer` island render: `Astro.props.stats` is absent, so this
+ *    fetches the invite API live at request time — the numbers move without a
+ *    redeploy.
+ *  - The `slot="fallback"` render (with `stats`): the build-time stand-in Home
+ *    fetched, so the instant before the island lands and no-JS visitors still
+ *    see a count instead of a blank line.
+ */
+const stats =
+  Astro.props.stats !== undefined ? Astro.props.stats : await getDiscordStats();
+
+if (Astro.props.stats === undefined) {
+  /* Deliberate no-store, matching the other islands: per-view data, not a
+     cacheable asset. The Discord API call is tiny and this page sees modest
+     traffic, so this does not need the edge-cache wrapper the bulkier feeds
+     have. */
+  Astro.response.headers.set('Cache-Control', 'no-store');
+}
+---
+
+<div class="zine">
+  <div class="stats">
+    {stats && (
+      <>
+        <span>
+          <b>{stats.members}</b> {t('home.stats.members')}
+        </span>
+        <span>
+          <b>{stats.online}</b> {t('home.stats.online')}
+        </span>
+      </>
+    )}
+    <span>
+      <b>{t('home.stats.since')}</b>
+    </span>
+  </div>
+</div>
+
+<style>
+  /* Moved from Home.astro: the island renders outside Home's scope at request
+     time, so its own copy of these rules is required — Home's scoped copy
+     carries Home's component hash and can never match these elements. */
+  .zine .stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.25rem;
+    margin-top: 1rem;
+    padding-top: 0.9rem;
+    border-top: 1px solid var(--color-border);
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--color-muted);
+  }
+  .zine .stats b {
+    color: var(--color-on-background);
+  }
+</style>

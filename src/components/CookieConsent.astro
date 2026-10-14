@@ -1,0 +1,287 @@
+---
+import { getRelativeLocaleUrl } from 'astro:i18n';
+import { useTranslations } from '~/lib/i18n';
+
+const locale = Astro.currentLocale ?? 'pt-BR';
+const t = useTranslations(locale);
+const privacyHref = getRelativeLocaleUrl(locale, '/privacidade');
+---
+
+{/* Opt-in consent for the single optional category the site has: analytics.
+    Rendered once from MainLayout. It ships `hidden` by default so a returning
+    visitor who already answered never sees it flash — the script only un-hides
+    it when there is no valid stored choice. No dark patterns: accept and reject
+    carry the same weight, nothing is pre-selected, and it is a non-modal dialog
+    so it never traps focus or blocks the page. */}
+<div
+  class="consent"
+  data-consent
+  role="dialog"
+  aria-modal="false"
+  aria-labelledby="consent-title"
+  aria-describedby="consent-desc"
+  tabindex="-1"
+  hidden
+>
+  <p id="consent-title" class="eyebrow">
+    <span class="text-brand-500">●</span> {t('consent.title')}
+  </p>
+  <p id="consent-desc" class="consent__body">
+    {t('consent.message')}{' '}
+    <a class="consent__more" href={privacyHref}>{t('consent.learnMore')}</a>
+  </p>
+  <div class="consent__actions">
+    <button type="button" class="consent-btn" data-consent-accept>
+      {t('consent.accept')}
+    </button>
+    <button type="button" class="consent-btn" data-consent-reject>
+      {t('consent.reject')}
+    </button>
+  </div>
+</div>
+
+<script>
+  // Basic consent mode: the Google tag is never loaded until the visitor
+  // accepts, so a decline costs zero requests and zero bytes. This is stricter
+  // than loading gtag.js with `consent default denied`, where the script still
+  // downloads and transmits.
+  type Choice = { analytics: boolean; ts: number; v: number };
+
+  const STORAGE_KEY = 'dg-consent';
+  const MEASUREMENT_ID = 'G-ZZCPZLMW8G';
+  const MAX_AGE_MS = 180 * 24 * 60 * 60 * 1000;
+  // Bump when what is being consented to changes, so an old record no longer
+  // counts and the banner asks again instead of silently reusing stale consent.
+  const CONSENT_VERSION = 1;
+
+  const win = window as unknown as {
+    dataLayer?: unknown[];
+    gtag?: (...args: unknown[]) => void;
+    __dgGaLoaded?: boolean;
+  };
+
+  function read(): Choice | null {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return null;
+      const parsed = JSON.parse(raw) as Partial<Choice>;
+      if (typeof parsed.analytics !== 'boolean' || typeof parsed.ts !== 'number') {
+        return null;
+      }
+      if (parsed.v !== CONSENT_VERSION) return null;
+      if (Date.now() - parsed.ts > MAX_AGE_MS) return null;
+      return { analytics: parsed.analytics, ts: parsed.ts, v: parsed.v };
+    } catch {
+      return null;
+    }
+  }
+
+  function save(analytics: boolean): void {
+    try {
+      localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify({ analytics, ts: Date.now(), v: CONSENT_VERSION }),
+      );
+    } catch {
+      // Storage can be unavailable (private mode, quota). Consent simply does
+      // not persist; the tag still only loads from this same tick.
+    }
+  }
+
+  function loadGA(): void {
+    if (win.__dgGaLoaded) return;
+    win.__dgGaLoaded = true;
+
+    const dataLayer = (win.dataLayer = win.dataLayer ?? []);
+    const gtag = (...args: unknown[]): void => {
+      dataLayer.push(args);
+    };
+    win.gtag = gtag;
+
+    // Consent Mode v2. Denied first, then granted — the visitor has just opted
+    // in, so both signals land before the tag itself is requested.
+    gtag('consent', 'default', {
+      ad_storage: 'denied',
+      ad_user_data: 'denied',
+      ad_personalization: 'denied',
+      analytics_storage: 'denied',
+      functionality_storage: 'denied',
+      personalization_storage: 'denied',
+      security_storage: 'granted',
+      wait_for_update: 500,
+    });
+    gtag('consent', 'update', { analytics_storage: 'granted' });
+    gtag('js', new Date());
+    gtag('config', MEASUREMENT_ID);
+
+    const script = document.createElement('script');
+    script.async = true;
+    script.src = `https://www.googletagmanager.com/gtag/js?id=${MEASUREMENT_ID}`;
+    document.head.appendChild(script);
+  }
+
+  const banner = document.querySelector<HTMLElement>('[data-consent]');
+
+  function show(): void {
+    if (!banner) return;
+    banner.hidden = false;
+    banner.focus();
+  }
+
+  function hide(): void {
+    if (!banner) return;
+    banner.hidden = true;
+  }
+
+  const stored = read();
+  if (stored?.analytics) {
+    loadGA();
+  } else if (!stored) {
+    show();
+  }
+
+  banner?.addEventListener('click', (event) => {
+    const target = event.target as HTMLElement;
+    if (target.closest('[data-consent-accept]')) {
+      save(true);
+      loadGA();
+      hide();
+    } else if (target.closest('[data-consent-reject]')) {
+      save(false);
+      hide();
+    }
+  });
+
+  // The footer owns the persistent "revisit your choice" entry point, so the
+  // visitor can always withdraw or change consent later.
+  document.addEventListener('click', (event) => {
+    const target = event.target as HTMLElement;
+    if (target.closest('[data-consent-settings]')) {
+      event.preventDefault();
+      show();
+    }
+  });
+</script>
+
+<style>
+  /* A bottom-corner card, not a wall: it never covers the page, never traps
+     focus, and never blocks reading or scrolling — which is what keeps consent
+     "freely given" and keeps the crawler able to index the page. The 6px brand
+     spine matches the edition/newsletter cards so it reads as part of the site
+     rather than a bolted-on overlay. */
+  .consent {
+    position: fixed;
+    z-index: 80;
+    inset-inline: 1rem;
+    inset-block-end: max(1rem, env(safe-area-inset-bottom));
+    margin-inline: auto;
+    max-width: 27rem;
+    padding: 1.25rem 1.25rem 1.125rem;
+    border: 1px solid var(--color-border);
+    border-left: 6px solid var(--color-brand-500);
+    background: var(--color-surface-raised);
+    box-shadow: 0 18px 50px -12px rgb(0 0 0 / 0.6);
+    animation: consent-in 0.28s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+
+  @keyframes consent-in {
+    from {
+      opacity: 0;
+      transform: translateY(0.75rem);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @media (min-width: 640px) {
+    .consent {
+      inset-inline: auto 1.5rem;
+      margin-inline: 0;
+    }
+  }
+
+  .consent__body {
+    margin-top: 0.625rem;
+    font-size: 0.875rem;
+    line-height: 1.6;
+    color: var(--color-on-surface);
+    text-wrap: pretty;
+  }
+
+  .consent__more {
+    color: var(--color-brand-400);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    white-space: nowrap;
+  }
+
+  .consent__more:hover {
+    color: var(--color-brand-300);
+  }
+
+  /* Equal columns so accept and reject are the exact same size no matter how
+     long each label is — equal weight is a consent requirement, not styling. */
+  .consent__actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    margin-top: 1.125rem;
+  }
+
+  /* 44px clears the WCAG 2.2 target-size floor, and the boundary uses
+     --color-muted (not --color-border) so it clears the 3:1 non-text contrast.
+     The global :focus-visible ring supplies the visible keyboard focus. */
+  .consent-btn {
+    min-height: 44px;
+    padding-inline: 1rem;
+    border: 2px solid var(--color-muted);
+    background: transparent;
+    color: var(--color-on-background);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    transition:
+      border-color 0.15s,
+      color 0.15s;
+  }
+
+  .consent-btn:hover {
+    border-color: var(--color-brand-500);
+    color: var(--color-brand-400);
+  }
+
+  /* Mobile: a slimmer card — tighter spacing, smaller type and a shorter
+     button, nothing else changes. The two targets stay equal width and clear
+     the 24px WCAG 2.5.8 floor. Declared last so it overrides the base sizes. */
+  @media (max-width: 639px) {
+    .consent {
+      padding: 0.875rem 1rem;
+    }
+    .consent__body {
+      margin-top: 0.375rem;
+      font-size: 0.8125rem;
+      line-height: 1.4;
+    }
+    .consent__actions {
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+    }
+    .consent-btn {
+      min-height: 40px;
+      padding-inline: 0.75rem;
+      font-size: 0.7rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .consent {
+      animation: none;
+    }
+    .consent-btn {
+      transition: none;
+    }
+  }
+</style>

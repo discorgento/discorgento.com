@@ -57,7 +57,12 @@ export function thumbCache() {
       try {
         for (const file of readdirSync(dir)) {
           const m = anySize.exec(file);
-          if (m) (buckets[m[3]][m[1]] ??= []).push(Number(m[2]));
+          if (m) {
+            const format = m[3];
+            const id = m[1];
+            buckets[format][id] ??= [];
+            buckets[format][id].push(Number(m[2]));
+          }
         }
       } catch {
         // No cache directory yet: every id resolves to the remote CDN.
@@ -68,7 +73,7 @@ export function thumbCache() {
       const avifCount = Object.keys(avif).length;
       if (count) {
         this.info?.(
-          `[thumbs] ${count} cached thumbnail id(s), ${webpCount} with webp, ${avifCount} with avif`
+          `[thumbs] ${count} cached thumbnail id(s), ${webpCount} with webp, ${avifCount} with avif`,
         );
       }
       /* A content version for the cacheable episode assets, so the immutable

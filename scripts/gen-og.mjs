@@ -34,10 +34,14 @@ const BRAND = '#ec6737'; // --color-brand-500, official primary
 const INK = '#fde8e0'; // --color-brand-100
 
 const font = (path) =>
-  readFileSync(resolve(ROOT, 'node_modules/@fontsource-variable', path)).toString('base64');
+  readFileSync(
+    resolve(ROOT, 'node_modules/@fontsource-variable', path),
+  ).toString('base64');
 
 const OUTFIT = font('outfit/files/outfit-latin-wght-normal.woff2');
-const MONO = font('jetbrains-mono/files/jetbrains-mono-latin-wght-normal.woff2');
+const MONO = font(
+  'jetbrains-mono/files/jetbrains-mono-latin-wght-normal.woff2',
+);
 const logoData =
   'data:image/svg+xml;base64,' + readFileSync(LOGO).toString('base64');
 
@@ -71,13 +75,20 @@ const main = async () => {
   await sharp(backdrop)
     .composite([{ input: Buffer.from(overlay), top: 0, left: 0 }])
     .flatten({ background: BG })
-    .jpeg({ quality: 88, progressive: true, chromaSubsampling: '4:2:0', mozjpeg: true })
+    .jpeg({
+      quality: 88,
+      progressive: true,
+      chromaSubsampling: '4:2:0',
+      mozjpeg: true,
+    })
     .toFile(`${OUT}.tmp`)
     .then(() => renameSync(`${OUT}.tmp`, OUT));
 
   const bytes = readFileSync(OUT);
   const { width, height } = await sharp(OUT).metadata();
-  console.log(`wrote public/img/og.jpg  ${width}x${height}  ${(bytes.length / 1024).toFixed(1)} kB`);
+  console.log(
+    `wrote public/img/og.jpg  ${width}x${height}  ${(bytes.length / 1024).toFixed(1)} kB`,
+  );
   if (width !== W || height !== H) {
     console.error(`expected ${W}x${H}`);
     process.exitCode = 1;
