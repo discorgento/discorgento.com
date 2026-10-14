@@ -44,7 +44,9 @@ const BYLINE_WIDTH = 96;
 
 /** GitHub avatars are resized server-side by the `s` query parameter. */
 function avatarSrcset(url: string): string | null {
-  const m = /^(https:\/\/avatars\.githubusercontent\.com\/[^?]+)\?s=(\d+)/.exec(url);
+  const m = /^(https:\/\/avatars\.githubusercontent\.com\/[^?]+)\?s=(\d+)/.exec(
+    url,
+  );
   if (!m) return null;
   return `${m[1]}?s=${BYLINE_WIDTH} ${BYLINE_WIDTH}w, ${m[1]}?s=${m[2]} ${m[2]}w`;
 }
@@ -99,12 +101,16 @@ export const team: TeamMember[] = [
     name: 'Vitor Coutinho Fernandes',
     roleKey: 'home.hosts.role.cohostAdmin',
     bio: {
-      'pt-BR': 'Apaixonado por programação, sem medo de ser um eterno Young Padawan.',
+      'pt-BR':
+        'Apaixonado por programação, sem medo de ser um eterno Young Padawan.',
       en: 'Passionate about programming, without fear of being an eternal Young Padawan.',
     },
     fallback: null,
     socials: [
-      { label: 'linkedin', url: 'https://www.linkedin.com/in/vitor-coutinho-fernandes/' },
+      {
+        label: 'linkedin',
+        url: 'https://www.linkedin.com/in/vitor-coutinho-fernandes/',
+      },
       { label: 'github', url: 'https://github.com/coutodev' },
     ],
   },
@@ -132,36 +138,46 @@ export function buildTeamJsonLd(locale: string, site: URL) {
   };
 }
 
-  /** Resolves photos (public/time/<slug>.{jpg,png,webp} wins), initials, role and bio for a locale. */
-  export function getTeam(locale: string): ResolvedMember[] {
-    const t = useTranslations(locale);
-    const localPhotos = Object.keys(import.meta.glob('../../public/time/*.{jpg,png,webp}'));
-    const extensions = ['jpg', 'png', 'webp'];
+/** Resolves photos (public/time/<slug>.{jpg,png,webp} wins), initials, role and bio for a locale. */
+export function getTeam(locale: string): ResolvedMember[] {
+  const t = useTranslations(locale);
+  const localPhotos = Object.keys(
+    import.meta.glob('../../public/time/*.{jpg,png,webp}'),
+  );
+  const extensions = ['jpg', 'png', 'webp'];
 
-    /** Small byline copy, named <slug>-96.<ext> so it cannot shadow the main photo. */
-    const bylineCopy = (slug: string): string | null =>
-      extensions
-        .map((extension) =>
-          localPhotos.find((file) => file.endsWith(`/${slug}-${BYLINE_WIDTH}.${extension}`))
-        )
-        .find(Boolean) ?? null;
+  /** Small byline copy, named <slug>-96.<ext> so it cannot shadow the main photo. */
+  const bylineCopy = (slug: string): string | null =>
+    extensions
+      .map((extension) =>
+        localPhotos.find((file) =>
+          file.endsWith(`/${slug}-${BYLINE_WIDTH}.${extension}`),
+        ),
+      )
+      .find(Boolean) ?? null;
 
-    return team.map((person) => {
-      const localPhoto = extensions
-        .map((extension) => localPhotos.find((file) => file.endsWith(`/${person.slug}.${extension}`)))
-        .find(Boolean);
-      const photo = localPhoto ? `/time/${localPhoto.split('/').pop()}` : person.fallback;
-      const small = bylineCopy(person.slug);
-      return {
-        ...person,
-        photo,
-        photoSrcset: small
-          ? `${`/time/${small.split('/').pop()}`} ${BYLINE_WIDTH}w`
-          : photo
-            ? avatarSrcset(photo)
-            : null,
+  return team.map((person) => {
+    const localPhoto = extensions
+      .map((extension) =>
+        localPhotos.find((file) =>
+          file.endsWith(`/${person.slug}.${extension}`),
+        ),
+      )
+      .find(Boolean);
+    const photo = localPhoto
+      ? `/time/${localPhoto.split('/').pop()}`
+      : person.fallback;
+    const small = bylineCopy(person.slug);
+    return {
+      ...person,
+      photo,
+      photoSrcset: small
+        ? `${`/time/${small.split('/').pop()}`} ${BYLINE_WIDTH}w`
+        : photo
+          ? avatarSrcset(photo)
+          : null,
       /* the photo links to the person's own page — first social (linkedin) */
-      profile: person.socials[0].url,
+      profile: person.socials[0]?.url ?? '#',
       initials: person.name
         .split(' ')
         .filter((word) => word.length > 2)
@@ -169,7 +185,9 @@ export function buildTeamJsonLd(locale: string, site: URL) {
         .slice(0, 2)
         .join(''),
       role: t(person.roleKey),
-      bio: person.bio ? (person.bio[locale] ?? person.bio['pt-BR']) : null,
+      bio: person.bio
+        ? (person.bio[locale] ?? person.bio['pt-BR'] ?? null)
+        : null,
     };
   });
 }

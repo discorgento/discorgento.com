@@ -1,10 +1,10 @@
 ---
 import { getRelativeLocaleUrl } from 'astro:i18n';
-import { getLatestVideos, episodeNum, formatEpDate } from '~/lib/youtube';
-import type { Video } from '~/lib/youtube';
-import { useTranslations } from '~/lib/i18n';
-import YouTubeStamp from '~/components/YouTubeStamp.astro';
 import EpisodeArt from '~/components/EpisodeArt.astro';
+import YouTubeStamp from '~/components/YouTubeStamp.astro';
+import { useTranslations } from '~/lib/i18n';
+import type { Video } from '~/lib/youtube';
+import { episodeNum, formatEpDate, getLatestVideos } from '~/lib/youtube';
 
 interface Props {
   locale: string;
@@ -59,13 +59,14 @@ const coverSizes: (320 | 640 | 1024 | 1280)[] = [320, 640, 1024, 1280];
               never waits on a third-party handshake. */}
           <EpisodeArt
             id={episode.id}
-            alt={`discorgento — episódio ${epTag}: ${episode.title}`}
+            alt={`discorgento, episódio ${epTag}: ${episode.title}`}
             pictureClass="contents"
             imgClass="still"
             sizes="(min-width: 1232px) 506px, (min-width: 900px) 42vw, 84vw"
             width={1280}
             height={720}
             fetchpriority="high"
+            loading="eager"
             tiers={coverSizes}
           />
         <span class="n">{epTag}</span>
@@ -76,7 +77,7 @@ const coverSizes: (320 | 640 | 1024 | 1280)[] = [320, 640, 1024, 1280];
         </span>
       </div>
       <figcaption class="figcap">
-        fig. 01 — {t('home.featuredEp.title')} ·{' '}
+        fig. 01 · {t('home.featuredEp.title')} ·{' '}
         <a href={episode.url} target="_blank" rel="noopener noreferrer">
           {t('home.featuredEp.watch')}
         </a>
@@ -85,7 +86,7 @@ const coverSizes: (320 | 640 | 1024 | 1280)[] = [320, 640, 1024, 1280];
 
     <article class="lead">
       <p class="kicker">
-        <span class="o">●</span> {t('home.featuredEp.eyebrow')} — {t('home.capa.tag')}
+        <span class="o">●</span> {t('home.featuredEp.eyebrow')} · {t('home.capa.tag')}
       </p>
       <h2>{episode.title}</h2>
       <p class="deck">{t('home.capa.deck')}</p>

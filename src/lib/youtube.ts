@@ -5,8 +5,6 @@
 // A build must never ship a home page with no cover art and no episodes, so the fetch falls
 // back to the committed snapshot in src/data/episodes.json when it yields nothing.
 
-import snapshot from '~/data/episodes.json';
-import { intlLocale } from '~/lib/i18n';
 // Ids we have on disk, emitted at build time by plugins/thumb-cache.mjs. Reading
 // the filesystem from here is not an option: prerendering runs inside workerd,
 // where no path base resolves to the real project.
@@ -16,6 +14,9 @@ import {
   THUMB_VERSION,
   WEBP_THUMBS,
 } from 'virtual:discorgento-thumb-cache';
+import snapshot from '~/data/episodes.json';
+import { fetchWithRetry } from '~/lib/fetch';
+import { intlLocale } from '~/lib/i18n';
 
 const CHANNEL_ID = 'UChJitnyFtNOoCe6cu-rHcow';
 const FEED_URL = `https://www.youtube.com/feeds/videos.xml?channel_id=${CHANNEL_ID}`;
@@ -37,11 +38,6 @@ function decodeXml(value: string): string {
     .replace(/&apos;/g, "'");
 }
 
-const MAX_ATTEMPTS = 3;
-const TIMEOUT_MS = 10_000;
-
-const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
-
 function parseFeed(xml: string): Video[] {
   return xml
     .split('<entry>')
@@ -53,7 +49,8 @@ function parseFeed(xml: string): Video[] {
         entry.match(/<media:title>([^<]+)<\/media:title>/)?.[1] ??
         entry.match(/<title>([^<]+)<\/title>/)?.[1] ??
         '';
-      const published = entry.match(/<published>([^<]+)<\/published>/)?.[1] ?? '';
+      const published =
+        entry.match(/<published>([^<]+)<\/published>/)?.[1] ?? '';
       return {
         id,
         title: decodeXml(title),
@@ -88,13 +85,15 @@ function isVideo(value: unknown): value is Video {
  */
 export function getSnapshotVideos(): Video[] {
   if (!Array.isArray(snapshot)) {
-    throw new Error('[episodes] src/data/episodes.json must be an array of episodes');
+    throw new Error(
+      '[episodes] src/data/episodes.json must be an array of episodes',
+    );
   }
   return snapshot.map((entry, i) => {
     if (!isVideo(entry)) {
       throw new Error(
         `[episodes] src/data/episodes.json entry ${i} is not a valid episode: ` +
-          JSON.stringify(entry)
+          JSON.stringify(entry),
       );
     }
     return entry;
@@ -102,45 +101,22 @@ export function getSnapshotVideos(): Video[] {
 }
 
 export async function getLatestVideos(): Promise<Video[]> {
-  // The feed answers 500 under load and 404 from datacenter IPs. Retry, and shout in the
-  // build log: an empty list silently ships a site with no episodes at all.
-  for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
-    try {
-      const res = await fetch(FEED_URL, {
-        headers: { 'user-agent': 'discorgento-site' },
-        signal: AbortSignal.timeout(TIMEOUT_MS),
-        // Caches the feed at the Cloudflare edge so every page view does not hit
-        // the publication. A new episode is visible within this window. Node
-        // ignores `cf`, so the build-time path is unaffected.
-        cf: { cacheTtl: 1_800, cacheEverything: true },
-      } as RequestInit & { cf: { cacheTtl: number; cacheEverything: boolean } });
+  // The feed answers 500 under load and 404 from datacenter IPs; fetchWithRetry
+  // covers the flaky cases and logs each attempt. An empty list must never ship a
+  // site with no episodes at all, so falling through returns the snapshot.
+  const res = await fetchWithRetry(FEED_URL, {
+    cacheTtl: 1_800,
+    label: 'youtube',
+  });
 
-      if (res.ok) {
-        const videos = parseFeed(await res.text());
-        if (videos.length) return videos;
-        break;
-      }
-
-      // 4xx means we are being refused, not throttled: retrying won't help.
-      if (res.status < 500 && res.status !== 429) {
-        console.warn(`[youtube] feed refused with ${res.status}`);
-        break;
-      }
-
-      console.warn(
-        `[youtube] feed returned ${res.status}, attempt ${attempt}/${MAX_ATTEMPTS}`
-      );
-    } catch (err) {
-      console.warn(
-        `[youtube] feed request failed on attempt ${attempt}/${MAX_ATTEMPTS}:`,
-        err instanceof Error ? err.message : err
-      );
-    }
-
-    if (attempt < MAX_ATTEMPTS) await sleep(attempt * 1000);
+  if (res) {
+    const videos = parseFeed(await res.text());
+    if (videos.length) return videos;
   }
 
-  console.warn('[youtube] falling back to the committed snapshot in src/data/episodes.json');
+  console.warn(
+    '[youtube] falling back to the committed snapshot in src/data/episodes.json',
+  );
   return getSnapshotVideos();
 }
 
@@ -253,7 +229,7 @@ export function avifSrcset(id: string, sizes: ThumbSize[]): string | null {
 
 export function episodeNum(title: string): string | null {
   const m = title.match(/^#(\d+)/);
-  return m ? m[1] : null;
+  return m && m[1] ? m[1] : null;
 }
 
 export function formatEpDate(published: string, locale: string): string {

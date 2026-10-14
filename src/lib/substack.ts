@@ -7,17 +7,12 @@
 //   - nothing reads it at build time any more; the page ships the island, not the
 //     post, so there is no committed snapshot to keep current.
 //
-// The timeout is not optional. On the runtime path a feed that accepts the connection
-// and then never responds would hold the island open until the Worker is killed; at
-// build time it hangs the whole build. Same for discord.ts.
+// Timeout, retries and edge caching live in `~/lib/fetch` (`fetchWithRetry`),
+// shared with youtube.ts and discord.ts so the three cannot drift apart.
+
+import { fetchWithRetry } from '~/lib/fetch';
 
 const FEED_URL = 'https://discorgento.substack.com/feed';
-const TIMEOUT_MS = 10_000;
-const ATTEMPTS = 3;
-const RETRY_BACKOFF_MS = 400;
-// The island runs once per page view. Caching the feed at the Cloudflare edge keeps
-// the publication from being hit on every one of them; a new post is visible within
-// this window. Node ignores `cf`, so the build-time path is unaffected.
 const EDGE_TTL_S = 1_800;
 
 export interface SubstackPost {
@@ -38,19 +33,14 @@ function clean(value: string): string {
     .trim();
 }
 
-// A fresh AbortSignal per attempt: reusing one would leave it already aborted after
-// the first timeout and make every retry fail instantly.
 async function readFeed(): Promise<SubstackPost[] | null> {
-  const res = await fetch(FEED_URL, {
-    headers: { 'user-agent': 'discorgento-site' },
-    signal: AbortSignal.timeout(TIMEOUT_MS),
-    cf: { cacheTtl: EDGE_TTL_S, cacheEverything: true },
-  } as RequestInit & { cf: { cacheTtl: number; cacheEverything: boolean } });
+  const res = await fetchWithRetry(FEED_URL, {
+    cacheTtl: EDGE_TTL_S,
+    backoffMs: 400,
+    label: 'substack',
+  });
 
-  if (!res.ok) {
-    console.warn(`[substack] feed returned ${res.status}`);
-    return null;
-  }
+  if (!res) return null;
 
   const text = await res.text();
   if (!text.includes('<item>')) {
@@ -64,31 +54,25 @@ async function readFeed(): Promise<SubstackPost[] | null> {
     .map((entry) => {
       const title = clean(entry.match(/<title>([\s\S]*?)<\/title>/)?.[1] ?? '');
       const url = clean(entry.match(/<link>([^<]+)<\/link>/)?.[1] ?? '');
-      const published = clean(entry.match(/<pubDate>([^<]+)<\/pubDate>/)?.[1] ?? '');
+      const published = clean(
+        entry.match(/<pubDate>([^<]+)<\/pubDate>/)?.[1] ?? '',
+      );
       if (!title || !url) return null;
       return { title, published, url };
     })
     .filter((post): post is SubstackPost => post !== null);
 }
 
-export async function getLatestSubstackPosts(limit = 3): Promise<SubstackPost[]> {
-  for (let attempt = 1; attempt <= ATTEMPTS; attempt++) {
-    try {
-      const posts = await readFeed();
-      // A parsed feed is the answer even when it is empty: retrying a publication
-      // that genuinely has no posts yet will not conjure one.
-      if (posts) return posts.slice(0, limit);
-    } catch (err) {
-      console.warn(
-        `[substack] attempt ${attempt}/${ATTEMPTS} failed:`,
-        err instanceof Error ? err.message : err
-      );
-    }
-    if (attempt < ATTEMPTS) {
-      await new Promise((resolve) => setTimeout(resolve, RETRY_BACKOFF_MS * attempt));
-    }
-  }
+export async function getLatestSubstackPosts(
+  limit = 3,
+): Promise<SubstackPost[]> {
+  const posts = await readFeed();
+  // A parsed feed is the answer even when it is empty: retrying a publication
+  // that genuinely has no posts yet will not conjure one.
+  if (posts) return posts.slice(0, limit);
 
-  console.warn('[substack] feed unavailable after retries, the island renders its fallback');
+  console.warn(
+    '[substack] feed unavailable after retries, the island renders its fallback',
+  );
   return [];
 }

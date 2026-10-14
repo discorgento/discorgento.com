@@ -1,5 +1,8 @@
 ---
-import { getDiscordStats, type DiscordStats as DiscordStatsData } from '~/lib/discord';
+import {
+  type DiscordStats as DiscordStatsData,
+  getDiscordStats,
+} from '~/lib/discord';
 import { useTranslations } from '~/lib/i18n';
 
 interface Props {
@@ -20,7 +23,8 @@ const t = useTranslations(locale);
  *    fetched, so the instant before the island lands and no-JS visitors still
  *    see a count instead of a blank line.
  */
-const stats = Astro.props.stats !== undefined ? Astro.props.stats : await getDiscordStats();
+const stats =
+  Astro.props.stats !== undefined ? Astro.props.stats : await getDiscordStats();
 
 if (Astro.props.stats === undefined) {
   /* Deliberate no-store, matching the other islands: per-view data, not a
