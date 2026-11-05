@@ -222,7 +222,7 @@ export function avifSrcset(id: string, sizes: ThumbSize[]): string | null {
 
 export function episodeNum(title: string): string | null {
   const m = title.match(/^#(\d+)/);
-  return m && m[1] ? m[1] : null;
+  return m?.[1] ?? null;
 }
 
 export function formatEpDate(published: string, locale: string): string {

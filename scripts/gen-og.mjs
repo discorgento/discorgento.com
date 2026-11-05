@@ -45,8 +45,7 @@ const OUTFIT = font('outfit/files/outfit-latin-wght-normal.woff2');
 const MONO = font(
   'jetbrains-mono/files/jetbrains-mono-latin-wght-normal.woff2',
 );
-const logoData =
-  'data:image/svg+xml;base64,' + readFileSync(LOGO).toString('base64');
+const logoData = `data:image/svg+xml;base64,${readFileSync(LOGO).toString('base64')}`;
 
 const overlay = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}">
   <style>

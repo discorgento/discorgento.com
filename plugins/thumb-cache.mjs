@@ -15,7 +15,7 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
 const VIRTUAL_ID = 'virtual:discorgento-thumb-cache';
-const RESOLVED_ID = '\0' + VIRTUAL_ID;
+const RESOLVED_ID = `\0${VIRTUAL_ID}`;
 
 /** Cached sizes are part of the contract; see the sizing note in src/lib/youtube.ts. */
 export function thumbCache() {
