@@ -11,6 +11,7 @@
 // shared with youtube.ts and discord.ts so the three cannot drift apart.
 
 import { fetchWithRetry } from '~/lib/fetch';
+import { xmlText } from '~/lib/xml';
 
 const FEED_URL = 'https://discorgento.substack.com/feed';
 const EDGE_TTL_S = 1_800;
@@ -19,18 +20,6 @@ export interface SubstackPost {
   title: string;
   published: string; // RFC822 pubDate, parsed by consumers via Date.parse
   url: string;
-}
-
-function clean(value: string): string {
-  return value
-    .replace(/<!\[CDATA\[|\]\]>/g, '')
-    .replace(/&amp;/g, '&')
-    .replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>')
-    .replace(/&quot;/g, '"')
-    .replace(/&#39;|&apos;/g, "'")
-    .replace(/&#(\d+);/g, (_, code) => String.fromCharCode(Number(code)))
-    .trim();
 }
 
 async function readFeed(): Promise<SubstackPost[] | null> {
@@ -52,9 +41,11 @@ async function readFeed(): Promise<SubstackPost[] | null> {
     .split('<item>')
     .slice(1)
     .map((entry) => {
-      const title = clean(entry.match(/<title>([\s\S]*?)<\/title>/)?.[1] ?? '');
-      const url = clean(entry.match(/<link>([^<]+)<\/link>/)?.[1] ?? '');
-      const published = clean(
+      const title = xmlText(
+        entry.match(/<title>([\s\S]*?)<\/title>/)?.[1] ?? '',
+      );
+      const url = xmlText(entry.match(/<link>([^<]+)<\/link>/)?.[1] ?? '');
+      const published = xmlText(
         entry.match(/<pubDate>([^<]+)<\/pubDate>/)?.[1] ?? '',
       );
       if (!title || !url) return null;

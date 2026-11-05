@@ -1,5 +1,6 @@
 // Fetches the latest videos from the discorgento YouTube channel via the public RSS feed.
-// Runs at build time (node) — no CORS, no API key. The feed delivers the 15 most recent videos.
+// No CORS, no API key; the feed delivers the 15 most recent videos. Called at build time
+// (the islands' fallbacks) and at request time (the episode islands and /podcast.xml).
 //
 // The feed is not dependable from CI: it answers 404 from datacenter IPs and 500 under load.
 // A build must never ship a home page with no cover art and no episodes, so the fetch falls
@@ -17,6 +18,7 @@ import {
 import snapshot from '~/data/episodes.json';
 import { fetchWithRetry } from '~/lib/fetch';
 import { intlLocale } from '~/lib/i18n';
+import { xmlText } from '~/lib/xml';
 
 const CHANNEL_ID = 'UChJitnyFtNOoCe6cu-rHcow';
 const FEED_URL = `https://www.youtube.com/feeds/videos.xml?channel_id=${CHANNEL_ID}`;
@@ -26,16 +28,6 @@ export interface Video {
   title: string;
   published: string;
   url: string;
-}
-
-function decodeXml(value: string): string {
-  return value
-    .replace(/&amp;/g, '&')
-    .replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>')
-    .replace(/&quot;/g, '"')
-    .replace(/&#39;/g, "'")
-    .replace(/&apos;/g, "'");
 }
 
 function parseFeed(xml: string): Video[] {
@@ -53,7 +45,7 @@ function parseFeed(xml: string): Video[] {
         entry.match(/<published>([^<]+)<\/published>/)?.[1] ?? '';
       return {
         id,
-        title: decodeXml(title),
+        title: xmlText(title),
         published,
         url: `https://www.youtube.com/watch?v=${id}`,
       };
@@ -148,7 +140,7 @@ export async function getLatestVideos(): Promise<Video[]> {
 // id on every publish, and nobody is around to commit its thumbnail in the same
 // commit that publishes the episode. Any id missing from CACHED_THUMBS falls back
 // to the remote original, so a new episode costs one cross-origin request instead
-// of a broken image. Run `npm run thumbs:sync` to pull the new files in.
+// of a broken image. `npm run build` syncs the new files in as a pre-build step.
 
 /**
  * Fallback for each size when there is no local copy. 640 and 1024 have no YouTube
