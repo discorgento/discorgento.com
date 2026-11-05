@@ -1,17 +1,18 @@
 ---
 import { getRelativeLocaleUrl } from 'astro:i18n';
 import { useTranslations } from '~/lib/i18n';
+import { LINKS } from '~/lib/links';
 
 const locale = Astro.currentLocale ?? 'pt-BR';
 const t = useTranslations(locale);
 const homeUrl = getRelativeLocaleUrl(locale, '/');
 const privacyUrl = getRelativeLocaleUrl(locale, '/privacidade');
-const discordUrl = 'https://discorgento.com/discord';
-const githubUrl = 'https://github.com/discorgento';
-const youtubeUrl = 'https://www.youtube.com/@discorgento';
-const spotifyUrl = 'https://open.spotify.com/playlist/4pU2Abae7J8vdY4yqPCXRc';
-const substackUrl = 'https://discorgento.substack.com';
-const twitterUrl = 'https://twitter.com/discorgento';
+const discordUrl = LINKS.discord;
+const githubUrl = LINKS.github;
+const youtubeUrl = LINKS.youtube;
+const spotifyUrl = LINKS.spotify;
+const substackUrl = LINKS.substack;
+const twitterUrl = LINKS.twitter;
 ---
 
 <footer class="mt-12 border-t-2 border-on-background bg-surface sm:mt-16">

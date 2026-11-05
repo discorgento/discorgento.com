@@ -12,6 +12,7 @@ import CookieConsent from '~/components/CookieConsent.astro';
 import Footer from '~/components/Footer.astro';
 import Navbar from '~/components/Navbar.astro';
 import { LOCALES, type Locale, stripLocale, useTranslations } from '~/lib/i18n';
+import { LINKS } from '~/lib/links';
 
 const PRELOAD_FONTS = [frauncesUrl, interUrl, monoUrl, brandUrl];
 
@@ -58,14 +59,12 @@ const alternateUrl = (target: Locale) => {
 };
 
 const SOCIALS = [
-  'https://www.youtube.com/@discorgento',
-  'https://github.com/discorgento',
-  // The show is the podcast's canonical Spotify entity; the playlist the UI links
-  // to is a curated selection, not a profile, so it does not belong here.
-  'https://open.spotify.com/show/5h3gKepBezY4Iz5LM79nUn',
-  'https://discorgento.substack.com/',
-  'https://twitter.com/discorgento',
-  'https://www.instagram.com/discorgento/',
+  LINKS.youtube,
+  LINKS.github,
+  LINKS.spotifyShow,
+  `${LINKS.substack}/`,
+  LINKS.twitter,
+  LINKS.instagram,
 ];
 
 // WebSite describes the site as a browsing surface. Organization describes the
