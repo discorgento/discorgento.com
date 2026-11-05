@@ -2,8 +2,13 @@ import type { APIRoute } from 'astro';
 import { useTranslations } from '~/lib/i18n';
 import { getLatestVideos, getSnapshotVideos } from '~/lib/youtube';
 
-// RSS 2.0 feed for the podcast, served on demand by the Worker like the episode
-// islands: a new episode shows up without a redeploy. The YouTube fetch is
+// RSS 2.0 feed of the podcast episodes, served on demand by the Worker like the
+// episode islands: a new episode shows up without a redeploy.
+//
+// This is a feed for readers, not a podcast-directory feed. The episodes are
+// YouTube videos and there is no audio file to put in an <enclosure>, so Spotify
+// and Apple would reject it; the audio lives on the Spotify show instead. Adding
+// iTunes tags without an audio source would only produce an invalid podcast feed. The YouTube fetch is
 // edge-cached (cf.cacheTtl in youtube.ts), so this does not hammer the feed.
 export const prerender = false;
 
