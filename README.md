@@ -9,7 +9,7 @@ Brazilian tech community — born in Magento, today we talk about tech in genera
 
 ## Site
 
-Built with **Astro 7 + Tailwind v4**, static, with i18n (pt-BR default, `/en/` prefix) and deployed on Cloudflare (Workers static assets).
+Built with **Astro 7 + Tailwind v4**: static pages plus a few server islands (latest episodes, newsletter, Discord stats) rendered live by a Cloudflare Worker. Three locales: pt-BR (default, no prefix), `/en/` and `/es/`.
 
 See [AGENTS.md](AGENTS.md) for commands and architecture.
 

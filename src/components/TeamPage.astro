@@ -1,5 +1,6 @@
 ---
 import { useTranslations } from '~/lib/i18n';
+import { LINKS } from '~/lib/links';
 import { getTeam } from '~/lib/team';
 
 interface Props {
@@ -9,7 +10,7 @@ interface Props {
 const { locale } = Astro.props;
 const t = useTranslations(locale);
 const people = getTeam(locale);
-const discordUrl = 'https://discorgento.com/discord';
+const discordUrl = LINKS.discord;
 ---
 
 <section class="border-b-2 border-on-background py-10 sm:py-20">

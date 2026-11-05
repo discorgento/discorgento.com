@@ -50,6 +50,10 @@ export default defineConfig({
       },
     },
   },
+  // No page renders Markdown, and Shiki's inline-styled code blocks would clash
+  // with the hash-locked style-src-elem above (Astro warns about it on every
+  // build). Turning highlighting off removes the warning and the dead weight.
+  markdown: { syntaxHighlight: false },
   i18n: {
     locales: ['pt-BR', 'en', 'es'],
     defaultLocale: 'pt-BR',

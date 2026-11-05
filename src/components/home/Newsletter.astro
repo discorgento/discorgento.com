@@ -1,0 +1,74 @@
+---
+import LatestEdition from '~/components/LatestEdition.astro';
+import { useTranslations } from '~/lib/i18n';
+import { LINKS } from '~/lib/links';
+
+interface Props {
+  locale: string;
+}
+
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+---
+
+<!-- NEWSLETTER -->
+<section class="block reveal inverted">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <p class="eyebrow"><span class="o">●</span> {t('home.newsletter.eyebrow')}</p>
+        <h2>{t('home.newsletter.title')}</h2>
+      </div>
+      <a href={LINKS.substack} target="_blank" rel="noopener noreferrer" class="link-arrow">
+        {t('home.newsletter.read')} →
+      </a>
+    </div>
+    {/* The card is a server island. It is rendered on the Worker at request time,
+        so a post published on Substack shows up without a redeploy — the build no
+        longer carries the post at all. The fallback is what a visitor sees for the
+        instant before the island lands, and what a reader without JavaScript keeps;
+        it is deliberately the generic card, since there is no build-time post to
+        show any more. Its styles live in global.css: the same markup is authored
+        here and in LatestEdition.astro. */}
+    <LatestEdition server:defer locale={locale}>
+      <a
+        href={LINKS.substack}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="edition"
+        slot="fallback"
+      >
+        <p class="meta">
+          <span class="tag">{t('home.newsletter.tag')}</span>
+        </p>
+        <h3>{t('home.newsletter.empty')}</h3>
+        <p class="go">{t('home.sign.substack')}</p>
+      </a>
+    </LatestEdition>
+  </div>
+</section>
+
+<style>
+  /* Inverted (paper) block: a light print sheet breaking the dark run.
+     Flipping --color-on-background to ink makes every hairline/title inside
+     invert on its own; surfaces stay dark, so cards read as ink on paper. */
+  :global(.zine) section.block.inverted {
+    --color-on-background: var(--color-background);
+    --color-on-surface: var(--color-background);
+    --color-muted: #6b635a;
+    --color-border: #d9d2c6;
+    /* The brand ramp is tuned for a dark ground: brand-400 is a light orange that
+       only clears 3:1 on near-black and lands at 2.4:1 on this cream, which is
+       an AA failure for the small link text. Stepping the two accents the paper
+       block actually uses down the ramp restores it without turning the links
+       brown — brand-700 still reads as orange ink on paper. */
+    --color-brand-400: var(--color-brand-700);
+    --color-brand-500: var(--color-brand-600);
+    /* Notebook grid, so the paper block reads as a printed page. */
+    background-color: #f3efe9;
+    background-image:
+      repeating-linear-gradient(to right, rgb(13 10 5 / 0.06) 0 1px, transparent 1px 2rem),
+      repeating-linear-gradient(to bottom, rgb(13 10 5 / 0.06) 0 1px, transparent 1px 2rem);
+    color: var(--color-background);
+  }
+</style>

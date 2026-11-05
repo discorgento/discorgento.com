@@ -11,6 +11,7 @@ import Episodes from '~/components/Episodes.astro';
  */
 import MainLayout from '~/layouts/MainLayout.astro';
 import { useTranslations } from '~/lib/i18n';
+import { LINKS } from '~/lib/links';
 import { episodeNum, getLatestVideos } from '~/lib/youtube';
 
 interface Props {
@@ -21,7 +22,7 @@ const { locale } = Astro.props;
 const t = useTranslations(locale);
 const videos = await getLatestVideos();
 const youtubeUrl = 'https://www.youtube.com/channel/UChJitnyFtNOoCe6cu-rHcow';
-const spotifyUrl = 'https://open.spotify.com/playlist/4pU2Abae7J8vdY4yqPCXRc';
+const spotifyUrl = LINKS.spotify;
 const site = Astro.site ?? new URL('https://discorgento.com/');
 
 // PodcastSeries names the show as a whole; each episode is a PodcastEpisode

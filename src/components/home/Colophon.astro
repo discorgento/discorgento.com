@@ -1,0 +1,234 @@
+---
+import DiscordStats from '~/components/DiscordStats.astro';
+import type { DiscordStats as DiscordStatsData } from '~/lib/discord';
+import { useTranslations } from '~/lib/i18n';
+import { LINKS } from '~/lib/links';
+import type { Video } from '~/lib/youtube';
+
+interface Props {
+  locale: string;
+  firstVideo: Video | null;
+  epTag: string;
+  epDate: string;
+  discord: DiscordStatsData | null;
+}
+
+const { locale, firstVideo, epTag, epDate, discord } = Astro.props;
+const t = useTranslations(locale);
+---
+
+<!-- COLOPHON + SIGNATURES (colophon block) -->
+<div class="colofao reveal">
+  <div class="wrap">
+    <div class="colophon" role="region" aria-label={t('home.terminal.aria')}>
+      <div class="h">
+        <span>terminal discorgento</span>
+        <span class="dots" aria-hidden="true"><i></i><i></i><i class="o"></i></span>
+      </div>
+      <div class="b">
+        <p class="cmd"><span class="p">$</span> ./discorgento --info</p>
+        <div class="sep"></div>
+        <p class="f">&gt; {t('home.terminal.stack')}</p>
+        <p>{t('home.terminal.stackValue')}</p>
+        <p class="f">&gt; {t('home.terminal.since')}</p>
+        <p>{t('home.terminal.sinceValue')}</p>
+        <p class="f">&gt; {t('home.terminal.format')}</p>
+        <p>{t('home.terminal.formatValue')}</p>
+        {firstVideo && (
+          <>
+            <p class="f">&gt; {t('home.terminal.lastEp')}</p>
+            <p class="ep">
+              <a href={firstVideo.url} target="_blank" rel="noopener noreferrer">
+                {epTag} · {firstVideo.title} ({epDate})
+              </a>
+            </p>
+          </>
+        )}
+      </div>
+      <div class="cap">
+        <span><span class="led" aria-hidden="true"></span>online</span>
+        <span>v0.0.1 · astro</span>
+      </div>
+    </div>
+
+    <div class="subs">
+      <p class="eyebrow"><span class="o">●</span> {t('home.subs.eyebrow')}</p>
+      <ul>
+        <li><a href={LINKS.youtube} target="_blank" rel="noopener noreferrer">youtube.com/@discorgento <span class="go">→</span></a></li>
+        <li><a href={LINKS.spotify} target="_blank" rel="noopener noreferrer">open.spotify.com/discorgento <span class="go">→</span></a></li>
+        <li><a href={LINKS.substack} target="_blank" rel="noopener noreferrer">substack · newsletter <span class="go">→</span></a></li>
+        <li><a href={LINKS.twitter} target="_blank" rel="noopener noreferrer">twitter.com/discorgento <span class="go">→</span></a></li>
+        <li><a href={LINKS.discord} target="_blank" rel="noopener noreferrer">discorgento.com/discord <span class="go">→</span></a></li>
+      </ul>
+      {/* The counters are a server island: re-fetched on the Worker at
+          request time, so they follow the guild without a redeploy. The
+          fallback below is the build-time value Home fetched. */}
+      <DiscordStats server:defer locale={locale}>
+        <DiscordStats slot="fallback" locale={locale} stats={discord} />
+      </DiscordStats>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* ---- colophon (terminal + signatures) ---- */
+  /* Off-screen on load: skip its layout and paint until it scrolls near (see the
+     note on .block in Home). */
+  :global(.zine) .colofao {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 800px;
+  }
+  :global(.zine) .colofao {
+    border-top: 1px solid var(--color-border);
+    padding-block: 2.5rem;
+  }
+  :global(.zine) .colofao .wrap {
+    display: grid;
+    gap: 1.5rem;
+  }
+  @media (min-width: 768px) {
+    :global(.zine) .colofao .wrap {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  /* Band plane: horizontal scanlines, the closest match to a terminal readout. */
+  :global(.zine) .colofao {
+    background-color: var(--color-surface);
+    background-image: repeating-linear-gradient(
+      to bottom,
+      rgb(236 103 55 / 0.05) 0 1px,
+      transparent 1px 3px
+    );
+  }
+
+  /* ---- terminal (colophon) ---- */
+  :global(.zine) .colophon {
+    background: var(--term);
+    border: 1px solid var(--term-line);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+  }
+  :global(.zine) .colophon .h {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.6rem 1rem;
+    border-bottom: 1px solid var(--term-line);
+    color: var(--color-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 0.7rem;
+  }
+  :global(.zine) .colophon .h .dots {
+    display: flex;
+    gap: 0.4rem;
+  }
+  :global(.zine) .colophon .h .dots i {
+    width: 0.55rem;
+    height: 0.55rem;
+    border-radius: 50%;
+    background: var(--term-line);
+    font-style: normal;
+  }
+  :global(.zine) .colophon .h .dots i.o {
+    background: var(--color-brand-500);
+  }
+  :global(.zine) .colophon .b {
+    padding: 1.1rem 1rem;
+    color: var(--color-muted);
+  }
+  :global(.zine) .colophon .b .cmd {
+    color: var(--color-on-background);
+  }
+  :global(.zine) .colophon .b .cmd .p {
+    color: var(--color-brand-400);
+  }
+  :global(.zine) .colophon .b .sep {
+    height: 1px;
+    background: var(--term-line);
+    margin: 0.9rem 0;
+  }
+  :global(.zine) .colophon .b .f {
+    color: var(--color-brand-400);
+  }
+  :global(.zine) .colophon .b .f + p {
+    margin-top: 0.25rem;
+    padding-left: 1rem;
+  }
+  :global(.zine) .colophon .b .ep a {
+    color: var(--color-on-background);
+    transition: color 0.15s;
+  }
+  :global(.zine) .colophon .b .ep a:hover {
+    color: var(--color-brand-400);
+  }
+  :global(.zine) .colophon .b p + .f {
+    margin-top: 0.9rem;
+  }
+  :global(.zine) .colophon .cap {
+    padding: 0.5rem 1rem;
+    border-top: 1px solid var(--term-line);
+    color: var(--color-muted);
+    font-size: 0.7rem;
+    display: flex;
+    justify-content: space-between;
+  }
+  :global(.zine) .colophon .cap .led {
+    display: inline-block;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: var(--color-brand-500);
+    margin-right: 0.45rem;
+  }
+
+  /* ---- assinaturas ---- */
+  :global(.zine) .subs {
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+    padding: 1.25rem;
+    text-wrap: pretty;
+  }
+  :global(.zine) .subs ul {
+    list-style: none;
+    display: grid;
+    gap: 0.6rem;
+    margin-top: 0.9rem;
+  }
+  :global(.zine) .subs a {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    color: var(--color-muted);
+    border-bottom: 1px dotted var(--color-border);
+    padding-bottom: 0.6rem;
+    transition: color 0.15s;
+  }
+  :global(.zine) .subs a:hover {
+    color: var(--color-brand-400);
+  }
+  :global(.zine) .subs a .go {
+    color: var(--color-brand-500);
+  }
+
+  /* Mobile tap targets: see the note on the overlay technique in Home. */
+  @media (max-width: 639px) {
+    :global(.zine) .colophon .b .ep a,
+    :global(.zine) .subs a {
+      position: relative;
+    }
+    :global(.zine) .colophon .b .ep a::after,
+    :global(.zine) .subs a::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 50%;
+      height: 44px;
+      transform: translateY(-50%);
+    }
+  }
+</style>

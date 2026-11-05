@@ -54,11 +54,14 @@ const privacyHref = getRelativeLocaleUrl(locale, '/privacidade');
   // counts and the banner asks again instead of silently reusing stale consent.
   const CONSENT_VERSION = 1;
 
-  const win = window as unknown as {
+  const win = window as unknown as Record<string, unknown> & {
     dataLayer?: unknown[];
     gtag?: (...args: unknown[]) => void;
     __dgGaLoaded?: boolean;
   };
+  // GA's documented per-property kill switch: while it is true, gtag.js sends
+  // nothing for this measurement ID, even though the script stays loaded.
+  const GA_DISABLE_FLAG = `ga-disable-${MEASUREMENT_ID}`;
 
   function read(): Choice | null {
     try {
@@ -88,8 +91,51 @@ const privacyHref = getRelativeLocaleUrl(locale, '/privacidade');
     }
   }
 
+  /**
+   * Drop the GA cookies (`_ga`, `_ga_<id>`). GA writes them on the widest domain
+   * it can (e.g. `.discorgento.com`), and a cookie only goes away when deleted
+   * with the domain it was set on, so expire each name on every parent domain of
+   * the current host plus the host-only variant.
+   */
+  function clearGACookies(): void {
+    const names = document.cookie
+      .split(';')
+      .map((pair) => pair.split('=')[0]?.trim() ?? '')
+      .filter((name) => name === '_ga' || name.startsWith('_ga_'));
+    if (!names.length) return;
+
+    const labels = location.hostname.split('.');
+    const domains = [''];
+    for (let i = 0; i < labels.length - 1; i++) {
+      domains.push(`; domain=.${labels.slice(i).join('.')}`);
+    }
+    for (const name of names) {
+      for (const domain of domains) {
+        document.cookie = `${name}=; Max-Age=0; path=/${domain}`;
+      }
+    }
+  }
+
+  /**
+   * Withdraw consent in this same page view. Recording `analytics: false` alone
+   * is not enough once gtag.js is running: it would keep sending hits until the
+   * next reload and leave its cookies behind. Withdrawing has to be as effective
+   * as granting (LGPD art. 8 §5), so stop the tag and remove what it stored.
+   */
+  function revokeGA(): void {
+    win[GA_DISABLE_FLAG] = true;
+    win.gtag?.('consent', 'update', { analytics_storage: 'denied' });
+    clearGACookies();
+  }
+
   function loadGA(): void {
-    if (win.__dgGaLoaded) return;
+    // Re-accepting after a revoke in the same page view: the tag is already
+    // loaded, so lift the kill switch and grant again instead of reloading it.
+    win[GA_DISABLE_FLAG] = false;
+    if (win.__dgGaLoaded) {
+      win.gtag?.('consent', 'update', { analytics_storage: 'granted' });
+      return;
+    }
     win.__dgGaLoaded = true;
 
     const dataLayer = (win.dataLayer = win.dataLayer ?? []);
@@ -140,8 +186,11 @@ const privacyHref = getRelativeLocaleUrl(locale, '/privacidade');
   const stored = read();
   if (stored?.analytics) {
     loadGA();
-  } else if (!stored) {
-    show();
+  } else {
+    // No consent on record (declined, expired or never asked): make sure no GA
+    // cookie survives from an earlier grant.
+    clearGACookies();
+    if (!stored) show();
   }
 
   banner?.addEventListener('click', (event) => {
@@ -152,6 +201,7 @@ const privacyHref = getRelativeLocaleUrl(locale, '/privacidade');
       hide();
     } else if (target.closest('[data-consent-reject]')) {
       save(false);
+      revokeGA();
       hide();
     }
   });

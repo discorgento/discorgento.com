@@ -9,6 +9,7 @@ import {
   stripLocale,
   useTranslations,
 } from '~/lib/i18n';
+import { LINKS } from '~/lib/links';
 
 interface Props {
   /** The home page renders its own big masthead, so it can drop this small lockup. */
@@ -34,9 +35,9 @@ const t = useTranslations(locale);
 const { showLockup = true, banner = true } = Astro.props;
 const NavRoot = banner ? 'header' : 'div';
 
-const substackUrl = 'https://discorgento.substack.com';
-const discordUrl = 'https://discorgento.com/discord';
-const githubUrl = 'https://github.com/discorgento';
+const substackUrl = LINKS.substack;
+const discordUrl = LINKS.discord;
+const githubUrl = LINKS.github;
 
 const homeUrl = getRelativeLocaleUrl(locale, '/');
 // Locale-prefixed routes (/en/podcast/, /es/podcast/) must match their

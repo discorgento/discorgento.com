@@ -1,0 +1,342 @@
+---
+import MenuTrigger from '~/components/MenuTrigger.astro';
+import Navbar from '~/components/Navbar.astro';
+import { intlLocale, useTranslations } from '~/lib/i18n';
+
+interface Props {
+  locale: string;
+}
+
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+
+const mastheadSub = t('home.hero.eyebrow').split(' · ');
+// The dateline is "today" on the page — it is the build date, not a post date,
+// so it gets a machine-readable datetime too. Without it a reader (human or
+// agent) has to parse "quinta-feira, 1 de outubro de 2026" to learn the day.
+const today = new Date();
+// UTC matches `datelineIso` below, which slices the same instant in UTC; without
+// it the visible day and the machine-readable day can differ while the build
+// runs on a machine west of Greenwich.
+const dateline = new Intl.DateTimeFormat(intlLocale(locale), {
+  weekday: 'long',
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+  timeZone: 'UTC',
+}).format(today);
+const datelineParts = dateline.split(', ');
+const datelineIso = today.toISOString().slice(0, 10);
+---
+
+<!--
+  The masthead is the page's banner landmark. It must sit outside <main>, so on
+  the home page Home renders its own <main> below instead of letting MainLayout
+  wrap everything: a <header> nested in <main> is not exposed as a banner.
+  The navbar right under it is demoted to a <div> so there is exactly one banner.
+-->
+<header class="zine mx-auto w-full max-w-[74rem]">
+  <!-- MASTHEAD -->
+  <div class="wrap masthead">
+    <h1 class="lockup">
+      <span class="logo" aria-hidden="true">
+        <img src="/img/logo.svg" alt="" width="48" height="48" />
+        <span class="logo-ghost"></span>
+      </span>
+      <span class="word" role="img" aria-label="discorgento">
+        {'discorgento'
+          .split('')
+          .map((ch, i) => (
+            <span class="l" aria-hidden="true" style={`--i:${i}`}>
+              {ch}
+            </span>
+          ))}
+      </span>
+    </h1>
+    <div class="sub">
+      {mastheadSub.map((part, i) => (
+        <span class="bit">
+          {i > 0 && <span class="o" aria-hidden="true">●</span>}
+          <span>{part}</span>
+        </span>
+      ))}
+    </div>
+    <p class="dateline">
+      <time datetime={datelineIso}>
+        {datelineParts.map((part, i) => (
+          <Fragment>
+            {i > 0 && (
+              <>
+                {' '}
+                <span class="o" aria-hidden="true">●</span>{' '}
+              </>
+            )}
+            <span>{part}</span>
+          </Fragment>
+        ))}
+      </time>
+    </p>
+    <span class="masthead__menu md:hidden">
+      <MenuTrigger label={t('nav.menu')} />
+    </span>
+  </div>
+  <div class="rule"></div>
+
+  <!-- NAV: same running head as the inner pages, minus the lockup (the masthead above is it) -->
+  <Navbar showLockup={false} banner={false} />
+</header>
+
+<style>
+  /* The header is a .zine root of its own (the banner landmark must sit outside
+     <main>), so the few page-wide .zine rules it relies on are repeated here —
+     Home's copies are scoped to Home and cannot reach this element. */
+  .zine {
+    --term: #0d0a05;
+    --term-line: #2e2618;
+    counter-reset: dg-sec;
+  }
+  .zine .wrap {
+    max-width: 74rem;
+    margin-inline: auto;
+    padding-inline: 1.25rem;
+  }
+  @media (min-width: 640px) {
+    .zine .wrap {
+      padding-inline: 1.5rem;
+    }
+  }
+  .zine .o {
+    color: var(--color-brand-500);
+  }
+  .zine .rule {
+    height: 2px;
+    background: var(--color-on-background);
+  }
+
+  /* ---- masthead (full-height hero) ---- */
+  .zine .masthead {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    min-height: 0;
+    padding-block: 0.9rem 0.75rem;
+    /* The masthead's plane: the same halftone dot field the team block and the
+       running head use, so those three bands read as one family. Cell tightened
+       to 10px (the nav's value) because the band is ~90px tall and the team's
+       14px grid all but vanishes at that height. */
+    background-color: var(--color-surface);
+    background-image: radial-gradient(
+      circle,
+      rgb(236 103 55 / 0.1) 1px,
+      transparent 1.2px
+    );
+    background-size: 10px 10px;
+    background-position: center;
+  }
+  .zine .masthead .lockup {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    font-family: var(--font-brand);
+    font-weight: 900;
+    letter-spacing: -0.045em;
+    /* Every display clamp on this page was retuned for small screens. The vw
+       term is inert down there — 4.5vw on a 375px phone is 16.9px, far under any
+       sensible floor — so the min was doing all the work and the type pinned to
+       desktop sizes on mobile. The floors are the mobile sizes now; the vw term
+       only takes over once there is room for it. */
+    font-size: clamp(1.3rem, 4.5vw, 3rem);
+    line-height: 0.86;
+    text-transform: lowercase;
+  }
+  /* ---- Logo mark: idle flat, single tear on hover ----
+     The mark is a plain SVG (orange disc, white shapes) and stays untouched at
+     rest. On hover one masked sibling band shears across it while the base
+     jitters, which reads as a dropped signal. Sibling layers rather than
+     pseudo-elements because those are unreliable on a replaced element in
+     Firefox. An earlier pass had two ghosts plus a CRT scanline and a phaser
+     sweep; at 40px the scanline read as dirt and the extra layers as noise, so
+     it was cut back to this. */
+  .zine .masthead .lockup .logo {
+    position: relative;
+    display: block;
+    /* Scales with the wordmark and runs slightly larger, so the mark reads as the
+       focal point of the lockup rather than a peer of the small tagline below. */
+    height: clamp(1.6rem, 1.15em, 3.5rem);
+    width: clamp(1.6rem, 1.15em, 3.5rem);
+    flex-shrink: 0;
+  }
+  .zine .masthead .lockup .logo img {
+    display: block;
+    height: 100%;
+    width: 100%;
+  }
+  /* One masked ghost, hidden until hover. The ink colour is deliberate: a white
+     ghost would vanish against the white shapes in the mark and only tear the
+     orange, whereas near-black reads on both. */
+  .zine .masthead .lockup .logo-ghost {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-color: var(--color-background);
+    /* Same square viewBox as the mark, so contain maps 1:1. */
+    mask-image: url('/img/logo.svg');
+    mask-size: contain;
+    mask-repeat: no-repeat;
+    mask-position: center;
+    opacity: 0;
+    will-change: transform, clip-path, opacity;
+  }
+  /* Trigger is the whole lockup, not just the 40px mark: a hit area that small
+     is miserable to hover, and the wordmark reads as part of the same object. */
+  .zine .masthead .lockup:hover .logo-ghost {
+    animation: 0.4s steps(3, end) dg-glitch both;
+  }
+  .zine .masthead .lockup:hover .logo img {
+    animation: 0.4s steps(3, end) dg-jitter both;
+  }
+  @keyframes dg-glitch {
+    0% {
+      opacity: 0;
+      transform: none;
+      clip-path: inset(24% 0 58% 0);
+    }
+    33% {
+      opacity: 0.9;
+      transform: translateX(-0.08em);
+      clip-path: inset(38% 0 34% 0);
+    }
+    66% {
+      opacity: 0.7;
+      transform: translateX(0.06em);
+      clip-path: inset(62% 0 12% 0);
+    }
+    100% {
+      opacity: 0;
+      transform: none;
+      clip-path: inset(24% 0 58% 0);
+    }
+  }
+  @keyframes dg-jitter {
+    0%,
+    100% {
+      transform: none;
+    }
+    33% {
+      transform: translateX(-1px);
+    }
+    66% {
+      transform: translateX(1px);
+    }
+  }
+  /* The wordmark is deliberately flat, like the logo mark: a solid orange disc
+     with white shapes, no glow and no misregistration. The orange accents
+     elsewhere in the page belong to the editorial furniture, not to the
+     identity, so the lockup stays clean. */
+  /* Letters drop into place one by one, like type being set. */
+  .zine .masthead .lockup .l {
+    display: inline-block;
+    animation: 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both dg-letter;
+    animation-delay: calc(var(--i) * 40ms + 120ms);
+  }
+  @keyframes dg-letter {
+    from {
+      opacity: 0;
+      transform: translateY(-0.32em) rotate(-5deg);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .zine .masthead .lockup .l,
+    .zine .masthead .lockup .logo img,
+    .zine .masthead .lockup .logo-ghost {
+      animation: none;
+    }
+  }
+  .zine .masthead .sub {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem 0.5rem;
+    justify-content: center;
+    margin-top: 0.45rem;
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--color-muted);
+  }
+  /* The separators are quiet furniture in the masthead, not accents: the small
+     orange dot would fight the logo for attention. The ● glyph also sits ~1px
+     below the baseline in JetBrains Mono, so next to the uppercase words it
+     reads low; nudge it back onto the cap-height centre. */
+  .zine .masthead .o {
+    position: relative;
+    top: -0.105em;
+    color: var(--color-muted);
+  }
+  /* One unit per word so the ● keeps equal space on both sides and never wraps
+     alone. The gap matches the run's own column gap so the dot is centred
+     between the words instead of hugging the right one. */
+  .zine .masthead .sub .bit {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    white-space: nowrap;
+  }
+  .zine .masthead .dateline {
+    margin-top: 0.45rem;
+    font-family: var(--font-mono);
+    font-size: 0.57rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-muted);
+  }
+  /* Mobile: the masthead is a single row, logo on the left and the menu button
+     on the right. The tagline and the date leave the banner for the menu (the
+     running head below is suppressed by Navbar on the home page at this size),
+     so the banner stays a clean logo — one logo, one menu button. */
+  @media (max-width: 767px) {
+    .zine .masthead {
+      flex-direction: row;
+      justify-content: space-between;
+      text-align: left;
+      gap: 1rem;
+    }
+    .zine .masthead .sub,
+    .zine .masthead .dateline {
+      display: none;
+    }
+  }
+  /* Newspaper "ears": on wide screens the nameplate stays centred and the
+     secondary info (tagline, date) drops into the flanks on the same baseline,
+     so it sits beside the logo instead of stacking under it. Narrow screens keep
+     the centred stack. */
+  @media (min-width: 1024px) {
+    .zine .masthead {
+      display: grid;
+      grid-template-columns: auto auto auto;
+      justify-content: center;
+      column-gap: 2rem;
+      align-items: center;
+    }
+    .zine .masthead .lockup {
+      grid-area: 1 / 2;
+    }
+    .zine .masthead .sub {
+      grid-area: 1 / 1;
+      justify-content: flex-start;
+      margin-top: 0;
+    }
+    .zine .masthead .dateline {
+      grid-area: 1 / 3;
+      margin-top: 0;
+      text-align: right;
+    }
+  }
+</style>

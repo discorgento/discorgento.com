@@ -14,13 +14,16 @@
 // produced an almost-black rectangle. Most of that weight was PNG failing to
 // compress film grain, so this composites the same texture as a backdrop,
 // darkens it, and lays the mark and wordmark on top.
+//
+// The texture lives in scripts/assets/, not public/: it is a build input only,
+// and anything under public/ is copied into dist/client and deployed.
 
 import { readFileSync, renameSync } from 'node:fs';
 import { resolve } from 'node:path';
 import sharp from 'sharp';
 
 const ROOT = process.cwd();
-const TEXTURE = resolve(ROOT, 'public/img/bg-website-fhd.png');
+const TEXTURE = resolve(ROOT, 'scripts/assets/og-texture.png');
 const LOGO = resolve(ROOT, 'public/img/logo.svg');
 const OUT = resolve(ROOT, 'public/img/og.jpg');
 
@@ -42,8 +45,7 @@ const OUTFIT = font('outfit/files/outfit-latin-wght-normal.woff2');
 const MONO = font(
   'jetbrains-mono/files/jetbrains-mono-latin-wght-normal.woff2',
 );
-const logoData =
-  'data:image/svg+xml;base64,' + readFileSync(LOGO).toString('base64');
+const logoData = `data:image/svg+xml;base64,${readFileSync(LOGO).toString('base64')}`;
 
 const overlay = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}">
   <style>

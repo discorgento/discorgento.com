@@ -22,21 +22,45 @@ jobs:
       - run: npm ci
       - run: npm run check
       - run: npm run lint
+      - run: npm test
       - run: npm run build
+      # The deploy jobs ship this exact build instead of rebuilding: the output
+      # bakes in the feeds fetched at build time, so a second build could deploy
+      # something other than what passed the gates above. Hidden files are
+      # included because dist/client/.assetsignore keeps the generated
+      # wrangler.json out of the public assets.
+      - name: Upload build output
+        if: github.event_name != 'pull_request'
+        uses: actions/upload-artifact@v7
+        with:
+          name: dist
+          path: dist/
+          include-hidden-files: true
+          retention-days: 3
 
   deploy:
     name: Deploy to Cloudflare Workers (production)
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    # workflow_dispatch is the documented manual deploy, so it has to pass too.
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
     needs: build
     runs-on: ubuntu-latest
+    # Queue, never overlap: two pushes in a row must deploy in order, so an
+    # older run cannot finish last and overwrite the newer Worker.
+    concurrency:
+      group: deploy-production
+      cancel-in-progress: false
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
         with:
           node-version: 22
           cache: npm
+      # Only for the wrangler version pinned in the lockfile; nothing is built.
       - run: npm ci
-      - run: npm run build
+      - uses: actions/download-artifact@v8
+        with:
+          name: dist
+          path: dist/
       - uses: cloudflare/wrangler-action@v4
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
@@ -45,9 +69,12 @@ jobs:
 
   deploy-staging:
     name: Deploy to Cloudflare Workers (staging)
-    if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/develop'
     needs: build
     runs-on: ubuntu-latest
+    concurrency:
+      group: deploy-staging
+      cancel-in-progress: false
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
@@ -55,7 +82,10 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - run: npm run build
+      - uses: actions/download-artifact@v8
+        with:
+          name: dist
+          path: dist/
       - uses: cloudflare/wrangler-action@v4
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}

@@ -3,7 +3,7 @@ import {
   type DiscordStats as DiscordStatsData,
   getDiscordStats,
 } from '~/lib/discord';
-import { useTranslations } from '~/lib/i18n';
+import { intlLocale, useTranslations } from '~/lib/i18n';
 
 interface Props {
   locale: string;
@@ -12,6 +12,8 @@ interface Props {
 
 const { locale } = Astro.props;
 const t = useTranslations(locale);
+// 1.234 in pt-BR/es, 1,234 in en — the raw number reads as a typo past 999.
+const formatCount = new Intl.NumberFormat(intlLocale(locale)).format;
 
 /* The member/presence counters in the colophon, rendered two ways by the same
    component:
@@ -28,9 +30,8 @@ const stats =
 
 if (Astro.props.stats === undefined) {
   /* Deliberate no-store, matching the other islands: per-view data, not a
-     cacheable asset. The Discord API call is tiny and this page sees modest
-     traffic, so this does not need the edge-cache wrapper the bulkier feeds
-     have. */
+     cacheable asset. Upstream load stays bounded anyway, because the invite API
+     call itself is edge-cached by fetchWithRetry (cf.cacheTtl in discord.ts). */
   Astro.response.headers.set('Cache-Control', 'no-store');
 }
 ---
@@ -40,10 +41,10 @@ if (Astro.props.stats === undefined) {
     {stats && (
       <>
         <span>
-          <b>{stats.members}</b> {t('home.stats.members')}
+          <b>{formatCount(stats.members)}</b> {t('home.stats.members')}
         </span>
         <span>
-          <b>{stats.online}</b> {t('home.stats.online')}
+          <b>{formatCount(stats.online)}</b> {t('home.stats.online')}
         </span>
       </>
     )}

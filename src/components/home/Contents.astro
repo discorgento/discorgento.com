@@ -1,0 +1,162 @@
+---
+import { getRelativeLocaleUrl } from 'astro:i18n';
+import { useTranslations } from '~/lib/i18n';
+import { LINKS } from '~/lib/links';
+
+interface Props {
+  locale: string;
+  epTag: string;
+}
+
+const { locale, epTag } = Astro.props;
+const t = useTranslations(locale);
+---
+
+<!-- SUMÁRIO -->
+<section class="block reveal band-toc">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <p class="eyebrow"><span class="o">●</span> {t('home.features.eyebrow')}</p>
+        <h2>{t('home.toc.title')}</h2>
+      </div>
+      <span class="mono small">{t('home.toc.label')}</span>
+    </div>
+    <div class="toc-big">
+      <a href={getRelativeLocaleUrl(locale, '/podcast')} class="row">
+        <span class="num">01</span>
+        <span class="mid">
+          <h3>{t('home.feature.podcast.title')}</h3>
+          <p>{t('home.feature.podcast.desc')}</p>
+        </span>
+        <span class="pg"><u>ep. {epTag}</u> {t('home.toc.watch')}</span>
+      </a>
+      <a href={LINKS.discord} target="_blank" rel="noopener noreferrer" class="row">
+        <span class="num">02</span>
+        <span class="mid">
+          <h3>{t('home.feature.community.title')}</h3>
+          <p>{t('home.feature.community.desc')}</p>
+        </span>
+        <span class="pg"><u>discord.gg</u> {t('home.toc.enter')}</span>
+      </a>
+      <a href={LINKS.substack} target="_blank" rel="noopener noreferrer" class="row">
+        <span class="num">03</span>
+        <span class="mid">
+          <h3>{t('home.feature.substack.title')}</h3>
+          <p>{t('home.feature.substack.desc')}</p>
+        </span>
+        <span class="pg"><u>substack.com</u> {t('home.toc.subscribe')}</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Band plane: dots, tightest cell on the page — a contents page set very small. */
+  :global(.zine) .band-toc {
+    background-color: var(--color-surface);
+    background-image: radial-gradient(
+      circle,
+      rgb(236 103 55 / 0.09) 1px,
+      transparent 1.1px
+    );
+    background-size: 7px 7px;
+  }
+
+  /* ---- table of contents ---- */
+  :global(.zine) .toc-big {
+    border-bottom: 1px solid var(--color-border);
+  }
+  :global(.zine) .toc-big .row {
+    position: relative;
+    display: grid;
+    gap: 0.5rem 1.5rem;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    padding-block: 1.75rem;
+    border-top: 1px solid var(--color-border);
+    transition: background 0.15s;
+  }
+  /* A tab marker drops down the left edge on hover, like a finger finding its
+     place in the contents page. */
+  :global(.zine) .toc-big .row::before {
+    content: '';
+    position: absolute;
+    inset-block: -1px;
+    left: 0;
+    width: 3px;
+    background: var(--color-brand-500);
+    transform: scaleY(0);
+    transform-origin: center;
+    transition: transform 0.3s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  :global(.zine) .toc-big .row:hover::before,
+  :global(.zine) .toc-big .row:focus-visible::before {
+    transform: scaleY(1);
+  }
+  :global(.zine) .toc-big .row:hover {
+    background: var(--color-surface);
+  }
+  :global(.zine) .toc-big .num {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: 1.3rem;
+    color: var(--color-brand-500);
+    line-height: 1;
+    transition: transform 0.3s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  :global(.zine) .toc-big .row:hover .num {
+    transform: translateX(6px);
+  }
+  :global(.zine) .toc-big .mid h3 {
+    font-weight: 600;
+    font-size: clamp(1.15rem, 3.5vw, 1.6rem);
+    letter-spacing: -0.01em;
+  }
+  :global(.zine) .toc-big .mid p {
+    margin-top: 0.4rem;
+    max-width: 34rem;
+    line-height: 1.6;
+    color: var(--color-muted);
+  }
+  :global(.zine) .toc-big .pg {
+    display: none;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--color-muted);
+  }
+  :global(.zine) .toc-big .pg u {
+    border-bottom: 1px dotted var(--color-muted);
+    display: inline-block;
+    /* Underlines the label only. It used to carry a min-width so the dotted
+       run reached a fixed length, but that padded the short "ep. #009" out to
+       96px and left ~35px of bare dots after the number. */
+    text-decoration: none;
+    margin-right: 0.6rem;
+  }
+  @media (min-width: 640px) {
+    :global(.zine) .toc-big .num {
+      /* The section counter (an outlined chapter numeral) is the page's
+         numbering voice; the contents ordinal stays a step below it so the two
+         "01 / 02 / 03" sequences never read at the same weight — most visible
+         on mobile, where they used to invert. */
+      font-size: 2rem;
+    }
+  }
+  @media (min-width: 1024px) {
+    :global(.zine) .toc-big .pg {
+      display: block;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :global(.zine) .toc-big .row::before,
+    :global(.zine) .toc-big .num {
+      transition: none;
+    }
+    :global(.zine) .toc-big .row:hover::before,
+    :global(.zine) .toc-big .row:hover .num {
+      transform: none;
+    }
+  }
+</style>

@@ -1,0 +1,49 @@
+---
+import { getRelativeLocaleUrl } from 'astro:i18n';
+import HomeEpisodes from '~/components/HomeEpisodes.astro';
+import { useTranslations } from '~/lib/i18n';
+import type { Video } from '~/lib/youtube';
+
+interface Props {
+  locale: string;
+  videos: Video[];
+}
+
+const { locale, videos } = Astro.props;
+const t = useTranslations(locale);
+---
+
+<!-- EPISÓDIOS -->
+<section class="block reveal band-eps">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <p class="eyebrow"><span class="o">●</span> {t('home.episodes.eyebrow')}</p>
+        <h2>{t('home.episodes.title')}</h2>
+      </div>
+      <a href={getRelativeLocaleUrl(locale, '/podcast')} class="link-arrow">
+        {t('home.featuredEp.all')} →
+      </a>
+    </div>
+    {/* The grid is a server island: it is re-rendered on the Worker at
+        request time, so the episodes here follow the channel without a
+        redeploy. The fallback below is the committed snapshot slice (skipping
+        index 0, already the cover above). */}
+    <HomeEpisodes server:defer locale={locale}>
+      <HomeEpisodes slot="fallback" locale={locale} videos={videos.slice(1, 7)} />
+    </HomeEpisodes>
+  </div>
+</section>
+
+<style>
+  /* Band plane: hatch leaning the other way from the hero's, wider pitch. The
+     cards themselves are styled in HomeEpisodes.astro. */
+  :global(.zine) .band-eps {
+    background-color: var(--color-surface);
+    background-image: repeating-linear-gradient(
+      45deg,
+      rgb(236 103 55 / 0.05) 0 1px,
+      transparent 1px 12px
+    );
+  }
+</style>

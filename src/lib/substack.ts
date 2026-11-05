@@ -11,6 +11,7 @@
 // shared with youtube.ts and discord.ts so the three cannot drift apart.
 
 import { fetchWithRetry } from '~/lib/fetch';
+import { xmlText } from '~/lib/xml';
 
 const FEED_URL = 'https://discorgento.substack.com/feed';
 const EDGE_TTL_S = 1_800;
@@ -21,16 +22,23 @@ export interface SubstackPost {
   url: string;
 }
 
-function clean(value: string): string {
-  return value
-    .replace(/<!\[CDATA\[|\]\]>/g, '')
-    .replace(/&amp;/g, '&')
-    .replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>')
-    .replace(/&quot;/g, '"')
-    .replace(/&#39;|&apos;/g, "'")
-    .replace(/&#(\d+);/g, (_, code) => String.fromCharCode(Number(code)))
-    .trim();
+/** Parse the `<item>` entries of the Substack RSS feed. Pure, for tests. */
+export function parseSubstackFeed(text: string): SubstackPost[] {
+  return text
+    .split('<item>')
+    .slice(1)
+    .map((entry) => {
+      const title = xmlText(
+        entry.match(/<title>([\s\S]*?)<\/title>/)?.[1] ?? '',
+      );
+      const url = xmlText(entry.match(/<link>([^<]+)<\/link>/)?.[1] ?? '');
+      const published = xmlText(
+        entry.match(/<pubDate>([^<]+)<\/pubDate>/)?.[1] ?? '',
+      );
+      if (!title || !url) return null;
+      return { title, published, url };
+    })
+    .filter((post): post is SubstackPost => post !== null);
 }
 
 async function readFeed(): Promise<SubstackPost[] | null> {
@@ -48,19 +56,7 @@ async function readFeed(): Promise<SubstackPost[] | null> {
     return null;
   }
 
-  return text
-    .split('<item>')
-    .slice(1)
-    .map((entry) => {
-      const title = clean(entry.match(/<title>([\s\S]*?)<\/title>/)?.[1] ?? '');
-      const url = clean(entry.match(/<link>([^<]+)<\/link>/)?.[1] ?? '');
-      const published = clean(
-        entry.match(/<pubDate>([^<]+)<\/pubDate>/)?.[1] ?? '',
-      );
-      if (!title || !url) return null;
-      return { title, published, url };
-    })
-    .filter((post): post is SubstackPost => post !== null);
+  return parseSubstackFeed(text);
 }
 
 export async function getLatestSubstackPosts(

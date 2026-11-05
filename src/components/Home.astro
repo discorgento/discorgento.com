@@ -1,13 +1,16 @@
 ---
-import { getRelativeLocaleUrl } from 'astro:i18n';
-import DiscordStats from '~/components/DiscordStats.astro';
-import HomeEpisodes from '~/components/HomeEpisodes.astro';
-import LatestEdition from '~/components/LatestEdition.astro';
+import Byline from '~/components/home/Byline.astro';
+import Colophon from '~/components/home/Colophon.astro';
+import Contents from '~/components/home/Contents.astro';
+import EpisodePlayer from '~/components/home/EpisodePlayer.astro';
+import EpisodesBand from '~/components/home/EpisodesBand.astro';
+import Join from '~/components/home/Join.astro';
+import Masthead from '~/components/home/Masthead.astro';
+import Newsletter from '~/components/home/Newsletter.astro';
+import PullQuote from '~/components/home/PullQuote.astro';
+import Team from '~/components/home/Team.astro';
 import LatestEpisode from '~/components/LatestEpisode.astro';
-import MenuTrigger from '~/components/MenuTrigger.astro';
-import Navbar from '~/components/Navbar.astro';
 import { getDiscordStats } from '~/lib/discord';
-import { intlLocale, useTranslations } from '~/lib/i18n';
 import { getTeam } from '~/lib/team';
 import { episodeNum, formatEpDate, getSnapshotVideos } from '~/lib/youtube';
 
@@ -16,7 +19,6 @@ interface Props {
 }
 
 const { locale } = Astro.props;
-const t = useTranslations(locale);
 
 // Validated against the Video shape: a malformed hand-maintained snapshot must
 // fail the build, never ship silently. getLatestVideos() uses the same gate.
@@ -34,87 +36,14 @@ const epTag = epNum ? `#${epNum}` : 'podcast';
 const epDate = firstVideo ? formatEpDate(firstVideo.published, locale) : '';
 
 const hosts = getTeam(locale);
-
-const mastheadSub = t('home.hero.eyebrow').split(' · ');
-// The dateline is "today" on the page — it is the build date, not a post date,
-// so it gets a machine-readable datetime too. Without it a reader (human or
-// agent) has to parse "quinta-feira, 1 de outubro de 2026" to learn the day.
-const today = new Date();
-// UTC matches `datelineIso` below, which slices the same instant in UTC; without
-// it the visible day and the machine-readable day can differ while the build
-// runs on a machine west of Greenwich.
-const dateline = new Intl.DateTimeFormat(intlLocale(locale), {
-  weekday: 'long',
-  day: 'numeric',
-  month: 'long',
-  year: 'numeric',
-  timeZone: 'UTC',
-}).format(today);
-const datelineParts = dateline.split(', ');
-const datelineIso = today.toISOString().slice(0, 10);
-const youtubeUrl = 'https://www.youtube.com/@discorgento';
-const spotifyUrl = 'https://open.spotify.com/playlist/4pU2Abae7J8vdY4yqPCXRc';
-const substackUrl = 'https://discorgento.substack.com';
-const discordUrl = 'https://discorgento.com/discord';
-const twitterUrl = 'https://twitter.com/discorgento';
 ---
 
-<!--
-  The masthead is the page's banner landmark. It must sit outside <main>, so on
-  the home page Home renders its own <main> below instead of letting MainLayout
-  wrap everything: a <header> nested in <main> is not exposed as a banner.
-  The navbar right under it is demoted to a <div> so there is exactly one banner.
--->
-<header class="zine mx-auto w-full max-w-[74rem]">
-  <!-- MASTHEAD -->
-  <div class="wrap masthead">
-    <h1 class="lockup">
-      <span class="logo" aria-hidden="true">
-        <img src="/img/logo.svg" alt="" width="48" height="48" />
-        <span class="logo-ghost"></span>
-      </span>
-      <span class="word" role="img" aria-label="discorgento">
-        {'discorgento'
-          .split('')
-          .map((ch, i) => (
-            <span class="l" aria-hidden="true" style={`--i:${i}`}>
-              {ch}
-            </span>
-          ))}
-      </span>
-    </h1>
-    <div class="sub">
-      {mastheadSub.map((part, i) => (
-        <span class="bit">
-          {i > 0 && <span class="o" aria-hidden="true">●</span>}
-          <span>{part}</span>
-        </span>
-      ))}
-    </div>
-    <p class="dateline">
-      <time datetime={datelineIso}>
-        {datelineParts.map((part, i) => (
-          <Fragment>
-            {i > 0 && (
-              <>
-                {' '}
-                <span class="o" aria-hidden="true">●</span>{' '}
-              </>
-            )}
-            <span>{part}</span>
-          </Fragment>
-        ))}
-      </time>
-    </p>
-    <span class="masthead__menu md:hidden">
-      <MenuTrigger label={t('nav.menu')} />
-    </span>
-  </div>
-  <div class="rule"></div>
-
-  <!-- NAV: same running head as the inner pages, minus the lockup (the masthead above is it) -->
-  <Navbar showLockup={false} banner={false} />
-</header>
+{/* The page is a stack of sections in src/components/home/. Each one carries its
+    own styles; this file keeps only what spans the whole page — the .zine root,
+    buttons, section heads and the scroll reveal. Section styles hang off this
+    .zine root, so they are written `:global(.zine) …` in the section files, and
+    the shared rules here reach into them with `.zine :global(…)`. */}
+<Masthead locale={locale} />
 
 <main
   id="main"
@@ -128,344 +57,66 @@ const twitterUrl = 'https://twitter.com/discorgento';
         <LatestEpisode slot="fallback" locale={locale} video={firstVideo} />
       </LatestEpisode>
     )}
-
-  <!-- BYLINE (as caras logo abaixo da capa) -->
-  <div class="byline reveal">
-    <div class="wrap row">
-      <span class="lbl">{t('home.hosts.byline')}</span>
-      <ul>
-        {hosts.map((person) => (
-          <li>
-            <a
-              class="face-link"
-              href={person.profile}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={`${person.name}, ${t('home.hosts.profile')}`}
-            >
-              {person.photo ? (
-                  <img
-                    class="face"
-                    src={person.photo}
-                    srcset={person.photoSrcset ?? undefined}
-                    sizes="2.25rem"
-                    alt={person.name}
-                    width="36"
-                    height="36"
-                    loading="lazy"
-                    decoding="async"
-                  />
-              ) : (
-                <span class="face monogram" aria-hidden="true">{person.initials}</span>
-              )}
-            </a>
-            <span class="nm">{person.name.split(' ')[0]}</span>
-          </li>
-        ))}
-      </ul>
-      <a class="all" href="#quem-faz">{t('home.hosts.all')} →</a>
-    </div>
+    <Byline locale={locale} hosts={hosts} />
+    <Colophon
+      locale={locale}
+      firstVideo={firstVideo}
+      epTag={epTag}
+      epDate={epDate}
+      discord={discord}
+    />
+    <Contents locale={locale} epTag={epTag} />
+    {videos.length > 0 && <EpisodesBand locale={locale} videos={videos} />}
+    <Newsletter locale={locale} />
+    <PullQuote locale={locale} firstVideo={firstVideo} epTag={epTag} />
+    <Team locale={locale} hosts={hosts} />
+    <Join locale={locale} />
   </div>
 
-  <!-- COLOPHON + SIGNATURES (colophon block) -->
-  <div class="colofao reveal">
-    <div class="wrap">
-      <div class="colophon" role="region" aria-label={t('home.terminal.aria')}>
-        <div class="h">
-          <span>terminal discorgento</span>
-          <span class="dots" aria-hidden="true"><i></i><i></i><i class="o"></i></span>
-        </div>
-        <div class="b">
-          <p class="cmd"><span class="p">$</span> ./discorgento --info</p>
-          <div class="sep"></div>
-          <p class="f">&gt; {t('home.terminal.stack')}</p>
-          <p>{t('home.terminal.stackValue')}</p>
-          <p class="f">&gt; {t('home.terminal.since')}</p>
-          <p>{t('home.terminal.sinceValue')}</p>
-          <p class="f">&gt; {t('home.terminal.format')}</p>
-          <p>{t('home.terminal.formatValue')}</p>
-          {firstVideo && (
-            <>
-              <p class="f">&gt; {t('home.terminal.lastEp')}</p>
-              <p class="ep">
-                <a href={firstVideo.url} target="_blank" rel="noopener noreferrer">
-                  {epTag} · {firstVideo.title} ({epDate})
-                </a>
-              </p>
-            </>
-          )}
-        </div>
-        <div class="cap">
-          <span><span class="led" aria-hidden="true"></span>online</span>
-          <span>v0.0.1 · astro</span>
-        </div>
-      </div>
-
-      <div class="subs">
-        <p class="eyebrow"><span class="o">●</span> {t('home.subs.eyebrow')}</p>
-        <ul>
-          <li><a href={youtubeUrl} target="_blank" rel="noopener noreferrer">youtube.com/@discorgento <span class="go">→</span></a></li>
-          <li><a href={spotifyUrl} target="_blank" rel="noopener noreferrer">open.spotify.com/discorgento <span class="go">→</span></a></li>
-          <li><a href={substackUrl} target="_blank" rel="noopener noreferrer">substack · newsletter <span class="go">→</span></a></li>
-          <li><a href={twitterUrl} target="_blank" rel="noopener noreferrer">twitter.com/discorgento <span class="go">→</span></a></li>
-          <li><a href={discordUrl} target="_blank" rel="noopener noreferrer">discorgento.com/discord <span class="go">→</span></a></li>
-        </ul>
-        {/* The counters are a server island: re-fetched on the Worker at
-            request time, so they follow the guild without a redeploy. The
-            fallback below is the build-time value Home fetched above. */}
-        <DiscordStats server:defer locale={locale}>
-          <DiscordStats slot="fallback" locale={locale} stats={discord} />
-        </DiscordStats>
-      </div>
-    </div>
-  </div>
-
-  <!-- SUMÁRIO -->
-  <section class="block reveal band-toc">
-    <div class="wrap">
-      <div class="sec-head">
-        <div>
-          <p class="eyebrow"><span class="o">●</span> {t('home.features.eyebrow')}</p>
-          <h2>{t('home.toc.title')}</h2>
-        </div>
-        <span class="mono small">{t('home.toc.label')}</span>
-      </div>
-      <div class="toc-big">
-        <a href={getRelativeLocaleUrl(locale, '/podcast')} class="row">
-          <span class="num">01</span>
-          <span class="mid">
-            <h3>{t('home.feature.podcast.title')}</h3>
-            <p>{t('home.feature.podcast.desc')}</p>
-          </span>
-          <span class="pg"><u>ep. {epTag}</u> {t('home.toc.watch')}</span>
-        </a>
-        <a href={discordUrl} target="_blank" rel="noopener noreferrer" class="row">
-          <span class="num">02</span>
-          <span class="mid">
-            <h3>{t('home.feature.community.title')}</h3>
-            <p>{t('home.feature.community.desc')}</p>
-          </span>
-          <span class="pg"><u>discord.gg</u> {t('home.toc.enter')}</span>
-        </a>
-        <a href={substackUrl} target="_blank" rel="noopener noreferrer" class="row">
-          <span class="num">03</span>
-          <span class="mid">
-            <h3>{t('home.feature.substack.title')}</h3>
-            <p>{t('home.feature.substack.desc')}</p>
-          </span>
-          <span class="pg"><u>substack.com</u> {t('home.toc.subscribe')}</span>
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <!-- EPISÓDIOS -->
-  {videos.length > 0 && (
-    <section class="block reveal band-eps">
-      <div class="wrap">
-        <div class="sec-head">
-          <div>
-            <p class="eyebrow"><span class="o">●</span> {t('home.episodes.eyebrow')}</p>
-            <h2>{t('home.episodes.title')}</h2>
-          </div>
-          <a href={getRelativeLocaleUrl(locale, '/podcast')} class="link-arrow">
-            {t('home.featuredEp.all')} →
-          </a>
-        </div>
-        {/* The grid is a server island: it is re-rendered on the Worker at
-            request time, so the episodes here follow the channel without a
-            redeploy. The fallback below is the committed snapshot slice (skipping
-            index 0, already the cover above). */}
-        <HomeEpisodes server:defer locale={locale}>
-          <HomeEpisodes slot="fallback" locale={locale} videos={videos.slice(1, 7)} />
-        </HomeEpisodes>
-      </div>
-    </section>
-  )}
-
-  <!-- NEWSLETTER -->
-  <section class="block reveal inverted">
-    <div class="wrap">
-      <div class="sec-head">
-        <div>
-          <p class="eyebrow"><span class="o">●</span> {t('home.newsletter.eyebrow')}</p>
-          <h2>{t('home.newsletter.title')}</h2>
-        </div>
-        <a href={substackUrl} target="_blank" rel="noopener noreferrer" class="link-arrow">
-          {t('home.newsletter.read')} →
-        </a>
-      </div>
-      {/* The card is a server island. It is rendered on the Worker at request time,
-          so a post published on Substack shows up without a redeploy — the build no
-          longer carries the post at all. The fallback is what a visitor sees for the
-          instant before the island lands, and what a reader without JavaScript keeps;
-          it is deliberately the generic card, since there is no build-time post to
-          show any more. */}
-      <LatestEdition server:defer>
-        <a
-          href={substackUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="edition"
-          slot="fallback"
-        >
-          <p class="meta">
-            <span class="tag">{t('home.newsletter.tag')}</span>
-          </p>
-          <h3>{t('home.newsletter.empty')}</h3>
-          <p class="go">{t('home.sign.substack')}</p>
-        </a>
-      </LatestEdition>
-    </div>
-  </section>
-
-  <!-- PULL QUOTE -->
-  <div class="wrap pull-plane">
-    <div class="pullquote reveal">
-      <span class="qm" aria-hidden="true">“</span>
-      <p>{t('home.pullquote')}</p>
-      <p class="src">{t('home.pullquote.src')}</p>
-      {firstVideo && (
-        <p class="pick">
-          <a href={firstVideo.url} target="_blank" rel="noopener noreferrer">
-            {epTag} · {firstVideo.title} →
-          </a>
-        </p>
-      )}
-    </div>
-  </div>
-
-  <!-- TEAM (who makes it) -->
-  <section class="block reveal halftone" id="quem-faz">
-    <div class="wrap">
-      <div class="sec-head">
-        <div>
-          <p class="eyebrow"><span class="o">●</span> {t('home.hosts.eyebrow')}</p>
-          <h2>{t('home.hosts.title')}</h2>
-        </div>
-        <a class="link-arrow" href={getRelativeLocaleUrl(locale, '/quem-faz')}>
-          {t('home.hosts.all')} →
-        </a>
-      </div>
-      <p class="hosts-note">{t('home.hosts.desc')}</p>
-      <div class="hosts-grid">
-        {hosts.map((person, index) => (
-          <article class="host">
-            <a class="ph" href={person.profile} target="_blank" rel="noopener noreferrer">
-              {person.photo ? (
-                <img
-                  class="face"
-                  src={person.photo}
-                  alt=""
-                  width="400"
-                  height="400"
-                  loading="lazy"
-                  decoding="async"
-                />
-              ) : (
-                <span class="face monogram" aria-hidden="true">{person.initials}</span>
-              )}
-              <span class="idx" aria-hidden="true">0{index + 1}</span>
-              <span class="see">
-                <span class="sr-only">{person.name}, </span>{t('home.hosts.profile')}
-                <span aria-hidden="true"> ↗</span>
-              </span>
-            </a>
-            <div class="who">
-              <h3>{person.name}</h3>
-              <span class="rule" aria-hidden="true"></span>
-              <p class="role">{person.role}</p>
-              <div class="socials">
-                {person.socials.map((social) => (
-                  <a
-                    class="s"
-                    href={social.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={`${person.name}, ${social.label}`}
-                  >
-                    {social.label} <span class="ext" aria-hidden="true">↗</span>
-                  </a>
-                ))}
-              </div>
-            </div>
-          </article>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <!-- ASSINATURA (CTA) -->
-  <section class="block sign reveal">
-    <div class="wrap inner" style="padding-block: 0">
-      <p class="eyebrow"><span class="o">●</span> {t('home.join.eyebrow')}</p>
-      <h2>{t('home.join.title')}</h2>
-      <p>{t('home.join.desc')}</p>
-      <div class="ctas">
-        <a href={discordUrl} target="_blank" rel="noopener noreferrer" class="btn">
-          {t('home.hero.ctaDiscord')}
-        </a>
-        <a href={substackUrl} target="_blank" rel="noopener noreferrer" class="btn ghost">
-          {t('home.sign.substack')}
-        </a>
-        <button type="button" class="btn ghost" data-copy={discordUrl}>{t('share.copy')}</button>
-      </div>
-    </div>
-  </section>
-</div>
-
-<dialog
-  class="ep-modal"
-  data-ep-modal
-  aria-label={t('player.title')}
-  style="position:fixed;inset:0;width:100%;max-width:56rem;height:fit-content;max-height:100dvh;margin:auto;"
->
-  <button type="button" class="ep-modal-close" data-player-close aria-label={t('player.close')}>×</button>
-  <div
-    class="ep-modal-frame"
-    data-ep-frame
-    style="position:relative;width:100%;aspect-ratio:16/9;"
-  >
-  </div>
-</dialog>
-<div class="toast" data-toast data-copied={t('share.copied')} role="status" aria-live="polite"></div>
+  <EpisodePlayer locale={locale} />
 </main>
 
 <style>
   /* ============================================================
      HOME — editorial fanzine (dark)
-     Reuses the global palette tokens from src/styles/global.css
+     Reuses the global palette tokens from src/styles/global.css.
+     Page-wide rules only; each section's own styles live with it.
      ============================================================ */
   .zine {
-  --term: #0d0a05;
-  --term-line: #2e2618;
-  counter-reset: dg-sec;
-}
-  .zine .wrap {
+    --term: #0d0a05;
+    --term-line: #2e2618;
+    counter-reset: dg-sec;
+  }
+  .zine :global(.wrap) {
     max-width: 74rem;
     margin-inline: auto;
     padding-inline: 1.25rem;
   }
   @media (min-width: 640px) {
-    .zine .wrap {
+    .zine :global(.wrap) {
       padding-inline: 1.5rem;
     }
   }
-  .zine a {
-    color: inherit;
-    text-decoration: none;
-  }
-  .zine .mono {
+  /* No link reset here: Tailwind's preflight already gives every <a>
+     color: inherit and text-decoration: inherit. */
+  .zine :global(.mono) {
     font-family: var(--font-mono);
   }
-  .zine .small {
+  .zine :global(.small) {
     font-size: 0.8rem;
     color: var(--color-muted);
   }
-  .zine .o {
+  .zine :global(.o) {
     color: var(--color-brand-500);
   }
-  .zine .btn {
+  .zine :global(.face) {
+    display: block;
+    object-fit: cover;
+    background: var(--color-surface-raised);
+  }
+
+  /* ---- buttons ---- */
+  .zine :global(.btn) {
     display: inline-block;
     /* position: relative anchors the tear band; no child of .btn is absolutely
        positioned, so nothing that existed depended on the button being static. */
@@ -480,18 +131,18 @@ const twitterUrl = 'https://twitter.com/discorgento';
     transition: background 0.15s, border-color 0.15s;
   }
   @media (min-width: 640px) {
-    .zine .btn {
+    .zine :global(.btn) {
       padding: 0.75rem 1.5rem;
     }
   }
-  .zine .btn:hover {
+  .zine :global(.btn:hover) {
     background: var(--color-brand-800);
     border-color: var(--color-brand-800);
   }
   /* Tear band, same clip-path read as the logo. Kept off the text: the band sits
      behind the label via z-index 0 against the button's own stacking, and the
      ::after carries no content of its own, so nothing reflows. */
-  .zine .btn::after {
+  .zine :global(.btn::after) {
     content: '';
     position: absolute;
     inset: 0;
@@ -502,7 +153,7 @@ const twitterUrl = 'https://twitter.com/discorgento';
     clip-path: inset(26% 0 48% 0);
     will-change: transform, clip-path, opacity;
   }
-  .zine .btn:hover::after {
+  .zine :global(.btn:hover::after) {
     animation: 0.42s steps(3, end) dg-btn-tear both;
   }
   @keyframes dg-btn-tear {
@@ -532,454 +183,61 @@ const twitterUrl = 'https://twitter.com/discorgento';
      1px up-left: with the tear band crossing the label at the same time, the
      movement read as two things happening at once. The shadow still grows, so
      the sticker still lifts. */
-  .zine .btn:not(.ghost) {
+  .zine :global(.btn:not(.ghost)) {
     box-shadow: 4px 4px 0 var(--color-brand-700);
     transition: background 0.15s, box-shadow 0.15s, border-color 0.15s;
   }
-  .zine .btn:not(.ghost):hover {
+  .zine :global(.btn:not(.ghost):hover) {
     box-shadow: 6px 6px 0 var(--color-brand-700), var(--shadow-glow-card);
   }
-  .zine .btn.ghost {
+  .zine :global(.btn.ghost) {
     background: transparent;
     border-color: var(--color-brand-700);
     color: var(--color-on-background);
   }
-  .zine .btn.ghost:hover {
+  .zine :global(.btn.ghost:hover) {
     background: var(--color-background);
     border-color: var(--color-brand-600);
   }
   /* The ink band is invisible against the dark fill a ghost button takes on
      hover, so the ghost variant tears in brand orange instead. */
-  .zine .btn.ghost::after {
+  .zine :global(.btn.ghost::after) {
     background-color: var(--color-brand-500);
   }
 
-  /* ---- masthead (full-height hero) ---- */
-  .zine .masthead {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    min-height: 0;
-    padding-block: 0.9rem 0.75rem;
-    /* The masthead's plane: the same halftone dot field the team block and the
-       running head use, so those three bands read as one family. Cell tightened
-       to 10px (the nav's value) because the band is ~90px tall and the team's
-       14px grid all but vanishes at that height. */
-    background-color: var(--color-surface);
-    background-image: radial-gradient(
-      circle,
-      rgb(236 103 55 / 0.1) 1px,
-      transparent 1.2px
-    );
-    background-size: 10px 10px;
-    background-position: center;
-  }
-  .zine .masthead .lockup {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.75rem;
-    font-family: var(--font-brand);
-    font-weight: 900;
-    letter-spacing: -0.045em;
-    /* Every display clamp on this page was retuned for small screens. The vw
-       term is inert down there — 4.5vw on a 375px phone is 16.9px, far under any
-       sensible floor — so the min was doing all the work and the type pinned to
-       desktop sizes on mobile. The floors are the mobile sizes now; the vw term
-       only takes over once there is room for it. */
-    font-size: clamp(1.3rem, 4.5vw, 3rem);
-    line-height: 0.86;
-    text-transform: lowercase;
-  }
-  /* ---- Logo mark: idle flat, single tear on hover ----
-     The mark is a plain SVG (orange disc, white shapes) and stays untouched at
-     rest. On hover one masked sibling band shears across it while the base
-     jitters, which reads as a dropped signal. Sibling layers rather than
-     pseudo-elements because those are unreliable on a replaced element in
-     Firefox. An earlier pass had two ghosts plus a CRT scanline and a phaser
-     sweep; at 40px the scanline read as dirt and the extra layers as noise, so
-     it was cut back to this. */
-  .zine .masthead .lockup .logo {
-    position: relative;
-    display: block;
-    /* Scales with the wordmark and runs slightly larger, so the mark reads as the
-       focal point of the lockup rather than a peer of the small tagline below. */
-    height: clamp(1.6rem, 1.15em, 3.5rem);
-    width: clamp(1.6rem, 1.15em, 3.5rem);
-    flex-shrink: 0;
-  }
-  .zine .masthead .lockup .logo img {
-    display: block;
-    height: 100%;
-    width: 100%;
-  }
-  /* One masked ghost, hidden until hover. The ink colour is deliberate: a white
-     ghost would vanish against the white shapes in the mark and only tear the
-     orange, whereas near-black reads on both. */
-  .zine .masthead .lockup .logo-ghost {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    background-color: var(--color-background);
-    /* Same square viewBox as the mark, so contain maps 1:1. */
-    mask-image: url('/img/logo.svg');
-    mask-size: contain;
-    mask-repeat: no-repeat;
-    mask-position: center;
-    opacity: 0;
-    will-change: transform, clip-path, opacity;
-  }
-  /* Trigger is the whole lockup, not just the 40px mark: a hit area that small
-     is miserable to hover, and the wordmark reads as part of the same object. */
-  .zine .masthead .lockup:hover .logo-ghost {
-    animation: 0.4s steps(3, end) dg-glitch both;
-  }
-  .zine .masthead .lockup:hover .logo img {
-    animation: 0.4s steps(3, end) dg-jitter both;
-  }
-  @keyframes dg-glitch {
-    0% {
-      opacity: 0;
-      transform: none;
-      clip-path: inset(24% 0 58% 0);
-    }
-    33% {
-      opacity: 0.9;
-      transform: translateX(-0.08em);
-      clip-path: inset(38% 0 34% 0);
-    }
-    66% {
-      opacity: 0.7;
-      transform: translateX(0.06em);
-      clip-path: inset(62% 0 12% 0);
-    }
-    100% {
-      opacity: 0;
-      transform: none;
-      clip-path: inset(24% 0 58% 0);
-    }
-  }
-  @keyframes dg-jitter {
-    0%,
-    100% {
-      transform: none;
-    }
-    33% {
-      transform: translateX(-1px);
-    }
-    66% {
-      transform: translateX(1px);
-    }
-  }
-  /* The wordmark is deliberately flat, like the logo mark: a solid orange disc
-     with white shapes, no glow and no misregistration. The orange accents
-     elsewhere in the page belong to the editorial furniture, not to the
-     identity, so the lockup stays clean. */
-  /* Letters drop into place one by one, like type being set. */
-  .zine .masthead .lockup .l {
-    display: inline-block;
-    animation: 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both dg-letter;
-    animation-delay: calc(var(--i) * 40ms + 120ms);
-  }
-  @keyframes dg-letter {
-    from {
-      opacity: 0;
-      transform: translateY(-0.32em) rotate(-5deg);
-    }
-    to {
-      opacity: 1;
-      transform: none;
-    }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .zine .masthead .lockup .l,
-    .zine .masthead .lockup .logo img,
-    .zine .masthead .lockup .logo-ghost,
-    .zine .ep .art-wrap,
-    .zine .host .ph,
-    .zine .btn {
-      animation: none;
-    }
-  }
-  .zine .masthead .sub {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.35rem 0.5rem;
-    justify-content: center;
-    margin-top: 0.45rem;
-    font-family: var(--font-mono);
-    font-size: 0.6rem;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    color: var(--color-muted);
-  }
-  /* The separators are quiet furniture in the masthead, not accents: the small
-     orange dot would fight the logo for attention. The ● glyph also sits ~1px
-     below the baseline in JetBrains Mono, so next to the uppercase words it
-     reads low; nudge it back onto the cap-height centre. */
-  .zine .masthead .o {
-    position: relative;
-    top: -0.105em;
-    color: var(--color-muted);
-  }
-  /* One unit per word so the ● keeps equal space on both sides and never wraps
-     alone. The gap matches the run's own column gap so the dot is centred
-     between the words instead of hugging the right one. */
-  .zine .masthead .sub .bit {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    white-space: nowrap;
-  }
-  .zine .masthead .dateline {
-    margin-top: 0.45rem;
-    font-family: var(--font-mono);
-    font-size: 0.57rem;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--color-muted);
-  }
-  /* Mobile: the masthead is a single row, logo on the left and the menu button
-     on the right. The tagline and the date leave the banner for the menu (the
-     running head below is suppressed by Navbar on the home page at this size),
-     so the banner stays a clean logo — one logo, one menu button. */
-  @media (max-width: 767px) {
-    .zine .masthead {
-      flex-direction: row;
-      justify-content: space-between;
-      text-align: left;
-      gap: 1rem;
-    }
-    .zine .masthead .sub,
-    .zine .masthead .dateline {
-      display: none;
-    }
-  }
-  /* Newspaper "ears": on wide screens the nameplate stays centred and the
-     secondary info (tagline, date) drops into the flanks on the same baseline,
-     so it sits beside the logo instead of stacking under it. Narrow screens keep
-     the centred stack. */
-  @media (min-width: 1024px) {
-    .zine .masthead {
-      display: grid;
-      grid-template-columns: auto auto auto;
-      justify-content: center;
-      column-gap: 2rem;
-      align-items: center;
-    }
-    .zine .masthead .lockup {
-      grid-area: 1 / 2;
-    }
-    .zine .masthead .sub {
-      grid-area: 1 / 1;
-      justify-content: flex-start;
-      margin-top: 0;
-    }
-    .zine .masthead .dateline {
-      grid-area: 1 / 3;
-      margin-top: 0;
-      text-align: right;
-    }
-  }
-  .zine .rule {
-    height: 2px;
-    background: var(--color-on-background);
-  }
-
-  /* ---- capa ----
-     The cover and its write-up moved with the markup into
-     src/components/LatestEpisode.astro (the server island): its scoped styles
-     render the cover on both the build fallback and the live island. */
-
-  /* ---- parallax: CSS scroll-driven, progressive enhancement ----
-     Browsers without animation-timeline simply don't move anything.
-     The quote drifts while the cover (in LatestEpisode) lags the other way,
-     so the two layers read as depth. */
-  @supports (animation-timeline: view()) {
-    @media (prefers-reduced-motion: no-preference) {
-      .zine .pullquote {
-        animation: dg-drift-quote linear both;
-        animation-timeline: view();
-      }
-      @keyframes dg-drift-quote {
-        from {
-          transform: translateY(0.875rem);
-        }
-        to {
-          transform: translateY(-0.875rem);
-        }
-      }
-    }
-  }
   /* Everything past the first screenful is off-screen on load. Skipping its layout
      and paint cuts the initial style/layout pass; contain-intrinsic-size keeps the
-     scrollbar honest until the section is drawn. Deliberately outside the
-     @supports and the reduced-motion query above: neither scroll-driven animation
-     support nor motion preference has anything to do with it, and nested there it
-     silently never applied in browsers without animation-timeline.
+     scrollbar honest until the section is drawn. Deliberately outside any
+     @supports or reduced-motion query: neither has anything to do with it.
      Must not touch the IntersectionObserver reveal: a content-visibility subtree is
-     not laid out, so its .reveal children never intersect to fire. */
-  .zine .colofao,
-  .zine .block:not(.in) {
+     not laid out, so its .reveal children never intersect to fire — hence
+     :not(.in). (The colophon band carries the same rule in Colophon.astro.) */
+  .zine :global(.block:not(.in)) {
     content-visibility: auto;
     contain-intrinsic-size: auto 800px;
   }
-  .zine .link-arrow {
+  .zine :global(.link-arrow) {
     font-family: var(--font-mono);
     font-size: 0.8rem;
     color: var(--color-brand-400);
   }
-  .zine .link-arrow:hover {
+  .zine :global(.link-arrow:hover) {
     text-decoration: underline;
   }
 
-  /* ---- colophon (terminal + signatures) ---- */
-  .zine .colofao {
-    border-top: 1px solid var(--color-border);
-    padding-block: 2.5rem;
-  }
-  .zine .colofao .wrap {
-    display: grid;
-    gap: 1.5rem;
-  }
-  @media (min-width: 768px) {
-    .zine .colofao .wrap {
-      grid-template-columns: repeat(2, 1fr);
-    }
-  }
-
-  /* ---- terminal (colophon) ---- */
-  .zine .colophon {
-    background: var(--term);
-    border: 1px solid var(--term-line);
-    font-family: var(--font-mono);
-    font-size: 0.8rem;
-  }
-  .zine .colophon .h {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.6rem 1rem;
-    border-bottom: 1px solid var(--term-line);
-    color: var(--color-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    font-size: 0.7rem;
-  }
-  .zine .colophon .h .dots {
-    display: flex;
-    gap: 0.4rem;
-  }
-  .zine .colophon .h .dots i {
-    width: 0.55rem;
-    height: 0.55rem;
-    border-radius: 50%;
-    background: var(--term-line);
-    font-style: normal;
-  }
-  .zine .colophon .h .dots i.o {
-    background: var(--color-brand-500);
-  }
-  .zine .colophon .b {
-    padding: 1.1rem 1rem;
-    color: var(--color-muted);
-  }
-  .zine .colophon .b .cmd {
-    color: var(--color-on-background);
-  }
-  .zine .colophon .b .cmd .p {
-    color: var(--color-brand-400);
-  }
-  .zine .colophon .b .sep {
-    height: 1px;
-    background: var(--term-line);
-    margin: 0.9rem 0;
-  }
-  .zine .colophon .b .f {
-    color: var(--color-brand-400);
-  }
-  .zine .colophon .b .f + p {
-    margin-top: 0.25rem;
-    padding-left: 1rem;
-  }
-  .zine .colophon .b .ep a {
-    color: var(--color-on-background);
-    transition: color 0.15s;
-  }
-  .zine .colophon .b .ep a:hover {
-    color: var(--color-brand-400);
-  }
-  .zine .colophon .b p + .f {
-    margin-top: 0.9rem;
-  }
-  .zine .colophon .cap {
-    padding: 0.5rem 1rem;
-    border-top: 1px solid var(--term-line);
-    color: var(--color-muted);
-    font-size: 0.7rem;
-    display: flex;
-    justify-content: space-between;
-  }
-  .zine .colophon .cap .led {
-    display: inline-block;
-    width: 0.5rem;
-    height: 0.5rem;
-    border-radius: 50%;
-    background: var(--color-brand-500);
-    margin-right: 0.45rem;
-  }
-
-  /* ---- assinaturas ---- */
-  .zine .subs {
-    border: 1px solid var(--color-border);
-    background: var(--color-surface);
-    padding: 1.25rem;
-    text-wrap: pretty;
-  }
-  /* Anchored sections should not land flush against the viewport edge. */
-  .zine section[id] {
-    scroll-margin-top: 1.5rem;
-  }
-  .zine .subs ul {
-    list-style: none;
-    display: grid;
-    gap: 0.6rem;
-    margin-top: 0.9rem;
-  }
-  .zine .subs a {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 1rem;
-    font-family: var(--font-mono);
-    font-size: 0.82rem;
-    color: var(--color-muted);
-    border-bottom: 1px dotted var(--color-border);
-    padding-bottom: 0.6rem;
-    transition: color 0.15s;
-  }
-  .zine .subs a:hover {
-    color: var(--color-brand-400);
-  }
-  .zine .subs a .go {
-    color: var(--color-brand-500);
-  }
-
-  /* ---- sections ---- */
-  :global(.js) .zine .reveal {
+  /* ---- scroll reveal (driven by the script below) ---- */
+  :global(.js) .zine :global(.reveal) {
     opacity: 0;
     transform: translateY(12px);
     transition: opacity 0.6s ease, transform 0.6s ease;
   }
-  :global(.js) .zine .reveal.in {
+  :global(.js) .zine :global(.reveal.in) {
     opacity: 1;
     transform: none;
   }
   /* headings rise out of a mask as the section enters */
-  :global(.js) .zine .reveal h2,
-  :global(.js) .zine .reveal .eyebrow {
+  :global(.js) .zine :global(.reveal h2),
+  :global(.js) .zine :global(.reveal .eyebrow) {
     clip-path: inset(0 0 100% 0);
     transform: translateY(0.45em);
     padding-bottom: 0.06em;
@@ -989,63 +247,28 @@ const twitterUrl = 'https://twitter.com/discorgento';
       transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) 0.08s,
       color 0.28s ease, text-shadow 0.28s ease;
   }
-  :global(.js) .zine .reveal.in h2,
-  :global(.js) .zine .reveal.in .eyebrow {
+  :global(.js) .zine :global(.reveal.in h2),
+  :global(.js) .zine :global(.reveal.in .eyebrow) {
     clip-path: inset(0);
     transform: none;
   }
-  /* grids cascade in (animation, not transition: keeps the hover) — the
-     episodes grid running the same cascade lives in HomeEpisodes.astro now */
-  :global(.js) .zine .reveal.in .hosts-grid > * {
-    animation: dg-rise 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both;
-  }
-  :global(.js) .zine .reveal.in .hosts-grid > *:nth-child(1) {
-    animation-delay: 0.06s;
-  }
-  :global(.js) .zine .reveal.in .hosts-grid > *:nth-child(2) {
-    animation-delay: 0.13s;
-  }
-  :global(.js) .zine .reveal.in .hosts-grid > *:nth-child(3) {
-    animation-delay: 0.2s;
-  }
-  :global(.js) .zine .reveal.in .hosts-grid > *:nth-child(4) {
-    animation-delay: 0.27s;
-  }
-  @keyframes dg-rise {
-    from {
-      opacity: 0;
-      transform: translateY(10px);
-    }
-    to {
-      opacity: 1;
-      transform: none;
-    }
-  }
-  .zine section.block {
+
+  /* ---- sections ---- */
+  .zine :global(section.block) {
     border-top: 1px solid var(--color-border);
     padding-block: 2.5rem;
   }
   @media (min-width: 640px) {
-    .zine section.block {
+    .zine :global(section.block) {
       padding-block: 4.5rem;
     }
   }
   @media (min-width: 1024px) {
-    .zine section.block {
+    .zine :global(section.block) {
       padding-block: 5.25rem;
     }
   }
-  /* The quote band is full-bleed, so its plane rides the wrapper (which spans
-     the zine) rather than the inset .pullquote; the quote keeps only its rules. */
-  .zine .pull-plane {
-    padding-block: 2.25rem;
-  }
-  @media (min-width: 640px) {
-    .zine .pull-plane {
-      padding-block: 3rem;
-    }
-  }
-  .zine .sec-head {
+  .zine :global(.sec-head) {
     display: flex;
     flex-wrap: wrap;
     align-items: flex-end;
@@ -1057,7 +280,7 @@ const twitterUrl = 'https://twitter.com/discorgento';
   }
   /* The section rule is drawn, not painted: it pulls itself across the page as
      the section enters, the way a rule prints left to right. */
-  .zine .sec-head::after {
+  .zine :global(.sec-head::after) {
     content: '';
     position: absolute;
     inset-inline: 0;
@@ -1067,11 +290,11 @@ const twitterUrl = 'https://twitter.com/discorgento';
     transform: scaleX(0);
     transform-origin: left center;
   }
-  :global(.js) .zine .reveal.in .sec-head::after {
+  :global(.js) .zine :global(.reveal.in .sec-head::after) {
     transition: transform 0.75s cubic-bezier(0.2, 0.7, 0.2, 1) 0.1s;
     transform: scaleX(1);
   }
-  .zine .sec-head h2 {
+  .zine :global(.sec-head h2) {
     font-weight: 600;
     letter-spacing: -0.01em;
     font-size: clamp(1.3rem, 3vw, 2.1rem);
@@ -1081,16 +304,16 @@ const twitterUrl = 'https://twitter.com/discorgento';
      touches the font metrics. Swapping the variable-font axes here (the old
      'wght' 780 / WONK 1 jump) re-drew every glyph wider, so the line re-wrapped
      and the heading visibly swelled under the cursor. */
-  .zine .sec-head h2:hover {
+  .zine :global(.sec-head h2:hover) {
     color: var(--color-brand-500);
     text-shadow: 0 0 0.5rem rgb(236 103 55 / 0.45);
   }
   /* Outlined numerals: one per headed section, counter bumped on the head so
      headless sections never consume a number. */
-  .zine .sec-head {
+  .zine :global(.sec-head) {
     counter-increment: dg-sec;
   }
-  .zine .sec-head .eyebrow::before {
+  .zine :global(.sec-head .eyebrow::before) {
     content: counter(dg-sec, decimal-leading-zero);
     display: block;
     margin-bottom: 0.15rem;
@@ -1103,743 +326,35 @@ const twitterUrl = 'https://twitter.com/discorgento';
     -webkit-text-stroke: 1px var(--color-brand-500);
     opacity: 0.6;
   }
-  .zine .sec-head .eyebrow {
+  .zine :global(.sec-head .eyebrow) {
     margin-bottom: 0.35rem;
-  }
-
-  /* Inverted (paper) block: a light print sheet breaking the dark run.
-     Flipping --color-on-background to ink makes every hairline/title inside
-     invert on its own; surfaces stay dark, so cards read as ink on paper. */
-  .zine section.block.inverted {
-    --color-on-background: var(--color-background);
-    --color-on-surface: var(--color-background);
-    --color-muted: #6b635a;
-    --color-border: #d9d2c6;
-    /* The brand ramp is tuned for a dark ground: brand-400 is a light orange that
-       only clears 3:1 on near-black and lands at 2.4:1 on this cream, which is
-       an AA failure for the small link text. Stepping the two accents the paper
-       block actually uses down the ramp restores it without turning the links
-       brown — brand-700 still reads as orange ink on paper. */
-    --color-brand-400: var(--color-brand-700);
-    --color-brand-500: var(--color-brand-600);
-    /* Notebook grid, so the paper block reads as a printed page. */
-    background-color: #f3efe9;
-    background-image:
-      repeating-linear-gradient(to right, rgb(13 10 5 / 0.06) 0 1px, transparent 1px 2rem),
-      repeating-linear-gradient(to bottom, rgb(13 10 5 / 0.06) 0 1px, transparent 1px 2rem);
-    color: var(--color-background);
-  }
-
-  /* ---- table of contents ---- */
-  .zine .toc-big {
-    border-bottom: 1px solid var(--color-border);
-  }
-  .zine .toc-big .row {
-    position: relative;
-    display: grid;
-    gap: 0.5rem 1.5rem;
-    grid-template-columns: auto 1fr auto;
-    align-items: center;
-    padding-block: 1.75rem;
-    border-top: 1px solid var(--color-border);
-    transition: background 0.15s;
-  }
-  /* A tab marker drops down the left edge on hover, like a finger finding its
-     place in the contents page. */
-  .zine .toc-big .row::before {
-    content: '';
-    position: absolute;
-    inset-block: -1px;
-    left: 0;
-    width: 3px;
-    background: var(--color-brand-500);
-    transform: scaleY(0);
-    transform-origin: center;
-    transition: transform 0.3s cubic-bezier(0.2, 0.7, 0.2, 1);
-  }
-  .zine .toc-big .row:hover::before,
-  .zine .toc-big .row:focus-visible::before {
-    transform: scaleY(1);
-  }
-  .zine .toc-big .row:hover {
-    background: var(--color-surface);
-  }
-  .zine .toc-big .num {
-    font-family: var(--font-display);
-    font-weight: 900;
-    font-size: 1.3rem;
-    color: var(--color-brand-500);
-    line-height: 1;
-    transition: transform 0.3s cubic-bezier(0.2, 0.7, 0.2, 1);
-  }
-  .zine .toc-big .row:hover .num {
-    transform: translateX(6px);
-  }
-  .zine .toc-big .mid h3 {
-    font-weight: 600;
-    font-size: clamp(1.15rem, 3.5vw, 1.6rem);
-    letter-spacing: -0.01em;
-  }
-  .zine .toc-big .mid p {
-    margin-top: 0.4rem;
-    max-width: 34rem;
-    line-height: 1.6;
-    color: var(--color-muted);
-  }
-  .zine .toc-big .pg {
-    display: none;
-    font-family: var(--font-mono);
-    font-size: 0.8rem;
-    color: var(--color-muted);
-  }
-  .zine .toc-big .pg u {
-    border-bottom: 1px dotted var(--color-muted);
-    display: inline-block;
-    /* Underlines the label only. It used to carry a min-width so the dotted
-       run reached a fixed length, but that padded the short "ep. #009" out to
-       96px and left ~35px of bare dots after the number. */
-    text-decoration: none;
-    margin-right: 0.6rem;
-  }
-  @media (min-width: 640px) {
-    .zine .toc-big .num {
-      /* The section counter (an outlined chapter numeral) is the page's
-         numbering voice; the contents ordinal stays a step below it so the two
-         "01 / 02 / 03" sequences never read at the same weight — most visible
-         on mobile, where they used to invert. */
-      font-size: 2rem;
-    }
-  }
-  @media (min-width: 1024px) {
-    .zine .toc-big .pg {
-      display: block;
-    }
-  }
-
-  /* ---- pull quote ---- */
-  .zine .pullquote {
-    position: relative;
-    max-width: 54rem;
-    margin-inline: auto;
-    padding-block: clamp(1.75rem, 5vw, 3.25rem);
-    border-top: 2px solid var(--color-on-background);
-    border-bottom: 2px solid var(--color-on-background);
-    text-align: center;
-  }
-  .zine .pullquote p {
-    font-weight: 600;
-    font-variation-settings: 'wght' 600;
-    transition: color 0.28s ease, text-shadow 0.28s ease;
-    font-size: clamp(1.3rem, 4vw, 2.6rem);
-    letter-spacing: -0.02em;
-    line-height: 1.25;
-    max-width: 46rem;
-    margin-inline: auto;
-    text-wrap: balance;
-  }
-  /* The quote mark leads the reveal: it sets in before the words it frames. */
-  :global(.js) .zine .reveal .pullquote .qm {
-    opacity: 0;
-    transform: translateY(0.35em) rotate(-8deg);
-    transition: opacity 0.5s ease, transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
-  }
-  :global(.js) .zine .reveal.in .pullquote .qm {
-    opacity: 1;
-    transform: none;
-  }
-  /* Quote hover: brand tint plus a wide, very soft glow. The axes used to jump
-     to wght 780 / SOFT 40 / WONK 1, which made a 2.6rem line grow several
-     pixels and re-wrap mid-sentence — the "text gets bigger" effect. */
-  .zine .pullquote p:first-of-type:hover {
-    color: var(--color-brand-500);
-    text-shadow: 0 0 0.9rem rgb(236 103 55 / 0.4);
-  }
-  .zine .pullquote .qm {
-    display: block;
-    font-family: var(--font-display);
-    font-size: clamp(3rem, 8vw, 5rem);
-    line-height: 1;
-    color: var(--color-brand-500);
-    margin-bottom: 0.1em;
-  }
-  .zine .pullquote .src {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.8rem;
-    margin-top: 1.5rem;
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.18em;
-    color: var(--color-muted);
-  }
-  .zine .pullquote .src::before,
-  .zine .pullquote .src::after {
-    content: '';
-    flex: none;
-    width: 1.75rem;
-    height: 2px;
-    background: var(--color-brand-500);
-  }
-  .zine .pullquote .pick {
-    margin-top: 1rem;
-    font-family: var(--font-mono);
-    font-size: 0.78rem;
-    text-transform: uppercase;
-    letter-spacing: 0.14em;
-  }
-  .zine .pullquote .pick a {
-    color: var(--color-brand-400);
-    transition: color 0.15s;
-  }
-  .zine .pullquote .pick a:hover {
-    color: var(--color-brand-500);
-  }
-
-  /* ---- assinatura (CTA) ---- */
-  .zine .sign {
-    background: var(--color-surface);
-    border-top: 2px solid var(--color-on-background);
-  }
-  .zine .sign .inner {
-    max-width: 42rem;
-    margin-inline: auto;
-    text-align: center;
-  }
-  .zine .sign h2 {
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    font-size: clamp(1.3rem, 4vw, 2.7rem);
-    text-wrap: balance;
-    margin-top: 0.75rem;
-  }
-  .zine .sign p {
-    margin: 1rem auto 0;
-    max-width: 34rem;
-    line-height: 1.7;
-    color: var(--color-muted);
-  }
-  .zine .sign .ctas {
-    margin-top: 2rem;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 0.75rem;
-  }
-  .zine .sign .btn {
-    /* 2.25rem inline was 36px per side, the widest padding on the page. Capped
-       on mobile so the two sign buttons sit side by side without clipping. */
-    padding: 0.8rem 1.4rem;
-    font-size: 1.05rem;
-  }
-  @media (min-width: 640px) {
-    .zine .sign .btn {
-      padding: 0.9rem 2.25rem;
-    }
-  }
-
-  /* ---- byline (caras na dobra da capa) ---- */
-  .zine .byline {
-    border-top: 1px solid var(--color-border);
-    border-bottom: 1px solid var(--color-border);
-    background: var(--color-surface);
-  }
-
-  /* ---- band planes: one texture per block ----
-     Every band gets a plane one step above the page background plus its own
-     texture, so the eye can tell the sections apart at a glance instead of
-     reading a stack of identical dark strips. Shapes alternate down the page
-     (dots / lines / dots / lines) and each one owns a distinct cell or angle,
-     so no two neighbours look like the same texture repeated.
-
-     One repeating gradient per band, never two: two periods inside a single
-     element beat against each other and the band fills with moiré, which is
-     what the first attempt at the masthead did. Alphas stay low because body
-     copy sits on top of all of them.
-
-     Declared after the band backgrounds on purpose: .byline and .sign set
-     theirs with the `background` shorthand, which would reset a
-     background-image declared earlier. background-color here, never the
-     shorthand, so each band's own base tone keeps winning. */
-  .zine .byline,
-  .zine .sign,
-  .zine .colofao,
-  .zine .pull-plane,
-  .zine .band-toc,
-  .zine .band-eps {
-    background-color: var(--color-surface);
-  }
-  /* byline: fine vertical rules, like the ruled strip of a printed colophon. */
-  .zine .byline {
-    background-image: repeating-linear-gradient(
-      to right,
-      rgb(236 103 55 / 0.05) 0 1px,
-      transparent 1px 6px
-    );
-  }
-  /* sign: wider vertical rules, mirrored rhythm against the byline above it. */
-  .zine .sign {
-    background-image: repeating-linear-gradient(
-      to right,
-      rgb(236 103 55 / 0.045) 0 1px,
-      transparent 1px 9px
-    );
-  }
-  /* colofao: horizontal scanlines, the closest match to a terminal readout. */
-  .zine .colofao {
-    background-image: repeating-linear-gradient(
-      to bottom,
-      rgb(236 103 55 / 0.05) 0 1px,
-      transparent 1px 3px
-    );
-  }
-  /* toc: dots, tightest cell on the page — a contents page set very small. */
-  .zine .band-toc {
-    background-image: radial-gradient(
-      circle,
-      rgb(236 103 55 / 0.09) 1px,
-      transparent 1.1px
-    );
-    background-size: 7px 7px;
-  }
-  /* episodes: hatch leaning the other way from the hero's, wider pitch. */
-  .zine .band-eps {
-    background-image: repeating-linear-gradient(
-      45deg,
-      rgb(236 103 55 / 0.05) 0 1px,
-      transparent 1px 12px
-    );
-  }
-  /* pull quote: wide horizontal rules, airy, so the quote is not crowded. */
-  .zine .pull-plane {
-    background-image: repeating-linear-gradient(
-      to bottom,
-      rgb(236 103 55 / 0.04) 0 1px,
-      transparent 1px 22px
-    );
-  }
-  .zine .byline .row {
-    display: flex;
-    align-items: center;
-    gap: 0.9rem;
-    flex-wrap: wrap;
-    padding-block: 0.8rem;
-  }
-  .zine .byline .lbl {
-    font-family: var(--font-mono);
-    font-size: 0.7rem;
-    text-transform: uppercase;
-    letter-spacing: 0.18em;
-    color: var(--color-muted);
-  }
-  .zine .byline ul {
-    display: flex;
-    align-items: center;
-    gap: 0.9rem;
-    flex-wrap: wrap;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-  .zine .byline li {
-    display: flex;
-    align-items: center;
-    gap: 0.45rem;
-  }
-  .zine .byline .face-link {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    overflow: hidden;
-    border-radius: 50%;
-    transition: transform 0.3s cubic-bezier(0.2, 0.7, 0.2, 1);
-  }
-  /* The avatar is a 36px circle, which is a fine pointer target but a small one
-     under a thumb. The link itself grows to 44px and the negative margin hands
-     the 8px straight back to the row, so the byline keeps the exact height and
-     the name does not move — margins shrink the layout box, not the hit box.
-     The overlay approach used elsewhere cannot be used here: overflow: hidden
-     plus border-radius: 50% clips a pseudo-element back to the circle. */
-  @media (max-width: 639px) {
-    .zine .byline .face-link {
-      width: 2.75rem;
-      height: 2.75rem;
-      margin: -0.25rem;
-    }
-  }
-  /* The avatar nudges out of the ring while the name stays put — a small
-     mis-registration, consistent with the wordmark treatment. */
-  .zine .byline .face-link:hover {
-    transform: translateX(3px);
-  }
-  .zine .byline .nm {
-    font-family: var(--font-mono);
-    font-size: 0.78rem;
-  }
-  .zine .byline .all {
-    margin-left: auto;
-    font-family: var(--font-mono);
-    font-size: 0.78rem;
-    color: var(--color-brand-400);
-  }
-  .zine .byline .all:hover {
-    color: var(--color-brand-500);
-  }
-
-  /* ---- team (who makes it) — cover cards ---- */
-  .zine .face {
-    display: block;
-    object-fit: cover;
-    background: var(--color-surface-raised);
-  }
-  /* avatar pequeno da byline */
-  .zine .byline .face {
-    width: 2.25rem;
-    height: 2.25rem;
-    border-radius: 50%;
-    border: 1px solid var(--color-border);
-  }
-  .zine .byline .face.monogram {
-    display: grid;
-    place-items: center;
-    font-family: var(--font-display);
-    font-weight: 700;
-    font-size: 0.82rem;
-    color: var(--color-muted);
-  }
-  .zine .hosts-note {
-    margin-top: 0.5rem;
-    max-width: 34rem;
-    font-size: 0.95rem;
-    color: var(--color-muted);
-    text-wrap: pretty;
-  }
-  .zine section.halftone {
-    /* Halftone dot field: the print texture the risograph cover uses, kept
-       faint so it stays a backdrop. */
-    background-image: radial-gradient(circle, rgb(236 103 55 / 0.1) 1px, transparent 1.2px);
-    background-size: 14px 14px;
-    background-position: center;
-  }
-  .zine .hosts-grid {
-    display: grid;
-    /* Two up on a phone. auto-fit with a 13.5rem floor can only place one track
-       below ~450px, so each 1:1 photo took the full 334px and four of them stacked
-       into 1900px of scrolling. The square shape stays; the size does not. */
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1px;
-    background: var(--color-border);
-    border: 1px solid var(--color-border);
-    margin-top: 1.75rem;
-  }
-  @media (min-width: 768px) {
-    .zine .hosts-grid {
-      /* Four across on desktop, which is the whole roster in one row. */
-      grid-template-columns: repeat(4, 1fr);
-    }
-  }
-  .zine .host {
-    display: flex;
-    flex-direction: column;
-    background: var(--color-surface);
-    transition: background 0.2s;
-  }
-  .zine .host:hover {
-    background: var(--color-surface-raised);
-  }
-  .zine .host .ph {
-    display: block;
-    position: relative;
-    overflow: hidden;
-    aspect-ratio: 1/1;
-    border-bottom: 1px solid var(--color-border);
-  }
-  .zine .host .ph .face {
-    width: 100%;
-    height: 100%;
-    /* Slow push-in on hover, same easing as the episode thumbnails so the whole
-       page answers a hover the same way. */
-    transition: transform 0.5s cubic-bezier(0.2, 0.7, 0.2, 1);
-  }
-  .zine .host:hover .ph .face {
-    transform: scale(1.05);
-  }
-  /* ---- Tear on hover: the mark's glitch, generalised to any container ----
-     The logo needs a masked ghost because the mark is one SVG. Everywhere else
-     the same read comes from a clip-path band laid over the content. This only
-     works on real elements, not replaced ones — pseudo-elements on an <img> are
-     unreliable in Firefox, which is why the logo markup uses sibling spans.
-     (The episodes grid runs the same tear inside HomeEpisodes.astro.) */
-  .zine .host .ph::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    z-index: 1;
-    pointer-events: none;
-    background-color: var(--color-on-background);
-    opacity: 0;
-    clip-path: inset(30% 0 44% 0);
-    will-change: transform, clip-path, opacity;
-  }
-  .zine .host:hover .ph::after {
-    animation: 0.42s steps(3, end) dg-tear both;
-  }
-  @keyframes dg-tear {
-    0% {
-      opacity: 0;
-      transform: none;
-      clip-path: inset(30% 0 44% 0);
-    }
-    33% {
-      opacity: 0.85;
-      transform: translateX(-0.5rem);
-      clip-path: inset(42% 0 30% 0);
-    }
-    66% {
-      opacity: 0.6;
-      transform: translateX(0.35rem);
-      clip-path: inset(18% 0 56% 0);
-    }
-    100% {
-      opacity: 0;
-      transform: none;
-      clip-path: inset(30% 0 44% 0);
-    }
-  }
-  .zine .host .ph .face.monogram {
-    display: grid;
-    place-items: center;
-    font-family: var(--font-display);
-    font-weight: 700;
-    font-size: 3rem;
-    color: var(--color-muted);
-  }
-  .zine .host .idx {
-    position: absolute;
-    top: 0.65rem;
-    left: 0.75rem;
-    z-index: 1;
-    padding: 0.15rem 0.4rem;
-    font-family: var(--font-mono);
-    font-size: 0.7rem;
-    letter-spacing: 0.14em;
-    color: var(--color-background);
-    background: var(--color-brand-500);
-  }
-  .zine .host .see {
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    z-index: 1;
-    padding: 0.45rem 0.75rem;
-    font-family: var(--font-mono);
-    font-size: 0.7rem;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    color: var(--color-background);
-    background: var(--color-brand-500);
-    transform: translateY(101%);
-    transition: transform 0.25s ease;
-  }
-  .zine .host .ph:hover .see,
-  .zine .host .ph:focus-visible .see {
-    transform: none;
-  }
-  .zine .host .who {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    padding: 1.1rem 1.25rem 1.35rem;
-  }
-  .zine .host h3 {
-    font-family: var(--font-display);
-    font-size: 1.3rem;
-    line-height: 1.1;
-    letter-spacing: -0.01em;
-  }
-  .zine .host .rule {
-    display: block;
-    width: 0;
-    height: 2px;
-    margin-top: 0.5rem;
-    background: var(--color-brand-500);
-    transition: width 0.35s ease;
-  }
-  .zine .host:hover .rule {
-    width: 2.5rem;
-  }
-  .zine .host .role {
-    margin-top: 0.55rem;
-    font-family: var(--font-mono);
-    font-size: 0.7rem;
-    text-transform: uppercase;
-    letter-spacing: 0.14em;
-    color: var(--color-muted);
-  }
-  .zine .host .socials {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-top: 1rem;
-  }
-  /* 24px minimum touch target, per WCAG 2.5.8. Padding does that without
-     touching the type size the zine depends on. */
-  .zine .host .s {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.3rem;
-    min-height: 1.5rem;
-    min-width: 1.5rem;
-    padding: 0.4rem 0.6rem;
-    border: 1px solid var(--color-border);
-    font-family: var(--font-mono);
-    font-size: 0.7rem;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--color-muted);
-    transition: border-color 0.15s, color 0.15s;
-  }
-  .zine .host .s:hover {
-    border-color: var(--color-brand-500);
-    color: var(--color-brand-400);
-  }
-  .zine .host .s .ext {
-    font-size: 0.85em;
-    opacity: 0.7;
-  }
-
-  /* ---- episode player (modal) ---- */
-  .ep-modal {
-    /* Size explicitly: never rely on the UA's fit-content for a dialog whose
-       only child is an absolutely positioned iframe (that collapses to 0).
-       height must be resolved (fit-content): with inset:0 and height:auto the
-       box stretches to the full viewport instead of hugging the video. */
-    position: fixed;
-    inset: 0;
-    width: 100%;
-    max-width: 56rem;
-    height: fit-content;
-    max-height: 100dvh;
-    margin: auto;
-    padding: 0;
-    border: 1px solid var(--color-border);
-    background: #000;
-  }
-  .ep-modal::backdrop {
-    background: rgb(13 10 5 / 85%);
-  }
-  .ep-modal-frame {
-    position: relative;
-    aspect-ratio: 16 / 9;
-  }
-  .ep-modal-frame iframe {
-    position: absolute;
-    inset: 0;
-    display: block;
-    width: 100%;
-    height: 100%;
-    border: 0;
-  }
-  .ep-modal-close {
-    position: absolute;
-    top: 0.5rem;
-    right: 0.5rem;
-    z-index: 1;
-    width: 2.25rem;
-    height: 2.25rem;
-    display: grid;
-    place-items: center;
-    font-size: 1.35rem;
-    line-height: 1;
-    color: var(--color-on-background);
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    cursor: pointer;
-  }
-  .ep-modal-close:hover,
-  .ep-modal-close:focus-visible {
-    color: var(--color-brand-400);
-    border-color: var(--color-brand-500);
-  }
-
-  /* ---- toast (copiar convite) ---- */
-  .toast {
-    position: fixed;
-    left: 50%;
-    bottom: 1.5rem;
-    z-index: 70;
-    transform: translate(-50%, 0.75rem);
-    opacity: 0;
-    visibility: hidden;
-    padding: 0.6rem 1rem;
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    color: var(--color-on-background);
-    background: var(--color-surface);
-    border: 1px solid var(--color-brand-500);
-    transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
-  }
-  .toast.on {
-    opacity: 1;
-    visibility: visible;
-    transform: translate(-50%, 0);
   }
 
   /* ---- movimento reduzido ---- */
   @media (prefers-reduced-motion: reduce) {
-    :global(.js) .zine .reveal {
+    .zine :global(.btn) {
+      animation: none;
+    }
+    :global(.js) .zine :global(.reveal) {
       opacity: 1;
       transform: none;
       transition: none;
     }
-    :global(.js) .zine .reveal h2,
-    :global(.js) .zine .reveal .eyebrow {
+    :global(.js) .zine :global(.reveal h2),
+    :global(.js) .zine :global(.reveal .eyebrow) {
       clip-path: none;
       transform: none;
       transition: none;
     }
-    :global(.js) .zine .reveal.in .hosts-grid > * {
-      animation: none;
-    }
-    /* The drawn rule and the quote mark are motion, not decoration: land them
-       in their final state instead of leaving them invisible. */
-    :global(.js) .zine .reveal.in .sec-head::after,
-    :global(.js) .zine .reveal.in .pullquote .qm {
+    /* The drawn rule is motion, not decoration: land it in its final state
+       instead of leaving it invisible. */
+    :global(.js) .zine :global(.reveal.in .sec-head::after) {
       transform: none;
       transition: none;
-    }
-    :global(.js) .zine .reveal .pullquote .qm {
-      opacity: 1;
-      transition: none;
-    }
-    .toast {
-      transform: translate(-50%, 0);
-      transition: opacity 0.2s ease, visibility 0.2s;
-    }
-    .zine .host .rule,
-    .zine .host .s,
-    .zine .host .see,
-    .zine .host .ph .face,
-    .zine .byline .face-link,
-    .zine .toc-big .row::before,
-    .zine .toc-big .num {
-      transition: none;
-    }
-    .zine .host:hover .ph .face,
-    .zine .byline .face-link:hover,
-    .zine .toc-big .row:hover::before,
-    .zine .toc-big .row:hover .num {
-      transform: none;
     }
     /* The load-in choreography is motion, so it goes. (The cover wipe and the
        card animations live in LatestEpisode / HomeEpisodes.) */
-    .zine .btn:not(.ghost) {
+    .zine :global(.btn:not(.ghost)) {
       animation: none;
       transition: none;
       transform: none;
@@ -1847,31 +362,24 @@ const twitterUrl = 'https://twitter.com/discorgento';
   }
 
   /* ---- Mobile tap targets ----
-     Apple asks for 44px, Material for 48dp. Everything below measures 18-36px
-     on a phone, which is the usual reason a site feels imprecise under the
-     thumb: you aim at a thin line and miss it. Padding is not the fix — it would
-     push the surrounding layout down — so each target grows an invisible
-     overlay instead. Type size, visual box and spacing are all untouched, which
-     is why this is scoped to below 640px: on a pointer device a 19px link is
-     perfectly normal to hit and a 44px one is just a fat row.
+     Apple asks for 44px, Material for 48dp. Small links measure 18-36px on a
+     phone, which is the usual reason a site feels imprecise under the thumb: you
+     aim at a thin line and miss it. Padding is not the fix — it would push the
+     surrounding layout down — so each target grows an invisible overlay instead.
+     Type size, visual box and spacing are all untouched, which is why this is
+     scoped to below 640px: on a pointer device a 19px link is perfectly normal to
+     hit and a 44px one is just a fat row.
 
      The overlay is centred on the link rather than stretched, so a link that is
      already 36px only gains 4px per side and a 19px one gains ~12px. That
-     matters because .subs a already sits 9.6px apart from its neighbour — an
-     inset-based expansion large enough for the 19px links would overlap here. */
+     matters because the colophon links sit 9.6px apart — an inset-based
+     expansion large enough for the 19px links would overlap there. The section
+     files repeat this overlay for their own small links. */
   @media (max-width: 639px) {
-    .zine .link-arrow,
-    .zine .byline .all,
-    .zine .colophon .b .ep a,
-    .zine .subs a,
-    .zine .host .s {
+    .zine :global(.link-arrow) {
       position: relative;
     }
-    .zine .link-arrow::after,
-    .zine .byline .all::after,
-    .zine .colophon .b .ep a::after,
-    .zine .subs a::after,
-    .zine .host .s::after {
+    .zine :global(.link-arrow::after) {
       content: '';
       position: absolute;
       left: 0;
@@ -1880,27 +388,18 @@ const twitterUrl = 'https://twitter.com/discorgento';
       height: 44px;
       transform: translateY(-50%);
     }
-    /* .face-link is handled above. The hero badge used to be listed here too,
-       because its stretched ::after covered the whole artwork, but the badge is
-       gone: the CTA button is the episode's single affordance now. (The cover
-       caption keeps its own touch target inside LatestEpisode.) */
   }
 </style>
 
 <script>
   document.documentElement.classList.add('js');
 
-  function initReveal() {
-    const items = document.querySelectorAll('.zine .reveal:not([data-reveal-ready])');
-    if (!items.length) return;
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (reduceMotion || !('IntersectionObserver' in window)) {
-      items.forEach((el) => {
-        el.setAttribute('data-reveal-ready', '');
-        el.classList.add('in');
-      });
-      return;
-    }
+  // Scroll reveal: each .reveal gets .in the first time it enters the viewport.
+  const items = document.querySelectorAll('.zine .reveal');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduceMotion || !('IntersectionObserver' in window)) {
+    items.forEach((el) => el.classList.add('in'));
+  } else {
     const observer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
@@ -1910,108 +409,8 @@ const twitterUrl = 'https://twitter.com/discorgento';
           }
         }
       },
-      { rootMargin: '0px 0px -8% 0px', threshold: 0.06 }
+      { rootMargin: '0px 0px -8% 0px', threshold: 0.06 },
     );
-    items.forEach((el) => {
-      el.setAttribute('data-reveal-ready', '');
-      observer.observe(el);
-    });
+    items.forEach((el) => observer.observe(el));
   }
-
-  const scope = window as unknown as Record<string, unknown>;
-
-  if (!scope.__dgHome) {
-    scope.__dgHome = true;
-
-    let toastTimer = 0;
-
-    function showToast(message: string) {
-      const toast = document.querySelector<HTMLElement>('[data-toast]');
-      if (!toast) return;
-      toast.textContent = message;
-      toast.classList.add('on');
-      window.clearTimeout(toastTimer);
-      toastTimer = window.setTimeout(() => toast.classList.remove('on'), 2400);
-    }
-
-    const modal = () =>
-      document.querySelector<HTMLDialogElement>('[data-ep-modal]');
-
-    document.addEventListener('click', async (event) => {
-      const target = event.target as Element | null;
-      if (!target || !target.closest) return;
-
-      // copiar convite do Discord
-      const copier = target.closest<HTMLElement>('[data-copy]');
-      if (copier) {
-        const value = copier.getAttribute('data-copy') ?? '';
-        const toast = document.querySelector('[data-toast]');
-        try {
-          await navigator.clipboard.writeText(value);
-        } catch {
-          /* clipboard bloqueado: avisa mesmo assim */
-        }
-        showToast(toast?.getAttribute('data-copied') ?? '');
-        return;
-      }
-
-      // fechar o player
-      if (target.closest('[data-player-close]')) {
-        modal()?.close();
-        return;
-      }
-
-      // open the episode in the player instead of leaving the site.
-      // Cards carry the id in their href; the cover carries it in data-ep-id.
-      const card = target.closest<HTMLElement>('.zine .ep, [data-ep-open]');
-      if (card) {
-        const id =
-          card.getAttribute('data-ep-id') ??
-          (card.getAttribute('href') ?? '').match(/(?:v=|youtu\.be\/|embed\/)([\w-]{6,})/)?.[1];
-        const dialog = modal();
-        const frame = dialog?.querySelector('[data-ep-frame]');
-        // Both paths are build-time data, but the href regex cannot produce
-        // anything but word characters while data-ep-id is copied verbatim, so
-        // check the charset here instead of trusting where the id came from.
-        if (!id || !/^[\w-]{6,20}$/.test(id) || !dialog || !frame) return;
-        event.preventDefault();
-        // Built as a node, not as an HTML string: assigning to src is a value,
-        // never markup, so the id has no way to break out of the attribute even
-        // if the check above were ever relaxed.
-        const iframe = document.createElement('iframe');
-        iframe.src = `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0`;
-        iframe.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;border:0;';
-        iframe.allow =
-          'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
-        iframe.allowFullscreen = true;
-        iframe.title =
-          card.getAttribute('data-ep-title') ??
-          card.querySelector('.title')?.textContent?.trim() ??
-          'YouTube';
-        frame.replaceChildren(iframe);
-        dialog.showModal();
-        return;
-      }
-
-      // clique no backdrop fecha
-      const opened = modal();
-      if (opened?.open && event.target === opened) opened.close();
-    });
-
-    // the close event does not bubble: capture it so the iframe (and audio) is torn down
-    document.addEventListener(
-      'close',
-      (event) => {
-        const dialog = event.target as HTMLDialogElement | null;
-        if (dialog?.matches?.('[data-ep-modal]')) {
-          const frame = dialog.querySelector('[data-ep-frame]');
-          if (frame) frame.innerHTML = '';
-        }
-      },
-      true
-    );
-  }
-
-  document.addEventListener('astro:page-load', initReveal);
-  initReveal();
 </script>
