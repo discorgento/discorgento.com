@@ -60,9 +60,12 @@ const alternateUrl = (target: Locale) => {
 const SOCIALS = [
   'https://www.youtube.com/@discorgento',
   'https://github.com/discorgento',
-  'https://open.spotify.com/playlist/4pU2Abae7J8vdY4yqPCXRc',
+  // The show is the podcast's canonical Spotify entity; the playlist the UI links
+  // to is a curated selection, not a profile, so it does not belong here.
+  'https://open.spotify.com/show/5h3gKepBezY4Iz5LM79nUn',
   'https://discorgento.substack.com/',
   'https://twitter.com/discorgento',
+  'https://www.instagram.com/discorgento/',
 ];
 
 // WebSite describes the site as a browsing surface. Organization describes the
