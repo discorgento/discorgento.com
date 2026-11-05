@@ -22,21 +22,8 @@ export interface SubstackPost {
   url: string;
 }
 
-async function readFeed(): Promise<SubstackPost[] | null> {
-  const res = await fetchWithRetry(FEED_URL, {
-    cacheTtl: EDGE_TTL_S,
-    backoffMs: 400,
-    label: 'substack',
-  });
-
-  if (!res) return null;
-
-  const text = await res.text();
-  if (!text.includes('<item>')) {
-    console.warn('[substack] feed carried no <item>');
-    return null;
-  }
-
+/** Parse the `<item>` entries of the Substack RSS feed. Pure, for tests. */
+export function parseSubstackFeed(text: string): SubstackPost[] {
   return text
     .split('<item>')
     .slice(1)
@@ -52,6 +39,24 @@ async function readFeed(): Promise<SubstackPost[] | null> {
       return { title, published, url };
     })
     .filter((post): post is SubstackPost => post !== null);
+}
+
+async function readFeed(): Promise<SubstackPost[] | null> {
+  const res = await fetchWithRetry(FEED_URL, {
+    cacheTtl: EDGE_TTL_S,
+    backoffMs: 400,
+    label: 'substack',
+  });
+
+  if (!res) return null;
+
+  const text = await res.text();
+  if (!text.includes('<item>')) {
+    console.warn('[substack] feed carried no <item>');
+    return null;
+  }
+
+  return parseSubstackFeed(text);
 }
 
 export async function getLatestSubstackPosts(

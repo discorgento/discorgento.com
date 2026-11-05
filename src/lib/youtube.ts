@@ -30,7 +30,8 @@ export interface Video {
   url: string;
 }
 
-function parseFeed(xml: string): Video[] {
+/** Parse the `<entry>` elements of the YouTube channel feed. Pure, for tests. */
+export function parseFeed(xml: string): Video[] {
   return xml
     .split('<entry>')
     .slice(1)
