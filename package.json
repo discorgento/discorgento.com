@@ -32,7 +32,7 @@
     "@astrojs/check": "^0.9.12",
     "@astrojs/cloudflare": "^14.4.3",
     "@astrojs/sitemap": "^3.7.4",
-    "@biomejs/biome": "^2.5.15",
+    "@biomejs/biome": "^2.6.4",
     "@tailwindcss/typography": "^0.5.20",
     "@tailwindcss/vite": "^4.3.3",
     "sharp": "^0.35.4",
