@@ -234,13 +234,8 @@ const structuredData = {
           frame = requestAnimationFrame(paintProgress);
         }
 
-        const scope = window as unknown as Record<string, unknown>;
-        if (!scope.__dgProgress) {
-          scope.__dgProgress = true;
-          window.addEventListener('scroll', requestProgress, { passive: true });
-          window.addEventListener('resize', requestProgress);
-        }
-        document.addEventListener('astro:page-load', requestProgress);
+        window.addEventListener('scroll', requestProgress, { passive: true });
+        window.addEventListener('resize', requestProgress);
         requestProgress();
       }
     </script>
