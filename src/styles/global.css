@@ -8,7 +8,6 @@
 /* Brand wordmark face, see --font-brand below. */
 @import "@fontsource-variable/outfit";
 @import "tailwindcss";
-@plugin "@tailwindcss/typography";
 
 /*
   ============================================================
@@ -315,19 +314,6 @@ body::after {
      nothing. If a transition is reintroduced, its reduced-motion guard belongs in
      that change — not left behind here as dead CSS that reads as if it still
      governs something. */
-
-/* ---- Prose (post content) safe on narrow screens ----
-   Code blocks, images and tables must never overflow the viewport
-*/
-.prose pre,
-.prose table,
-.prose img {
-  max-width: 100%;
-  overflow-x: auto;
-}
-.prose img {
-  height: auto;
-}
 
 /* ---- Newsletter edition card ----
    Lives here, not in a component, because the card is rendered in two places: the
