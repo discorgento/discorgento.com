@@ -91,13 +91,15 @@ const t = useTranslations(locale);
     margin-inline: auto;
     text-wrap: balance;
   }
-  /* The quote mark leads the reveal: it sets in before the words it frames. */
-  :global(.js .zine) .reveal .pullquote .qm {
+  /* The quote mark leads the reveal: it sets in before the words it frames.
+     .pullquote is itself the .reveal element, so the two classes sit on one
+     compound selector — a `.reveal .pullquote` descendant form never matches. */
+  :global(.js .zine) .pullquote.reveal .qm {
     opacity: 0;
     transform: translateY(0.35em) rotate(-8deg);
     transition: opacity 0.5s ease, transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
   }
-  :global(.js .zine) .reveal.in .pullquote .qm {
+  :global(.js .zine) .pullquote.reveal.in .qm {
     opacity: 1;
     transform: none;
   }
@@ -155,11 +157,11 @@ const t = useTranslations(locale);
   @media (prefers-reduced-motion: reduce) {
     /* The quote mark is motion, not decoration: land it in its final state
        instead of leaving it invisible. */
-    :global(.js .zine) .reveal.in .pullquote .qm {
+    :global(.js .zine) .pullquote.reveal.in .qm {
       transform: none;
       transition: none;
     }
-    :global(.js .zine) .reveal .pullquote .qm {
+    :global(.js .zine) .pullquote.reveal .qm {
       opacity: 1;
       transition: none;
     }
