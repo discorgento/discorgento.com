@@ -1,8 +1,10 @@
 @import "@fontsource-variable/inter";
 @import "@fontsource-variable/jetbrains-mono";
-/* Full build: exposes the opsz/SOFT/WONK axes (optical sizing + axis play).
-   Same subsets as the standard build, ~52K bigger on the latin subset. */
-@import "@fontsource-variable/fraunces/full.css";
+/* opsz build: wght + optical size, which `font-optical-sizing: auto` below
+   relies on. Not the full build: the SOFT/WONK axis play it existed for was
+   removed (it re-wrapped headings on hover), and full costs 121 kB on the
+   latin subset against 67 kB here. Keep MainLayout's preload on the same file. */
+@import "@fontsource-variable/fraunces/opsz.css";
 /* Brand wordmark face, see --font-brand below. */
 @import "@fontsource-variable/outfit";
 @import "tailwindcss";
