@@ -1,0 +1,181 @@
+---
+import { useTranslations } from '~/lib/i18n';
+import type { ResolvedMember } from '~/lib/team';
+
+interface Props {
+  locale: string;
+  hosts: ResolvedMember[];
+}
+
+const { locale, hosts } = Astro.props;
+const t = useTranslations(locale);
+---
+
+<!-- BYLINE (as caras logo abaixo da capa) -->
+<div class="byline reveal">
+  <div class="wrap row">
+    <span class="lbl">{t('home.hosts.byline')}</span>
+    <ul>
+      {hosts.map((person) => (
+        <li>
+          <a
+            class="face-link"
+            href={person.profile}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`${person.name}, ${t('home.hosts.profile')}`}
+          >
+            {person.photo ? (
+                <img
+                  class="face"
+                  src={person.photo}
+                  srcset={person.photoSrcset ?? undefined}
+                  sizes="2.25rem"
+                  alt={person.name}
+                  width="36"
+                  height="36"
+                  loading="lazy"
+                  decoding="async"
+                />
+            ) : (
+              <span class="face monogram" aria-hidden="true">{person.initials}</span>
+            )}
+          </a>
+          <span class="nm">{person.name.split(' ')[0]}</span>
+        </li>
+      ))}
+    </ul>
+    <a class="all" href="#quem-faz">{t('home.hosts.all')} →</a>
+  </div>
+</div>
+
+<style>
+  /* Section styles hang off the page's .zine root, which Home owns, hence the
+     :global(.zine) prefix. Page-wide pieces (.wrap, .face, .reveal) live in Home. */
+
+  /* ---- byline (caras na dobra da capa) ---- */
+  :global(.zine) .byline {
+    border-top: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-border);
+    background: var(--color-surface);
+  }
+  /* Band plane: fine vertical rules, like the ruled strip of a printed colophon.
+     background-color, never the shorthand, so the base tone above keeps winning
+     (see the band planes note in Home). */
+  :global(.zine) .byline {
+    background-color: var(--color-surface);
+    background-image: repeating-linear-gradient(
+      to right,
+      rgb(236 103 55 / 0.05) 0 1px,
+      transparent 1px 6px
+    );
+  }
+  :global(.zine) .byline .row {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    flex-wrap: wrap;
+    padding-block: 0.8rem;
+  }
+  :global(.zine) .byline .lbl {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--color-muted);
+  }
+  :global(.zine) .byline ul {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    flex-wrap: wrap;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  :global(.zine) .byline li {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+  }
+  :global(.zine) .byline .face-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    border-radius: 50%;
+    transition: transform 0.3s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  /* The avatar is a 36px circle, which is a fine pointer target but a small one
+     under a thumb. The link itself grows to 44px and the negative margin hands
+     the 8px straight back to the row, so the byline keeps the exact height and
+     the name does not move — margins shrink the layout box, not the hit box.
+     The overlay approach used elsewhere cannot be used here: overflow: hidden
+     plus border-radius: 50% clips a pseudo-element back to the circle. */
+  @media (max-width: 639px) {
+    :global(.zine) .byline .face-link {
+      width: 2.75rem;
+      height: 2.75rem;
+      margin: -0.25rem;
+    }
+  }
+  /* The avatar nudges out of the ring while the name stays put — a small
+     mis-registration, consistent with the wordmark treatment. */
+  :global(.zine) .byline .face-link:hover {
+    transform: translateX(3px);
+  }
+  :global(.zine) .byline .nm {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+  }
+  :global(.zine) .byline .all {
+    margin-left: auto;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--color-brand-400);
+  }
+  :global(.zine) .byline .all:hover {
+    color: var(--color-brand-500);
+  }
+  /* avatar pequeno da byline */
+  :global(.zine) .byline .face {
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 50%;
+    border: 1px solid var(--color-border);
+  }
+  :global(.zine) .byline .face.monogram {
+    display: grid;
+    place-items: center;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 0.82rem;
+    color: var(--color-muted);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :global(.zine) .byline .face-link {
+      transition: none;
+    }
+    :global(.zine) .byline .face-link:hover {
+      transform: none;
+    }
+  }
+
+  /* Mobile tap target: see the note on the overlay technique in Home. */
+  @media (max-width: 639px) {
+    :global(.zine) .byline .all {
+      position: relative;
+    }
+    :global(.zine) .byline .all::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 50%;
+      height: 44px;
+      transform: translateY(-50%);
+    }
+  }
+</style>

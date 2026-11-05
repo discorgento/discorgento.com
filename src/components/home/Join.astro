@@ -1,0 +1,84 @@
+---
+import { useTranslations } from '~/lib/i18n';
+import { LINKS } from '~/lib/links';
+
+interface Props {
+  locale: string;
+}
+
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+---
+
+<!-- ASSINATURA (CTA) -->
+<section class="block sign reveal">
+  <div class="wrap inner" style="padding-block: 0">
+    <p class="eyebrow"><span class="o">●</span> {t('home.join.eyebrow')}</p>
+    <h2>{t('home.join.title')}</h2>
+    <p>{t('home.join.desc')}</p>
+    <div class="ctas">
+      <a href={LINKS.discord} target="_blank" rel="noopener noreferrer" class="btn">
+        {t('home.hero.ctaDiscord')}
+      </a>
+      <a href={LINKS.substack} target="_blank" rel="noopener noreferrer" class="btn ghost">
+        {t('home.sign.substack')}
+      </a>
+      {/* Handled by EpisodePlayer's script, which owns the toast. */}
+      <button type="button" class="btn ghost" data-copy={LINKS.discord}>{t('share.copy')}</button>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* ---- assinatura (CTA) ---- */
+  :global(.zine) .sign {
+    background: var(--color-surface);
+    border-top: 2px solid var(--color-on-background);
+  }
+  /* Band plane: wider vertical rules, mirrored rhythm against the byline.
+     background-color, never the shorthand, so the base tone above keeps winning. */
+  :global(.zine) .sign {
+    background-color: var(--color-surface);
+    background-image: repeating-linear-gradient(
+      to right,
+      rgb(236 103 55 / 0.045) 0 1px,
+      transparent 1px 9px
+    );
+  }
+  :global(.zine) .sign .inner {
+    max-width: 42rem;
+    margin-inline: auto;
+    text-align: center;
+  }
+  :global(.zine) .sign h2 {
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    font-size: clamp(1.3rem, 4vw, 2.7rem);
+    text-wrap: balance;
+    margin-top: 0.75rem;
+  }
+  :global(.zine) .sign p {
+    margin: 1rem auto 0;
+    max-width: 34rem;
+    line-height: 1.7;
+    color: var(--color-muted);
+  }
+  :global(.zine) .sign .ctas {
+    margin-top: 2rem;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem;
+  }
+  :global(.zine) .sign .btn {
+    /* 2.25rem inline was 36px per side, the widest padding on the page. Capped
+       on mobile so the two sign buttons sit side by side without clipping. */
+    padding: 0.8rem 1.4rem;
+    font-size: 1.05rem;
+  }
+  @media (min-width: 640px) {
+    :global(.zine) .sign .btn {
+      padding: 0.9rem 2.25rem;
+    }
+  }
+</style>

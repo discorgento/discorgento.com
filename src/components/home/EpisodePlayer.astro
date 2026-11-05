@@ -1,0 +1,206 @@
+---
+import { useTranslations } from '~/lib/i18n';
+
+interface Props {
+  locale: string;
+}
+
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+---
+
+{/* The in-page YouTube player and the "copied" toast. The script below handles
+    clicks page-wide: episode cards (`.zine .ep`) and the cover (`[data-ep-open]`)
+    open the player, and any `[data-copy]` button copies its value and toasts. */}
+<dialog
+  class="ep-modal"
+  data-ep-modal
+  aria-label={t('player.title')}
+  style="position:fixed;inset:0;width:100%;max-width:56rem;height:fit-content;max-height:100dvh;margin:auto;"
+>
+  <button type="button" class="ep-modal-close" data-player-close aria-label={t('player.close')}>×</button>
+  <div
+    class="ep-modal-frame"
+    data-ep-frame
+    style="position:relative;width:100%;aspect-ratio:16/9;"
+  >
+  </div>
+</dialog>
+<div class="toast" data-toast data-copied={t('share.copied')} role="status" aria-live="polite"></div>
+
+<style>
+  /* ---- episode player (modal) ---- */
+  .ep-modal {
+    /* Size explicitly: never rely on the UA's fit-content for a dialog whose
+       only child is an absolutely positioned iframe (that collapses to 0).
+       height must be resolved (fit-content): with inset:0 and height:auto the
+       box stretches to the full viewport instead of hugging the video. */
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    max-width: 56rem;
+    height: fit-content;
+    max-height: 100dvh;
+    margin: auto;
+    padding: 0;
+    border: 1px solid var(--color-border);
+    background: #000;
+  }
+  .ep-modal::backdrop {
+    background: rgb(13 10 5 / 85%);
+  }
+  .ep-modal-frame {
+    position: relative;
+    aspect-ratio: 16 / 9;
+  }
+  .ep-modal-frame iframe {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+  .ep-modal-close {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    z-index: 1;
+    width: 2.25rem;
+    height: 2.25rem;
+    display: grid;
+    place-items: center;
+    font-size: 1.35rem;
+    line-height: 1;
+    color: var(--color-on-background);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    cursor: pointer;
+  }
+  .ep-modal-close:hover,
+  .ep-modal-close:focus-visible {
+    color: var(--color-brand-400);
+    border-color: var(--color-brand-500);
+  }
+
+  /* ---- toast (copiar convite) ---- */
+  .toast {
+    position: fixed;
+    left: 50%;
+    bottom: 1.5rem;
+    z-index: 70;
+    transform: translate(-50%, 0.75rem);
+    opacity: 0;
+    visibility: hidden;
+    padding: 0.6rem 1rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--color-on-background);
+    background: var(--color-surface);
+    border: 1px solid var(--color-brand-500);
+    transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+  }
+  .toast.on {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, 0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .toast {
+      transform: translate(-50%, 0);
+      transition: opacity 0.2s ease, visibility 0.2s;
+    }
+  }
+</style>
+
+<script>
+  let toastTimer = 0;
+
+  function showToast(message: string) {
+    const toast = document.querySelector<HTMLElement>('[data-toast]');
+    if (!toast) return;
+    toast.textContent = message;
+    toast.classList.add('on');
+    window.clearTimeout(toastTimer);
+    toastTimer = window.setTimeout(() => toast.classList.remove('on'), 2400);
+  }
+
+  const modal = () => document.querySelector<HTMLDialogElement>('[data-ep-modal]');
+
+  document.addEventListener('click', async (event) => {
+    const target = event.target as Element | null;
+    if (!target || !target.closest) return;
+
+    // copiar convite do Discord
+    const copier = target.closest<HTMLElement>('[data-copy]');
+    if (copier) {
+      const value = copier.getAttribute('data-copy') ?? '';
+      const toast = document.querySelector('[data-toast]');
+      try {
+        await navigator.clipboard.writeText(value);
+      } catch {
+        /* clipboard bloqueado: avisa mesmo assim */
+      }
+      showToast(toast?.getAttribute('data-copied') ?? '');
+      return;
+    }
+
+    // fechar o player
+    if (target.closest('[data-player-close]')) {
+      modal()?.close();
+      return;
+    }
+
+    // open the episode in the player instead of leaving the site.
+    // Cards carry the id in their href; the cover carries it in data-ep-id.
+    const card = target.closest<HTMLElement>('.zine .ep, [data-ep-open]');
+    if (card) {
+      const id =
+        card.getAttribute('data-ep-id') ??
+        (card.getAttribute('href') ?? '').match(/(?:v=|youtu\.be\/|embed\/)([\w-]{6,})/)?.[1];
+      const dialog = modal();
+      const frame = dialog?.querySelector('[data-ep-frame]');
+      // Both paths are build-time data, but the href regex cannot produce
+      // anything but word characters while data-ep-id is copied verbatim, so
+      // check the charset here instead of trusting where the id came from.
+      if (!id || !/^[\w-]{6,20}$/.test(id) || !dialog || !frame) return;
+      event.preventDefault();
+      // Built as a node, not as an HTML string: assigning to src is a value,
+      // never markup, so the id has no way to break out of the attribute even
+      // if the check above were ever relaxed.
+      const iframe = document.createElement('iframe');
+      iframe.src = `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0`;
+      iframe.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;border:0;';
+      iframe.allow =
+        'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+      iframe.allowFullscreen = true;
+      iframe.title =
+        card.getAttribute('data-ep-title') ??
+        card.querySelector('.title')?.textContent?.trim() ??
+        'YouTube';
+      frame.replaceChildren(iframe);
+      dialog.showModal();
+      return;
+    }
+
+    // clique no backdrop fecha
+    const opened = modal();
+    if (opened?.open && event.target === opened) opened.close();
+  });
+
+  // the close event does not bubble: capture it so the iframe (and audio) is torn down
+  document.addEventListener(
+    'close',
+    (event) => {
+      const dialog = event.target as HTMLDialogElement | null;
+      if (dialog?.matches?.('[data-ep-modal]')) {
+        const frame = dialog.querySelector('[data-ep-frame]');
+        if (frame) frame.innerHTML = '';
+      }
+    },
+    true,
+  );
+</script>

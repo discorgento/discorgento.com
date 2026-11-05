@@ -1,0 +1,167 @@
+---
+import { useTranslations } from '~/lib/i18n';
+import type { Video } from '~/lib/youtube';
+
+interface Props {
+  locale: string;
+  firstVideo: Video | null;
+  epTag: string;
+}
+
+const { locale, firstVideo, epTag } = Astro.props;
+const t = useTranslations(locale);
+---
+
+<!-- PULL QUOTE -->
+<div class="wrap pull-plane">
+  <div class="pullquote reveal">
+    <span class="qm" aria-hidden="true">“</span>
+    <p>{t('home.pullquote')}</p>
+    <p class="src">{t('home.pullquote.src')}</p>
+    {firstVideo && (
+      <p class="pick">
+        <a href={firstVideo.url} target="_blank" rel="noopener noreferrer">
+          {epTag} · {firstVideo.title} →
+        </a>
+      </p>
+    )}
+  </div>
+</div>
+
+<style>
+  /* The quote band is full-bleed, so its plane rides the wrapper (which spans
+     the zine) rather than the inset .pullquote; the quote keeps only its rules. */
+  :global(.zine) .pull-plane {
+    padding-block: 2.25rem;
+  }
+  @media (min-width: 640px) {
+    :global(.zine) .pull-plane {
+      padding-block: 3rem;
+    }
+  }
+  /* Band plane: wide horizontal rules, airy, so the quote is not crowded. */
+  :global(.zine) .pull-plane {
+    background-color: var(--color-surface);
+    background-image: repeating-linear-gradient(
+      to bottom,
+      rgb(236 103 55 / 0.04) 0 1px,
+      transparent 1px 22px
+    );
+  }
+
+  /* ---- parallax: CSS scroll-driven, progressive enhancement ----
+     Browsers without animation-timeline simply don't move anything.
+     The quote drifts while the cover (in LatestEpisode) lags the other way,
+     so the two layers read as depth. */
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      :global(.zine) .pullquote {
+        animation: dg-drift-quote linear both;
+        animation-timeline: view();
+      }
+      @keyframes dg-drift-quote {
+        from {
+          transform: translateY(0.875rem);
+        }
+        to {
+          transform: translateY(-0.875rem);
+        }
+      }
+    }
+  }
+
+  /* ---- pull quote ---- */
+  :global(.zine) .pullquote {
+    position: relative;
+    max-width: 54rem;
+    margin-inline: auto;
+    padding-block: clamp(1.75rem, 5vw, 3.25rem);
+    border-top: 2px solid var(--color-on-background);
+    border-bottom: 2px solid var(--color-on-background);
+    text-align: center;
+  }
+  :global(.zine) .pullquote p {
+    font-weight: 600;
+    font-variation-settings: 'wght' 600;
+    transition: color 0.28s ease, text-shadow 0.28s ease;
+    font-size: clamp(1.3rem, 4vw, 2.6rem);
+    letter-spacing: -0.02em;
+    line-height: 1.25;
+    max-width: 46rem;
+    margin-inline: auto;
+    text-wrap: balance;
+  }
+  /* The quote mark leads the reveal: it sets in before the words it frames. */
+  :global(.js .zine) .reveal .pullquote .qm {
+    opacity: 0;
+    transform: translateY(0.35em) rotate(-8deg);
+    transition: opacity 0.5s ease, transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  :global(.js .zine) .reveal.in .pullquote .qm {
+    opacity: 1;
+    transform: none;
+  }
+  /* Quote hover: brand tint plus a wide, very soft glow. The axes used to jump
+     to wght 780 / SOFT 40 / WONK 1, which made a 2.6rem line grow several
+     pixels and re-wrap mid-sentence — the "text gets bigger" effect. */
+  :global(.zine) .pullquote p:first-of-type:hover {
+    color: var(--color-brand-500);
+    text-shadow: 0 0 0.9rem rgb(236 103 55 / 0.4);
+  }
+  :global(.zine) .pullquote .qm {
+    display: block;
+    font-family: var(--font-display);
+    font-size: clamp(3rem, 8vw, 5rem);
+    line-height: 1;
+    color: var(--color-brand-500);
+    margin-bottom: 0.1em;
+  }
+  :global(.zine) .pullquote .src {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.8rem;
+    margin-top: 1.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--color-muted);
+  }
+  :global(.zine) .pullquote .src::before,
+  :global(.zine) .pullquote .src::after {
+    content: '';
+    flex: none;
+    width: 1.75rem;
+    height: 2px;
+    background: var(--color-brand-500);
+  }
+  :global(.zine) .pullquote .pick {
+    margin-top: 1rem;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+  }
+  :global(.zine) .pullquote .pick a {
+    color: var(--color-brand-400);
+    transition: color 0.15s;
+  }
+  :global(.zine) .pullquote .pick a:hover {
+    color: var(--color-brand-500);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    /* The quote mark is motion, not decoration: land it in its final state
+       instead of leaving it invisible. */
+    :global(.js .zine) .reveal.in .pullquote .qm {
+      transform: none;
+      transition: none;
+    }
+    :global(.js .zine) .reveal .pullquote .qm {
+      opacity: 1;
+      transition: none;
+    }
+  }
+</style>
