@@ -98,15 +98,18 @@ const twitterUrl = LINKS.twitter;
     pointer-events: none;
     user-select: none;
     text-align: center;
-    font-family: var(--font-display);
-    font-weight: 900;
+    /* Same face and tracking as the lockup, so the ghost reads as the logo.
+       Mono at -0.07em runs ~6.4em for 12 glyphs: 12.5vw keeps it inside a
+       375px phone, and the 10.5rem cap inside the 72rem container. */
+    font-family: var(--font-brand);
+    font-weight: 700;
     line-height: 0.85;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.07em;
     font-size: clamp(2.5rem, 12.5vw, 10.5rem);
     color: color-mix(in srgb, var(--color-on-background) 4%, transparent);
   }
 
   .footer-wordmark::after {
-    content: 'discorgento';
+    content: 'discorgento_';
   }
 </style>

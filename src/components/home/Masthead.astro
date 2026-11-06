@@ -254,10 +254,27 @@ const datelineIso = today.toISOString().slice(0, 10);
       transform: none;
     }
   }
+  /* The cursor waits for the last letter to land, then starts blinking, so the
+     wordmark reads as typed. 1020ms = last letter's delay (10 × 40ms + 120ms)
+     plus its 500ms drop; keep it in step with .l above. The wait animation
+     holds it hidden while the blink sits in its delay. No fill on the wait:
+     a forwards fill would leave opacity 0 underneath the blink for good. */
+  .zine .masthead .lockup .brand-cursor {
+    animation:
+      dg-cursor-wait 1020ms,
+      brand-cursor-blink 1.1s steps(1) 1020ms infinite;
+  }
+  @keyframes dg-cursor-wait {
+    from,
+    to {
+      opacity: 0;
+    }
+  }
   @media (prefers-reduced-motion: reduce) {
     .zine .masthead .lockup .l,
     .zine .masthead .lockup .logo img,
-    .zine .masthead .lockup .logo-ghost {
+    .zine .masthead .lockup .logo-ghost,
+    .zine .masthead .lockup .brand-cursor {
       animation: none;
     }
   }
