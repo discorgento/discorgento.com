@@ -41,7 +41,7 @@ const font = (path) =>
     resolve(ROOT, 'node_modules/@fontsource-variable', path),
   ).toString('base64');
 
-const OUTFIT = font('outfit/files/outfit-latin-wght-normal.woff2');
+const BRAND_FONT = font('geist-mono/files/geist-mono-latin-wght-normal.woff2');
 const MONO = font(
   'jetbrains-mono/files/jetbrains-mono-latin-wght-normal.woff2',
 );
@@ -49,15 +49,16 @@ const logoData = `data:image/svg+xml;base64,${readFileSync(LOGO).toString('base6
 
 const overlay = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}">
   <style>
-    @font-face{font-family:Outfit;src:url(data:font/woff2;base64,${OUTFIT}) format("woff2");font-weight:100 900}
+    @font-face{font-family:Brand;src:url(data:font/woff2;base64,${BRAND_FONT}) format("woff2");font-weight:100 900}
     @font-face{font-family:Mono;src:url(data:font/woff2;base64,${MONO}) format("woff2");font-weight:100 800}
   </style>
   <rect width="${W}" height="${H}" fill="${BG}" opacity="0.55"/>
   <rect x="0" y="0" width="${W}" height="10" fill="${BRAND}"/>
   <rect x="0" y="${H - 10}" width="${W}" height="10" fill="${BRAND}"/>
   <image href="${logoData}" x="96" y="185" width="260" height="260"/>
-  <text x="410" y="300" font-family="Outfit" font-weight="800" font-size="104"
-        letter-spacing="-3" fill="${INK}">discorgento</text>
+  <text x="410" y="300" font-family="Brand" font-weight="700" font-size="96"
+        letter-spacing="-6.7" fill="${INK}">discorgento</text>
+  <rect x="982" y="287" width="33" height="13" fill="${BRAND}"/>
   <text x="414" y="368" font-family="Mono" font-weight="500" font-size="30"
         letter-spacing="7" fill="${BRAND}">DISCORGENTO.COM</text>
   <rect x="410" y="404" width="560" height="3" fill="${BRAND}" opacity="0.45"/>

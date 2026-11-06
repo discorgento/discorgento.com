@@ -51,6 +51,7 @@ const datelineIso = today.toISOString().slice(0, 10);
               {ch}
             </span>
           ))}
+        <span class="brand-cursor" aria-hidden="true"></span>
       </span>
     </h1>
     <div class="sub">
@@ -141,8 +142,8 @@ const datelineIso = today.toISOString().slice(0, 10);
     justify-content: center;
     gap: 0.75rem;
     font-family: var(--font-brand);
-    font-weight: 900;
-    letter-spacing: -0.045em;
+    font-weight: 700;
+    letter-spacing: -0.07em;
     /* Every display clamp on this page was retuned for small screens. The vw
        term is inert down there — 4.5vw on a 375px phone is 16.9px, far under any
        sensible floor — so the min was doing all the work and the type pinned to
@@ -153,7 +154,8 @@ const datelineIso = today.toISOString().slice(0, 10);
     text-transform: lowercase;
   }
   /* ---- Logo mark: idle flat, single tear on hover ----
-     The mark is a plain SVG (orange disc, white shapes) and stays untouched at
+     The mark is a plain SVG (black squircle, orange rim, white "d", orange
+     cursor) and stays untouched at
      rest. On hover one masked sibling band shears across it while the base
      jitters, which reads as a dropped signal. Sibling layers rather than
      pseudo-elements because those are unreliable on a replaced element in
@@ -232,8 +234,8 @@ const datelineIso = today.toISOString().slice(0, 10);
       transform: translateX(1px);
     }
   }
-  /* The wordmark is deliberately flat, like the logo mark: a solid orange disc
-     with white shapes, no glow and no misregistration. The orange accents
+  /* The wordmark is deliberately flat, like the logo mark: no glow and no
+     misregistration; its only accent is the .brand-cursor block. The orange accents
      elsewhere in the page belong to the editorial furniture, not to the
      identity, so the lockup stays clean. */
   /* Letters drop into place one by one, like type being set. */

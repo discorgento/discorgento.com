@@ -107,8 +107,8 @@ const todayLabel = new Intl.DateTimeFormat(intlLocale(locale), {
             <img src="/img/logo.svg" alt="" width={28} height={28} />
             <span class="logo-ghost"></span>
           </span>
-          <span class="text-xl font-extrabold lowercase tracking-tight text-on-background [font-family:var(--font-brand)]">
-            discorgento
+          <span class="text-xl font-bold lowercase tracking-[-0.07em] text-on-background [font-family:var(--font-brand)]">
+            discorgento<span class="brand-cursor" aria-hidden="true"></span>
           </span>
         </a>
       )}
@@ -215,7 +215,7 @@ const todayLabel = new Intl.DateTimeFormat(intlLocale(locale), {
           <img src="/img/logo.svg" alt="" width={28} height={28} />
           <span class="logo-ghost"></span>
         </span>
-        <span class="nav-sheet__word">discorgento</span>
+        <span class="nav-sheet__word">discorgento<span class="brand-cursor" aria-hidden="true"></span></span>
       </a>
       <button
         type="button"
@@ -496,9 +496,9 @@ const todayLabel = new Intl.DateTimeFormat(intlLocale(locale), {
   .nav-sheet__word {
     font-family: var(--font-brand);
     font-size: 1.2rem;
-    font-weight: 800;
+    font-weight: 700;
     text-transform: lowercase;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.07em;
   }
   /* The close control is a real 44px target; the glyph is two crossed bars so it
      reads as an X without an icon font. */
