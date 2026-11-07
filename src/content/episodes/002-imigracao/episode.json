@@ -1,0 +1,128 @@
+{
+  "youtubeId": "n886jgxt_O0",
+  "number": 2,
+  "published": "2022-09-26T22:30:15Z",
+  "duration": 7005,
+  "language": "pt-BR",
+  "title": {
+    "pt-BR": "Imigração para o Canadá com Rafael Corrêa Gomes e Tchays",
+    "en": "Immigrating to Canada with Rafael Corrêa Gomes and Tchays",
+    "es": "Inmigrar a Canadá con Rafael Corrêa Gomes y Tchays"
+  },
+  "hosts": ["jonatan-machado", "maria-ferro"],
+  "guests": ["rafael-correa-gomes", "tchaysllaney-rayenelly"],
+  "chapters": [
+    {
+      "start": 0,
+      "title": {
+        "pt-BR": "Abertura e apresentação dos convidados",
+        "en": "Opening and guest introductions",
+        "es": "Apertura y presentación de los invitados"
+      }
+    },
+    {
+      "start": 144,
+      "title": {
+        "pt-BR": "De Sertãozinho ao plano de morar fora",
+        "en": "From Sertãozinho to the plan to move abroad",
+        "es": "De Sertãozinho al plan de vivir afuera"
+      }
+    },
+    {
+      "start": 418,
+      "title": {
+        "pt-BR": "Inverno em Montreal: casaco e vitamina D",
+        "en": "Montreal winters: coats and vitamin D",
+        "es": "Invierno en Montreal: abrigo y vitamina D"
+      }
+    },
+    {
+      "start": 742,
+      "title": {
+        "pt-BR": "Prós e contras de morar no Canadá",
+        "en": "Pros and cons of living in Canada",
+        "es": "Pros y contras de vivir en Canadá"
+      }
+    },
+    {
+      "start": 1247,
+      "title": {
+        "pt-BR": "Visto de trabalho e processo de imigração",
+        "en": "Work visa and the immigration process",
+        "es": "Visa de trabajo y proceso migratorio"
+      }
+    },
+    {
+      "start": 1753,
+      "title": {
+        "pt-BR": "Burocracia e recomeço em outro país",
+        "en": "Paperwork and starting over abroad",
+        "es": "Burocracia y empezar de nuevo en otro país"
+      }
+    },
+    {
+      "start": 2124,
+      "title": {
+        "pt-BR": "A chegada e o primeiro dia no Canadá",
+        "en": "Arrival and the first day in Canada",
+        "es": "La llegada y el primer día en Canadá"
+      }
+    },
+    {
+      "start": 2404,
+      "title": {
+        "pt-BR": "Lockdown da covid logo após chegar",
+        "en": "Covid lockdown right after arriving",
+        "es": "El confinamiento por covid al llegar"
+      }
+    },
+    {
+      "start": 2728,
+      "title": {
+        "pt-BR": "Organização e ansiedade na mudança",
+        "en": "Planning and anxiety during the move",
+        "es": "Organización y ansiedad en la mudanza"
+      }
+    },
+    {
+      "start": 3184,
+      "title": {
+        "pt-BR": "Comparação e escolha da carreira",
+        "en": "Comparison and choosing a career",
+        "es": "Comparación y elección de carrera"
+      }
+    },
+    {
+      "start": 3917,
+      "title": {
+        "pt-BR": "O dia a dia de um diretor de tecnologia",
+        "en": "A day in the life of a technology director",
+        "es": "El día a día de un director de tecnología"
+      }
+    },
+    {
+      "start": 4285,
+      "title": {
+        "pt-BR": "Gênero, idioma e comunicação no trabalho",
+        "en": "Gender, language and communication at work",
+        "es": "Género, idioma y comunicación en el trabajo"
+      }
+    },
+    {
+      "start": 5251,
+      "title": {
+        "pt-BR": "O futuro do Magento na Adobe e headless",
+        "en": "Magento's future at Adobe and headless",
+        "es": "El futuro de Magento en Adobe y headless"
+      }
+    },
+    {
+      "start": 6125,
+      "title": {
+        "pt-BR": "Planos e conselhos para o eu do passado",
+        "en": "Plans and advice to their younger selves",
+        "es": "Planes y consejos para su yo del pasado"
+      }
+    }
+  ]
+}

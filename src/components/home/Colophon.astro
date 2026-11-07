@@ -1,13 +1,13 @@
 ---
 import DiscordStats from '~/components/DiscordStats.astro';
 import type { DiscordStats as DiscordStatsData } from '~/lib/discord';
+import type { EpisodeCard } from '~/lib/episodes';
 import { useTranslations } from '~/lib/i18n';
 import { LINKS } from '~/lib/links';
-import type { Video } from '~/lib/youtube';
 
 interface Props {
   locale: string;
-  firstVideo: Video | null;
+  firstVideo: EpisodeCard | null;
   epTag: string;
   epDate: string;
   discord: DiscordStatsData | null;
@@ -38,7 +38,10 @@ const t = useTranslations(locale);
           <>
             <p class="f">&gt; {t('home.terminal.lastEp')}</p>
             <p class="ep">
-              <a href={firstVideo.url} target="_blank" rel="noopener noreferrer">
+              <a
+                href={firstVideo.href}
+                {...(firstVideo.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+              >
                 {epTag} · {firstVideo.title} ({epDate})
               </a>
             </p>

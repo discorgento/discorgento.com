@@ -1,6 +1,7 @@
 import type { APIRoute } from 'astro';
+import { mergeWithCatalog, toCard } from '~/lib/episodes';
 import { useTranslations } from '~/lib/i18n';
-import { getLatestVideos, getSnapshotVideos } from '~/lib/youtube';
+import { getLatestVideos } from '~/lib/youtube';
 
 // RSS 2.0 feed of the podcast episodes, served on demand by the Worker like the
 // episode islands: a new episode shows up without a redeploy.
@@ -25,19 +26,27 @@ function escapeXml(value: string): string {
 
 export const GET: APIRoute = async () => {
   const t = useTranslations('pt-BR');
-  const fetched = await getLatestVideos();
-  const videos = fetched.length ? fetched : getSnapshotVideos();
+  // getLatestVideos() already falls back to the catalog; merging adds the
+  // archive the 15-item feed no longer carries.
+  const videos = mergeWithCatalog(await getLatestVideos());
 
   const items = videos
     .map((video) => {
+      const card = toCard(video, 'pt-BR');
+      const title = card.number
+        ? `#${card.number} · ${card.title}`
+        : card.title;
+      const link = card.external ? card.href : `${SITE}${card.href}`;
       const pubDate = new Date(video.published).toUTCString();
       return [
         '    <item>',
-        `      <title>${escapeXml(video.title)}</title>`,
-        `      <link>${escapeXml(video.url)}</link>`,
+        `      <title>${escapeXml(title)}</title>`,
+        `      <link>${escapeXml(link)}</link>`,
+        // The guid stays the YouTube URL it has always been: changing it would
+        // make every reader re-announce the whole archive as new items.
         `      <guid isPermaLink="true">${escapeXml(video.url)}</guid>`,
         `      <pubDate>${pubDate}</pubDate>`,
-        `      <description>${escapeXml(video.title)}</description>`,
+        `      <description>${escapeXml(title)}</description>`,
         `      <media:thumbnail url="https://i.ytimg.com/vi/${video.id}/mqdefault.jpg" />`,
         '    </item>',
       ].join('\n');

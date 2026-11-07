@@ -11,8 +11,9 @@ import PullQuote from '~/components/home/PullQuote.astro';
 import Team from '~/components/home/Team.astro';
 import LatestEpisode from '~/components/LatestEpisode.astro';
 import { getDiscordStats } from '~/lib/discord';
+import { toCard } from '~/lib/episodes';
 import { getTeam } from '~/lib/team';
-import { episodeNum, formatEpDate, getSnapshotVideos } from '~/lib/youtube';
+import { formatEpDate, getSnapshotVideos } from '~/lib/youtube';
 
 interface Props {
   locale: string;
@@ -20,8 +21,8 @@ interface Props {
 
 const { locale } = Astro.props;
 
-// Validated against the Video shape: a malformed hand-maintained snapshot must
-// fail the build, never ship silently. getLatestVideos() uses the same gate.
+// The episode catalog (validated by the content collection schema) is the
+// build-time stand-in for the live feed.
 const videos = getSnapshotVideos();
 const discord = await getDiscordStats();
 
@@ -30,8 +31,9 @@ const discord = await getDiscordStats();
 // committed snapshot as their static fallback instead of hitting the (flaky)
 // feed during the build, and the residuals below (terminal, toc, pull quote)
 // read the same snapshot by design: the site must never fail over a news feed.
-const firstVideo = videos[0] ?? null;
-const epNum = firstVideo ? (episodeNum(firstVideo.title) ?? '') : '';
+const latest = videos[0] ?? null;
+const firstVideo = latest ? toCard(latest, locale) : null;
+const epNum = firstVideo?.number ?? '';
 const epTag = epNum ? `#${epNum}` : 'podcast';
 const epDate = firstVideo ? formatEpDate(firstVideo.published, locale) : '';
 
@@ -52,9 +54,9 @@ const hosts = getTeam(locale);
 >
   <div class="zine -mx-5 sm:-mx-6">
     <!-- CAPA -->
-    {firstVideo && (
+    {latest && (
       <LatestEpisode server:defer locale={locale}>
-        <LatestEpisode slot="fallback" locale={locale} video={firstVideo} />
+        <LatestEpisode slot="fallback" locale={locale} video={latest} />
       </LatestEpisode>
     )}
     <Byline locale={locale} hosts={hosts} />

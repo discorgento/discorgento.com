@@ -1,0 +1,83 @@
+{
+  "source": "youtube-auto-captions",
+  "language": "pt-BR",
+  "segments": [
+    [
+      3,
+      "[Música] fala pessoal só uma rata rápida após a edição que eu tinha esquecido de mostrar como que instala o módulo Mas é bem simples primeiro vídeo original Mas vamos lá fala pessoal Enfim estamos aqui anunciando oficialmente o módulo migrations ele existe já vem usando faz algum tempo mas só agora tá sendo realmente anunciado para quem quiser usar inclusive tá galera tá estável já faz algum tempinho que está sendo usado em"
+    ],
+    [
+      48,
+      "produtos e vamos lá uma introdução bem breve rápida do que que ele faz para quem já tá familiarizado com conceito de migration já deve ser um tanto quanto Óbvio para que não conhece não usou ainda basicamente uma forma de traqueal alterações no banco de dados via código ou em outras palavras na prática especificamente Magento você faz alterações no de mim isso é salvo no banco e quando se faz o depore PlayStation ou seus colegas fazem beatboo essas alterações que você fez no de mim não vão instalar porque tava restrito ao seu banco aí você tem que replicar ela esteja replicar ela em produto e se algum colega seu precisar da feature replicar também ou importar um banco atualizado o que não é"
+    ],
+    [
+      94,
+      "interessante nenhum dos dois cenários então que a gente faz através de uma gratidão é justamente ter um arquivo no código que fala vai lá no banco e altera tal tal coisa o equivalente até aberto de mim feito isso Beleza e para quem já mexe com mais algum tempo vai pensar tá mas já existe de repente para isso e sim inclusive isso aqui nada mais é do que um simplificador do da Pet digamos aqui eu tenho um esqueleto de um deleira pet nativo ou de uma migration nativo do Magento 2 e arrazoavelmente nervoso Você tem quatro métodos que são obrigatórios dos interfaces um bocado de coisa ser feita Startup um bocado de coisa é muita coisa"
+    ],
+    [
+      141,
+      "o modo nosso Visa facilitar isso então com dois exemplos práticos aqui um sobre alteração de configuração de mim outra com conteúdo ICMS vai dar para dar uma ideia do todo mas não deixe de checar a documentação aqui no Wiki sempre que vocês quiserem precisarem que ele faz mais coisas do que isso e provavelmente ao longo do tempo vai fazer ainda mais coisas então vamos lá suponhamos que eu quero alterar a moeda da loja uma das coisas bem básica inclusive é interessante você ter um módulo comum das lojas que já sete isso para você para novos projetos Mas enfim então a gente viria aqui trocaria para real brasileiro só que a gente quer fazer isso agora via código como a gente faz da mesma forma que um"
+    ],
+    [
+      187,
+      "data patch em Setup/Patch/Data do seu módulo você vai estar criando o arquivo degrau eu gosto de fixar operação de mim pode me confirmando beleza Onde está o pulo do gato ao invés de tudo isso aqui a gente vai simplesmente estender classe Migration que vem nesse modo implementar o único método obrigatório que ela tem que e fazer o que a gente precisa aqui já bem direto ao ponto então contexto O que é mais comum de se alterar em banco a gente já tem os facilitadores a"
+    ],
+    [
+      233,
+      "gente vai chamar eles aqui de fáceis para quem já mexeu com o Largo deve estar finalizado com conceito basicamente você não ter que importar três classes só para fazer gerenciamento esse cara aqui simplifica tudo em um único métodozinho limpinho bonitinho lá dentro dele vamos lá já é compatível com PHP 8.1 tá galera Então pode usar sintaxe nova mais enxuta também que seria a rede declarar isso aqui se a gente cortar isso daqui e tirar isso daqui isso aqui é aceito também caso você esteja rodando Magento 245.1 mas do contrário assim no fundo 243 pega p7.4 só fazer do jeito clássico"
+    ],
+    [
+      280,
+      "vai funcionar e vamos lá que dentro do método ele já tem alguns facilitadores aqui dentro porque a gente precisa no momento é o sete Mas podem conferir a documentação a qualquer momento no make do módulo que lá explica que cada um faz tão disponíveis E por aí vai esse 7 ele só precisa do PF da configuração e o valor aceita outras coisas também se for muito Stories pode definir qual escopo com a loja mais ou menos isso aqui é um módulos íntima que faz não é nosso mas é gratuito é se a gente vai deixar na descrição Também quem tiver interesse e vamos lá para Brasília"
+    ],
+    [
+      327,
+      "real real beleza e é isso isso aqui já troca a configuração nesse específico de moeda só tem detalhezinho que também tem que trocar o The full e o alau vamos deixar trocar aqui tudo e pronto com 20 poucas metade do esqueleto de um data patch seja feitas é isso é isso migrations que vai ser executado Quando fizer"
+    ],
+    [
+      373,
+      "depois seja Playstation production integration onde é que for e quando a gente voltar aqui de mim atualizar a página tá na mão foi alterado Brasília Real essas alterações são registradas no banco de dados na tabela patch_list para quem tiver interesse de dar uma olhada depois então atualizar Aqui consta aqui ou de mim com Fake isso aqui é para evitar que Rode duas vezes se eu rodar você tá upgrade agora de novo ele não vai executar isso aqui então executa uma única vez não tem perigo de escrever quando você não queria e se você tiver desenvolvendo e quiser que roda de novo só vem aqui apagar e pronto no próximo upgrade vai ser executado novamente"
+    ],
+    [
+      419,
+      "beleza isso aqui já resolve a questão de versionar configuração no de mim morreu aproveitando atacada só demonstrar também questão de conteúdo cms vamos estar criando uma página nova e limpando ela aqui na home é feito de demonstração então adicionar nova página e aqui no conteúdo Vamos colocar o texto beleza a URL"
+    ],
+    [
+      466,
+      "e o layout beleza salvar aqui inserir ele na home lagem galera Não façam isso aqui quando foi em produtos salvar voltar aqui na home atualizar tá aqui confira a nossa nova página demonstração isso será criado"
+    ],
+    [
+      512,
+      "programaticamente Ok então Primeiro passo é fazer isso diretamente pelo de mim e o segundo a gente vai jogar isso para o código diretamente a partir do banco de dados então primeiro vamos criar a nova página nova Mc Tá certo"
+    ],
+    [
+      572,
+      "e vamos lá se respeite conferir aqui no banco como que ficou tá aqui o identifier dela é demo page que vai ser a URL também depois Olá Então pega aqui o título [Aplausos] cabeçalho e o mais importante conteúdo"
+    ],
+    [
+      631,
+      "Ok é isso com essas instruções a gente já cria a nossa página só aproveitar atacado aqui vamos inserir ela na home tá duplicando isso aqui galera resisto a tentação de fazer todo mundo que o migration tá regrinha de ouro aí vai por mim não façam tudo numa única resista ou tentação você me respeite como que a gente vai só fazer uma alteração nela então ao invés da home mesmo mas pode ser conferido aqui no banco então a gente Fire home e a gente só vai alterar o conteúdo dela"
+    ],
+    [
+      682,
+      "beleza só isso isso a gente criar página de mim e inserir ela na rua que a gente vai estar atualizando conteúdo inclusive já fica a dica aqui de uma vez sobre o nosso da separação de uma igreja vejo fazendo uma só é porque aqui agora poderia fazer isso aqui é duplicar a home criar um V2 e atualizar com um novo conteúdo na semana que vem aí fica a dica porque vai ser em ordem alfabética Então quem tiver como banco defasado vai rodar primeiro versão segunda e quantas tiver em sequência por isso é importante deixar tudo separado migrations bem atômicas mesmo Então vamos primeiro desfazer o conteúdo que dá ruim deixar vazio e"
+    ],
+    [
+      728,
+      "vou apagar a demo beleza se eu voltar aqui de mim vai ver que não consta mais beleza morreu não existe mais depende e a Roma é para estar vazia ou até quebrada Brasil [Música] Ah sim galera não faça isso que eu fiz aqui tá de a placa direto no banco com Basicamente nada do Magento Porque"
+    ],
+    [
+      773,
+      "sempre tem algum efeito colateral em algum lugar nesse caso aqui é porque o hard tivesse pagado pelo de mim tinha pagado nos dois mas como foi na mão não apaguem coisas direto no banco vai ficar coisa residual que você não queria a gente conferir aqui as páginas beleza Consta aqui a nova página de repente e a gente tinha transado da home atualizar aqui pronto confira nossa nova página de demonstração de um page criado via migration e é isso pessoal"
+    ],
+    [
+      819,
+      "eu só acho que eu troquei o riding que eu peguei o campo errado na hora mas deu para entender o certo seria a gente tinha colocado isso será criado enfim relevem esse detalhe mas é só isso inclusive Se quiser que agora para corrigir isso vai ser até bom né Deixa eu voltar aqui duplica ela faz uma V2 ao invés de update vai ser trade e o que a gente vai atualizar é só o contexto não precisa de nada mais beleza você está"
+    ],
+    [
+      870,
+      "aqui depende vamos análise que vem para bem já fique demonstrado Como que você mantenha esse conteúdo atualizado ao longo do tempo e é isso pessoal não deixem de conferir a wiki a gente já tem já faceitos para gerenciamento de atributos também de categoria de produto de customer vai ter Provavelmente algum momento aqui em breve para poder facilitar as coisas tá tudo bem documentadinho Qualquer dúvida também pode entrar em contato com a gente direto lá pela comunidade Discorgento a gente tá sempre por lá e é isso pessoal até a próxima valeu"
+    ],
+    [920, "[Música]"]
+  ]
+}

@@ -1,0 +1,128 @@
+{
+  "youtubeId": "k_WA3qMnEF8",
+  "number": 8,
+  "published": "2023-09-25T22:30:12Z",
+  "duration": 2964,
+  "language": "en",
+  "title": {
+    "pt-BR": "Cloudways: hospedagem cloud gerenciada para Magento",
+    "en": "Cloudways: managed cloud hosting for Magento",
+    "es": "Cloudways: hosting cloud gestionado para Magento"
+  },
+  "hosts": ["ivan-augusto"],
+  "guests": ["jyoti"],
+  "chapters": [
+    {
+      "start": 0,
+      "title": {
+        "pt-BR": "Abertura: a primeira entrevista com uma empresa",
+        "en": "Opening: the first company interview",
+        "es": "Apertura: la primera entrevista a una empresa"
+      }
+    },
+    {
+      "start": 91,
+      "title": {
+        "pt-BR": "Apresentação dos representantes da Cloudways",
+        "en": "Meet the Cloudways representatives",
+        "es": "Presentación de los representantes de Cloudways"
+      }
+    },
+    {
+      "start": 230,
+      "title": {
+        "pt-BR": "Origem da Cloudways e compra pela DigitalOcean",
+        "en": "Cloudways' origins and DigitalOcean acquisition",
+        "es": "Origen de Cloudways y compra por DigitalOcean"
+      }
+    },
+    {
+      "start": 366,
+      "title": {
+        "pt-BR": "Instalação de Magento em um clique",
+        "en": "One-click Magento installation",
+        "es": "Instalación de Magento en un clic"
+      }
+    },
+    {
+      "start": 606,
+      "title": {
+        "pt-BR": "Escolha do provedor e tamanho do servidor",
+        "en": "Choosing the provider and server size",
+        "es": "Elegir el proveedor y el tamaño del servidor"
+      }
+    },
+    {
+      "start": 699,
+      "title": {
+        "pt-BR": "Servidores standard x premium e Varnish",
+        "en": "Standard vs premium servers and Varnish",
+        "es": "Servidores standard vs premium y Varnish"
+      }
+    },
+    {
+      "start": 837,
+      "title": {
+        "pt-BR": "Escalar e clonar servidor entre provedores",
+        "en": "Scaling and cloning servers across providers",
+        "es": "Escalar y clonar servidores entre proveedores"
+      }
+    },
+    {
+      "start": 974,
+      "title": {
+        "pt-BR": "Cobrança por hora e período de teste",
+        "en": "Hourly billing and free trial",
+        "es": "Cobro por hora y período de prueba"
+      }
+    },
+    {
+      "start": 1247,
+      "title": {
+        "pt-BR": "Painel, acesso SSH e monitoramento",
+        "en": "Dashboard, SSH access and monitoring",
+        "es": "Panel, acceso SSH y monitoreo"
+      }
+    },
+    {
+      "start": 1431,
+      "title": {
+        "pt-BR": "Aplicações otimizadas e CDN Cloudflare",
+        "en": "Optimized apps and Cloudflare CDN",
+        "es": "Aplicaciones optimizadas y CDN de Cloudflare"
+      }
+    },
+    {
+      "start": 1623,
+      "title": {
+        "pt-BR": "Segurança, backups e SMTP",
+        "en": "Security, backups and SMTP",
+        "es": "Seguridad, backups y SMTP"
+      }
+    },
+    {
+      "start": 1851,
+      "title": {
+        "pt-BR": "Aplicação: staging, tráfego e consultas lentas",
+        "en": "Application: staging, traffic and slow queries",
+        "es": "Aplicación: staging, tráfico y consultas lentas"
+      }
+    },
+    {
+      "start": 2360,
+      "title": {
+        "pt-BR": "SSL gratuito, backup e deploy via Git",
+        "en": "Free SSL, backups and Git deployment",
+        "es": "SSL gratuito, backups y deploy con Git"
+      }
+    },
+    {
+      "start": 2591,
+      "title": {
+        "pt-BR": "Add-ons, conteúdo da Cloudways e encerramento",
+        "en": "Add-ons, Cloudways content and wrap-up",
+        "es": "Add-ons, contenido de Cloudways y cierre"
+      }
+    }
+  ]
+}

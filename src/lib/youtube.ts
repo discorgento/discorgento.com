@@ -4,7 +4,8 @@
 //
 // The feed is not dependable from CI: it answers 404 from datacenter IPs and 500 under load.
 // A build must never ship a home page with no cover art and no episodes, so the fetch falls
-// back to the committed snapshot in src/data/episodes.json when it yields nothing.
+// back to the episode catalog (src/content/episodes, via getSnapshotVideos) when it yields
+// nothing.
 
 // Ids we have on disk, emitted at build time by plugins/thumb-cache.mjs. Reading
 // the filesystem from here is not an option: prerendering runs inside workerd,
@@ -15,7 +16,7 @@ import {
   THUMB_VERSION,
   WEBP_THUMBS,
 } from 'virtual:discorgento-thumb-cache';
-import snapshot from '~/data/episodes.json';
+import { catalogVideos } from '~/lib/episodes';
 import { fetchWithRetry } from '~/lib/fetch';
 import { intlLocale } from '~/lib/i18n';
 import { xmlText } from '~/lib/xml';
@@ -54,43 +55,21 @@ export function parseFeed(xml: string): Video[] {
     .filter((v): v is Video => v !== null);
 }
 
-function isVideo(value: unknown): value is Video {
-  if (typeof value !== 'object' || value === null) return false;
-  const v = value as Record<string, unknown>;
-  return (
-    typeof v.id === 'string' &&
-    v.id.length > 0 &&
-    typeof v.title === 'string' &&
-    typeof v.published === 'string' &&
-    !Number.isNaN(Date.parse(v.published)) &&
-    typeof v.url === 'string'
-  );
-}
-
 /**
- * The committed snapshot in src/data/episodes.json, validated.
+ * The build-time stand-in for the feed: the episode catalog, newest first.
  *
- * The file is hand-maintained next to the live feed, so a typo there is a
- * failure with a bad default: mined as `Video` it silently renders broken dates
- * and missing text. Validating every entry throws precisely — entry index and
- * contents — and Home always calls this at build, so a malformed snapshot
- * fails `npm run build` instead of shipping.
+ * The catalog is validated by the content collection schema, so this cannot
+ * hand back a malformed entry. An empty catalog is the one failure left, and it
+ * would ship a home page with no cover and no episodes, so it throws instead.
  */
 export function getSnapshotVideos(): Video[] {
-  if (!Array.isArray(snapshot)) {
+  const videos = catalogVideos();
+  if (!videos.length) {
     throw new Error(
-      '[episodes] src/data/episodes.json must be an array of episodes',
+      '[episodes] the catalog in src/content/episodes is empty; the home page needs at least one episode',
     );
   }
-  return snapshot.map((entry, i) => {
-    if (!isVideo(entry)) {
-      throw new Error(
-        `[episodes] src/data/episodes.json entry ${i} is not a valid episode: ` +
-          JSON.stringify(entry),
-      );
-    }
-    return entry;
-  });
+  return videos;
 }
 
 export async function getLatestVideos(): Promise<Video[]> {
@@ -107,9 +86,7 @@ export async function getLatestVideos(): Promise<Video[]> {
     if (videos.length) return videos;
   }
 
-  console.warn(
-    '[youtube] falling back to the committed snapshot in src/data/episodes.json',
-  );
+  console.warn('[youtube] falling back to the episode catalog');
   return getSnapshotVideos();
 }
 
@@ -218,11 +195,6 @@ export function avifSrcset(id: string, sizes: ThumbSize[]): string | null {
     parts.push(`/img/episodes/${id}-${size}.avif?v=${THUMB_VERSION} ${size}w`);
   }
   return parts.length ? parts.join(', ') : null;
-}
-
-export function episodeNum(title: string): string | null {
-  const m = title.match(/^#(\d+)/);
-  return m?.[1] ?? null;
 }
 
 export function formatEpDate(published: string, locale: string): string {

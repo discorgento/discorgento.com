@@ -2,9 +2,10 @@
 import { getRelativeLocaleUrl } from 'astro:i18n';
 import EpisodeArt from '~/components/EpisodeArt.astro';
 import YouTubeStamp from '~/components/YouTubeStamp.astro';
+import { toCard } from '~/lib/episodes';
 import { useTranslations } from '~/lib/i18n';
 import type { Video } from '~/lib/youtube';
-import { episodeNum, formatEpDate, getLatestVideos } from '~/lib/youtube';
+import { formatEpDate, getLatestVideos } from '~/lib/youtube';
 
 interface Props {
   locale: string;
@@ -27,7 +28,10 @@ interface Props {
 const { locale, video } = Astro.props;
 const t = useTranslations(locale);
 
-const episode = video ?? (await getLatestVideos())[0] ?? null;
+const latest = video ?? (await getLatestVideos())[0] ?? null;
+// The localized catalog title and the episode page when there is one; the raw
+// feed entry (and a YouTube link) for an upload the catalog does not know yet.
+const episode = latest ? toCard(latest, locale) : null;
 
 if (video === undefined) {
   /* Deliberate no-store, matching LatestEdition: the island is per-view data,
@@ -36,7 +40,7 @@ if (video === undefined) {
   Astro.response.headers.set('Cache-Control', 'no-store');
 }
 
-const epNum = episode ? (episodeNum(episode.title) ?? '') : '';
+const epNum = episode?.number ?? '';
 const epTag = epNum ? `#${epNum}` : 'podcast';
 const epDate = episode ? formatEpDate(episode.published, locale) : '';
 const stampText = `${epTag} · ${t('home.toc.watch')} · youtube · `;
@@ -78,7 +82,9 @@ const coverSizes: (320 | 640 | 1024 | 1280)[] = [320, 640, 1024, 1280];
       </div>
       <figcaption class="figcap">
         fig. 01 · {t('home.featuredEp.title')} ·{' '}
-        <a href={episode.url} target="_blank" rel="noopener noreferrer">
+        {/* The label says "on YouTube", so it goes there; the headline links
+            to the episode page. */}
+        <a href={episode.youtubeUrl} target="_blank" rel="noopener noreferrer">
           {t('home.featuredEp.watch')}
         </a>
       </figcaption>
@@ -88,7 +94,9 @@ const coverSizes: (320 | 640 | 1024 | 1280)[] = [320, 640, 1024, 1280];
       <p class="kicker">
         <span class="o">●</span> {t('home.featuredEp.eyebrow')} · {t('home.capa.tag')}
       </p>
-      <h2>{episode.title}</h2>
+      <h2>
+        {episode.external ? episode.title : <a href={episode.href}>{episode.title}</a>}
+      </h2>
       <p class="deck">{t('home.capa.deck')}</p>
       <div class="facts">
         <span>{t('home.capa.published')} <b>{epDate}</b></span>
@@ -97,7 +105,7 @@ const coverSizes: (320 | 640 | 1024 | 1280)[] = [320, 640, 1024, 1280];
       </div>
       <div class="ctas">
         <a
-          href={episode.url}
+          href={episode.youtubeUrl}
           target="_blank"
           rel="noopener noreferrer"
           class="btn"

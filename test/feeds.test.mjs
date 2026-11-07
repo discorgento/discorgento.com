@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
+import { numberFromTitle } from '~/lib/episodes';
 import { parseSubstackFeed } from '~/lib/substack';
 import {
   avifSrcset,
-  episodeNum,
   formatEpDate,
   getSnapshotVideos,
   parseFeed,
@@ -71,9 +71,9 @@ test('parseSubstackFeed reads CDATA and escaped titles', () => {
   assert.equal(posts[1]?.title, 'Escaped & plain');
 });
 
-test('episodeNum extracts the leading number', () => {
-  assert.equal(episodeNum('#009 - E-Commerce Headless'), '009');
-  assert.equal(episodeNum('Trailer #1'), null);
+test('numberFromTitle extracts the leading number', () => {
+  assert.equal(numberFromTitle('#009 - E-Commerce Headless'), '009');
+  assert.equal(numberFromTitle('Trailer #1'), null);
 });
 
 test('formatEpDate formats in UTC per locale', () => {
@@ -108,7 +108,11 @@ test('srcsets are all-or-nothing', () => {
   assert.equal(avifSrcset('missing', sizes), null);
 });
 
-test('the committed episode snapshot is valid', () => {
+test('the snapshot is the episode catalog, newest first', () => {
   const videos = getSnapshotVideos();
-  assert.ok(videos.length > 0);
+  assert.deepEqual(
+    videos.map((v) => v.id),
+    ['AAAAAAAAAAA', 'BBBBBBBBBBB'],
+  );
+  assert.equal(videos[0]?.url, 'https://www.youtube.com/watch?v=AAAAAAAAAAA');
 });

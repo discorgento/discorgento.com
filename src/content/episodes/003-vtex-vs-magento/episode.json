@@ -1,0 +1,128 @@
+{
+  "youtubeId": "VHiyKo57zJE",
+  "number": 3,
+  "published": "2022-10-11T22:30:15Z",
+  "duration": 4571,
+  "language": "pt-BR",
+  "title": {
+    "pt-BR": "VTEX vs Magento com Felipe Mendes e Vitor Couto",
+    "en": "VTEX vs Magento with Felipe Mendes and Vitor Couto",
+    "es": "VTEX vs Magento con Felipe Mendes y Vitor Couto"
+  },
+  "hosts": ["jonatan-machado", "maria-ferro", "vitor-coutinho"],
+  "guests": ["felipe-mendes"],
+  "chapters": [
+    {
+      "start": 0,
+      "title": {
+        "pt-BR": "Abertura e apresentação dos convidados",
+        "en": "Intro and meet the guests",
+        "es": "Apertura y presentación de los invitados"
+      }
+    },
+    {
+      "start": 147,
+      "title": {
+        "pt-BR": "VTEX é melhor que Magento? Depende",
+        "en": "Is VTEX better than Magento? It depends",
+        "es": "¿VTEX es mejor que Magento? Depende"
+      }
+    },
+    {
+      "start": 518,
+      "title": {
+        "pt-BR": "Page Builder vs Site Editor da VTEX",
+        "en": "Page Builder vs VTEX Site Editor",
+        "es": "Page Builder vs Site Editor de VTEX"
+      }
+    },
+    {
+      "start": 702,
+      "title": {
+        "pt-BR": "Do Magento para VTEX: React e setup na nuvem",
+        "en": "From Magento to VTEX: React and cloud setup",
+        "es": "De Magento a VTEX: React y entorno en la nube"
+      }
+    },
+    {
+      "start": 935,
+      "title": {
+        "pt-BR": "Admin da VTEX e o que estudar para migrar",
+        "en": "VTEX admin and what to study to switch",
+        "es": "Admin de VTEX y qué estudiar para migrar"
+      }
+    },
+    {
+      "start": 1253,
+      "title": {
+        "pt-BR": "Sobrescrever componentes nativos da VTEX",
+        "en": "Overriding native VTEX components",
+        "es": "Sobrescribir componentes nativos de VTEX"
+      }
+    },
+    {
+      "start": 1392,
+      "title": {
+        "pt-BR": "Clientes, checkout e área do usuário",
+        "en": "Clients, checkout and the account area",
+        "es": "Clientes, checkout y área de usuario"
+      }
+    },
+    {
+      "start": 1903,
+      "title": {
+        "pt-BR": "Porte do cliente e o suporte VTEX Pro",
+        "en": "Client size and VTEX Pro support",
+        "es": "Tamaño del cliente y el soporte VTEX Pro"
+      }
+    },
+    {
+      "start": 2132,
+      "title": {
+        "pt-BR": "Checkout em Knockout e limites da VTEX",
+        "en": "A Knockout checkout and VTEX's limits",
+        "es": "Checkout en Knockout y límites de VTEX"
+      }
+    },
+    {
+      "start": 2414,
+      "title": {
+        "pt-BR": "A trajetória do Vitor",
+        "en": "Vitor's career path",
+        "es": "La trayectoria de Vitor"
+      }
+    },
+    {
+      "start": 2596,
+      "title": {
+        "pt-BR": "Felipe: da engenharia de produção a PO",
+        "en": "Felipe: from production engineering to PO",
+        "es": "Felipe: de ingeniería de producción a PO"
+      }
+    },
+    {
+      "start": 2965,
+      "title": {
+        "pt-BR": "O que é preciso para ser PO",
+        "en": "What it takes to be a PO",
+        "es": "Qué se necesita para ser PO"
+      }
+    },
+    {
+      "start": 3149,
+      "title": {
+        "pt-BR": "Ansiedade, esporte e trabalho remoto",
+        "en": "Anxiety, sports and remote work",
+        "es": "Ansiedad, deporte y trabajo remoto"
+      }
+    },
+    {
+      "start": 4028,
+      "title": {
+        "pt-BR": "Conselhos ao eu do passado e despedida",
+        "en": "Advice to their younger selves and goodbye",
+        "es": "Consejos a su yo del pasado y despedida"
+      }
+    }
+  ]
+}

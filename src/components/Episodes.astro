@@ -1,9 +1,10 @@
 ---
 import EpisodeArt from '~/components/EpisodeArt.astro';
 import YouTubeStamp from '~/components/YouTubeStamp.astro';
+import { mergeWithCatalog, toCard } from '~/lib/episodes';
 import { intlLocale, useTranslations } from '~/lib/i18n';
 import type { Video } from '~/lib/youtube';
-import { episodeNum, getLatestVideos } from '~/lib/youtube';
+import { getLatestVideos } from '~/lib/youtube';
 
 interface Props {
   locale: string;
@@ -19,7 +20,11 @@ interface Props {
  *    PodcastPage (which still needs them for the PodcastSeries JSON-LD).
  */
 const { locale } = Astro.props;
-const videos = Astro.props.videos ?? (await getLatestVideos());
+// The feed carries only the 15 latest uploads; the catalog is the archive, so
+// the list is their union. Catalogued episodes link to their page here.
+const videos = mergeWithCatalog(
+  Astro.props.videos ?? (await getLatestVideos()),
+).map((v) => toCard(v, locale));
 const t = useTranslations(locale);
 
 if (Astro.props.videos === undefined) {
@@ -66,14 +71,13 @@ function isoDate(published: string): string {
     </p>
   ) : (
     videos.map((v) => {
-      const num = episodeNum(v.title);
+      const num = v.number;
       const date = formatDate(v.published);
       const iso = isoDate(v.published);
       return (
         <a
-          href={v.url}
-          target="_blank"
-          rel="noopener noreferrer"
+          href={v.href}
+          {...(v.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
           class="group grid gap-3 border-t border-border py-5 transition hover:bg-surface sm:py-6 md:grid-cols-[4rem_8rem_1fr_auto] md:items-center md:gap-6"
         >
           <span class="font-mono text-sm text-brand-500">{num ? `#${num}` : '● ep'}</span>
@@ -107,7 +111,7 @@ function isoDate(published: string): string {
                 pt-BR reader. No visual change — the text is unchanged. */}
             <span class="mt-1 block font-mono text-xs text-muted">
               {iso && date ? <><time datetime={iso}>{date}</time> · </> : null}
-              youtube
+              {v.external ? 'youtube' : t('episode.eyebrow')}
             </span>
           </span>          <span class="hidden font-mono text-sm text-muted transition group-hover:text-brand-400 md:block">
             →

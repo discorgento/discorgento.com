@@ -1,0 +1,128 @@
+{
+  "youtubeId": "UOQ7XcltcCo",
+  "number": 5,
+  "published": "2023-01-30T22:00:12Z",
+  "duration": 3594,
+  "language": "pt-BR",
+  "title": {
+    "pt-BR": "Certificações Magento com João Victor Pereira",
+    "en": "Magento certifications with João Victor Pereira",
+    "es": "Certificaciones de Magento con João Victor Pereira"
+  },
+  "hosts": ["jonatan-machado", "maria-ferro", "ivan-augusto"],
+  "guests": ["joao-victor-pereira"],
+  "chapters": [
+    {
+      "start": 0,
+      "title": {
+        "pt-BR": "Abertura e apresentação de João",
+        "en": "Opening and João's introduction",
+        "es": "Apertura y presentación de João"
+      }
+    },
+    {
+      "start": 191,
+      "title": {
+        "pt-BR": "Professional Developer e Expert Front-End",
+        "en": "Professional Developer and Expert Front-End",
+        "es": "Professional Developer y Expert Front-End"
+      }
+    },
+    {
+      "start": 375,
+      "title": {
+        "pt-BR": "Da faculdade de matemática ao Magento 2.1",
+        "en": "From a math degree to Magento 2.1",
+        "es": "De la carrera de matemáticas a Magento 2.1"
+      }
+    },
+    {
+      "start": 605,
+      "title": {
+        "pt-BR": "Rotina de estudos: cronograma ou interesse",
+        "en": "Study routine: schedule or curiosity",
+        "es": "Rutina de estudio: cronograma o interés"
+      }
+    },
+    {
+      "start": 878,
+      "title": {
+        "pt-BR": "Como João se preparou para as provas",
+        "en": "How João prepared for the exams",
+        "es": "Cómo se preparó João para los exámenes"
+      }
+    },
+    {
+      "start": 1107,
+      "title": {
+        "pt-BR": "O que cai nas provas e as pegadinhas",
+        "en": "What the exams cover and the trick questions",
+        "es": "Qué toman los exámenes y las trampas"
+      }
+    },
+    {
+      "start": 1288,
+      "title": {
+        "pt-BR": "Nervosismo e a barreira do inglês",
+        "en": "Exam nerves and the English barrier",
+        "es": "Nervios y la barrera del inglés"
+      }
+    },
+    {
+      "start": 1475,
+      "title": {
+        "pt-BR": "Documentos, webcam e regras da prova online",
+        "en": "ID, webcam and online exam rules",
+        "es": "Documentos, webcam y reglas del examen online"
+      }
+    },
+    {
+      "start": 1841,
+      "title": {
+        "pt-BR": "Sala de aula e loja de jogos de tabuleiro",
+        "en": "Teaching and a board game store",
+        "es": "Docencia y una tienda de juegos de mesa"
+      }
+    },
+    {
+      "start": 2478,
+      "title": {
+        "pt-BR": "Ansiedade e trabalho sob pressão",
+        "en": "Anxiety and working under pressure",
+        "es": "Ansiedad y trabajo bajo presión"
+      }
+    },
+    {
+      "start": 2625,
+      "title": {
+        "pt-BR": "Dicas para tirar a certificação",
+        "en": "Tips for getting certified",
+        "es": "Consejos para certificarse"
+      }
+    },
+    {
+      "start": 2764,
+      "title": {
+        "pt-BR": "Preço, descontos e renovação gratuita",
+        "en": "Price, discounts and free renewal",
+        "es": "Precio, descuentos y renovación gratuita"
+      }
+    },
+    {
+      "start": 2855,
+      "title": {
+        "pt-BR": "O futuro do Magento e das certificações",
+        "en": "The future of Magento and certifications",
+        "es": "El futuro de Magento y las certificaciones"
+      }
+    },
+    {
+      "start": 3086,
+      "title": {
+        "pt-BR": "Prazos do comercial e conselho final",
+        "en": "Sales-driven deadlines and final advice",
+        "es": "Plazos comerciales y consejo final"
+      }
+    }
+  ]
+}

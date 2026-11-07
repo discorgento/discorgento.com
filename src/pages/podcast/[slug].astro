@@ -1,0 +1,16 @@
+---
+import EpisodePage from '~/components/EpisodePage.astro';
+import { getEpisodes } from '~/lib/episode-content';
+
+// One watch page per catalogued episode. The slug is the folder name under
+// src/content/episodes/ and is the same in every locale.
+export async function getStaticPaths() {
+  const episodes = await getEpisodes();
+  return episodes.map((episode) => ({ params: { slug: episode.slug } }));
+}
+
+const locale = Astro.currentLocale ?? 'pt-BR';
+const { slug } = Astro.params;
+---
+
+<EpisodePage slug={slug} locale={locale} />

@@ -10,9 +10,10 @@ import Episodes from '~/components/Episodes.astro';
  * body lives here and the locale is the only input.
  */
 import MainLayout from '~/layouts/MainLayout.astro';
+import { mergeWithCatalog, toCard } from '~/lib/episodes';
 import { useTranslations } from '~/lib/i18n';
 import { LINKS } from '~/lib/links';
-import { episodeNum, getLatestVideos } from '~/lib/youtube';
+import { getLatestVideos } from '~/lib/youtube';
 
 interface Props {
   locale: string;
@@ -24,6 +25,14 @@ const videos = await getLatestVideos();
 const youtubeUrl = 'https://www.youtube.com/channel/UChJitnyFtNOoCe6cu-rHcow';
 const spotifyUrl = LINKS.spotify;
 const site = Astro.site ?? new URL('https://discorgento.com/');
+// Absolute URLs for the structured data: the episode page when catalogued.
+const cards = mergeWithCatalog(videos).map((v) => {
+  const card = toCard(v, locale);
+  return {
+    ...card,
+    url: card.external ? card.href : new URL(card.href, site).href,
+  };
+});
 
 // PodcastSeries names the show as a whole; each episode is a PodcastEpisode
 // pointing back at it. Without this an agent only sees a page of links and has
@@ -44,26 +53,25 @@ const podcastJsonLd = {
       url: podcastUrl,
       inLanguage: locale,
       publisher: { '@id': publisherId },
-      episode: videos.map((v) => {
-        const n = episodeNum(v.title);
-        return {
-          '@type': 'PodcastEpisode',
-          name: v.title,
-          url: v.url,
-          datePublished: v.published,
-          ...(n ? { episodeNumber: n } : {}),
-          partOfSeries: { '@id': seriesId },
-        };
-      }),
+      episode: cards.map((c) => ({
+        '@type': 'PodcastEpisode',
+        // Same node as the one on the episode page, so the two merge.
+        ...(c.external ? {} : { '@id': `${c.url}#episode` }),
+        name: c.title,
+        url: c.url,
+        datePublished: c.published,
+        ...(c.number ? { episodeNumber: Number(c.number) } : {}),
+        partOfSeries: { '@id': seriesId },
+      })),
     },
     {
       '@type': 'ItemList',
       name: t('podcast.latest'),
-      itemListElement: videos.map((v, i) => ({
+      itemListElement: cards.map((c, i) => ({
         '@type': 'ListItem',
         position: i + 1,
-        url: v.url,
-        name: v.title,
+        url: c.url,
+        name: c.title,
       })),
     },
   ],

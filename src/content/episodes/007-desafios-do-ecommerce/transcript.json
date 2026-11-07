@@ -1,0 +1,454 @@
+{
+  "source": "youtube-auto-captions",
+  "language": "pt-BR",
+  "segments": [
+    [
+      10,
+      "fala pessoal aqui quem fala é o Jonatan com mais um podcast do discorgento para quem não conhece o discorgento vai ter um QR Code aqui na tela quem tiver assistindo pelo YouTube né ou pode acessar ou procurar no Instagram ou entrar no site discorgento.com também tem várias informações lá o discorgento ele é ele é mais focado em tecnologia mais gente mas ele tem várias várias tecnologias lá dentro quem quiser saber mais pode acessar lá e ver como funciona melhor hoje o nosso podcast vai ser os desafios do e-commerce é a gente"
+    ],
+    [
+      58,
+      "trouxe até um convidado aqui bem especial você quer falar alguma coisa introduzir E aí pessoal que é Mary Mary Iron Maria Ferro como quiseres chamar como Machado falou desafios aí já é Nossa sétima Episódio aqui e hoje vai ser com Thiago aí Marquesini e vamos nessa aí vou tentar passar um pouco a nossa experiência aqui qual for o nosso maior desafios aqui no e-commerce Espero que possa ajudar um pouquinho cada um de vocês quer se apresentar também temos o Ivan que também que é um roxo também aqui que"
+    ],
+    [
+      104,
+      "sempre tá aqui mais uma vez o pessoal deve lembrar de mim de outros episódios a questão é que hoje juntou é de line com programador com leite Murphy então sem câmera por hoje galera mas também bem-vindo Thiago quer se apresentar e falar um pouquinho de você Obrigado pessoal bom eu sou o Thiago eu trabalho Atualmente como desenvolvedor mas tenho alguns anos já com trabalhando na área de TI e mais recentemente aí dentro do mundo de mais gente do mundo de e-commerce e espero poder aprender um pouco com vocês"
+    ],
+    [
+      150,
+      "aí contribuir um pouco também muito bem bom a gente poderia começar já falando é dando mais contraído falando o que que os seus Hobby o que que você gosta de fazer e fora a programação para a gente não entrar direto na programação vamos descontrair um pouco quase todo mundo que é da área de ter acaba gostando de programar até nas horas vagas né mas eu gosto de praticar alguns esportes também eu gosto de praticar rapel pneuismo que vale bastante Chapéu a gente entra em rios de montanha vai descendo cachoeiras Eu gosto bastante desse"
+    ],
+    [
+      195,
+      "contato com a natureza e Mas recentemente de uns 3 8 meses para cá eu acabei conhecendo jiu-jitsu nunca tinha feito nenhum tipo de luta acabei gostando bastante eu tomei isso como um novo Hobby Mas recentemente Ah que legal esse negócio de rapel eu sempre quis fazer mas nunca nunca fui atrás de ver como é que funciona E aí no Paraná tem uns lugares que são sensacionais cara para fazer contato com a natureza é muito bom Eu gosto também e entrando mais no mais gente ali você"
+    ],
+    [
+      242,
+      "quando que você começou a conhecer essa essa ferramenta aí doida especificamente nojento eu diria que eu tive dois momentos com ele a primeira vez que eu tive um contato muito superficial foi entre 2015 e 2016 eu fui procurado por um colega ele trabalhava numa indústria indústria ela queria fazer um e-commerce e ele me procurou Olha eu quero que se desenvolva uma loja virtual Imagino você faz não entender que que é a demanda aí me conta um pouco do negócio e a gente começou a entender um pouquinho mais comecei entender um pouquinho mais da empresa"
+    ],
+    [
+      287,
+      "e eu não tinha ainda contato com mais gente comecei a Pesquisar mais sobre a ferramenta na época acho que fazia vai gerar bem assim lançado fazer um ano pouco tempo que tinha sido lançado [Música] e conforme eu fui entendendo um pouco mais do negócio das regras de negócio que eram super simples não tinha nada muito complexo e preencher ele tinha um orçamento muito limitado não tinha uma equipe de ti própria eu acabei meio que orientando colocar uma janta como não uma opção que não seria muito legal manutenção etc e seria um custo um pouquinho mais alto e a gente acabou indo por outra solução uma solução mais de mercado bem simplista com"
+    ],
+    [
+      334,
+      "investimento muito baixo E aí há uns dois anos e meio um pouco mais eu tive oportunidade de ir para uma empresa que ela tava passando por um processo de transformação digital ela já tinha equipes de ti tinha bastante profissionais de ti só que não tinha uma equipe focada para econom para web eram mais pessoas voltadas para infra em uma pessoa para começando com dataçãs tinha pessoal muita muito pessoal para RP mas não tinha focado para web e eu acabei conseguindo pegar essa oportunidade entrei com foco mais para"
+    ],
+    [
+      379,
+      "web passei alguns meses entendendo regra de negócio acompanhando junto com a agência que fazia o desenvolvimento para nós e foi onde eu comecei a entender um pouco mais a fundo o que que o Magento era o que ele podia fazer suas limitações e comecei a pesquisar a estudar por conta também o desenvolvimento do Magento até que durante minha jornada nessa empresa até um pouco antes de sair de lá a gente já tava conseguindo fazer alguns envolvimentos internos consegui montar uma empresa uma equipe focada para esse tipo de desenvolvimento lá e foi onde eu tive um pouco meu contato mais aprofundado ali com o coração de uma gente digamos assim"
+    ],
+    [
+      424,
+      "Que pena que foi isso só para a gente ter uma base faz uns dois anos e meio três anos foi em 2020 2 bem no meio da pandemia foi bem foi bem pro começo de começo de 2022 se eu não me engano que você começou a mexer lá no Magento né ou o e-commercing então a experiência era desenvolvimento mais genérico digamos assim [Música] esse projeto anterior mas outros eu não tinha aprofundado ainda"
+    ],
+    [
+      472,
+      "Comentou algo sobre que tinha um ano que uma gente tinha sido lançado Imagino que se refere o Magento dois né isso imagina tudo isso beleza é só só complementando foi uma coisa que pesou eu olhei assim a arquitetura mas complexa em um lançamento que não é tão tão distante é meio recente o pessoal não vai ter que tem poucos módulos de mercado naquela época peido correio vivia fora do ar pensei subir um site com isso a hora que não fizeram uma cotação de frete um meio de pagamento não passar essa galera não vai deixar eu dormir vamos me ligar"
+    ],
+    [
+      518,
+      "uma solução de mercado pelo menos vocês tem para quem gritar aí a solução de vocês foi tipo um sazo assim tipo foi tudo bem falar qual é a plataforma a gente foi para loja integrada minhas férias problemas também era extremamente limitada para fazer personalizações e era um projeto que tinha uma regra de negócio bem bem diferente que era uma indústria de produtos para prótese dentária e até"
+    ],
+    [
+      563,
+      "então eu não sabia que por exemplo você tem umas plaquinhas de gente para o pessoal fazer dentadura que elas têm 180 a 220 variações não produto como que vai ter esse monte de variações [Música] e para conseguir personalizar essas experiências não só essa mas eu acabei me baseando muitos muitas lojas que eram feitas na loja integrada eu falei como que as galera consegue personalizar isso e não me orgulho disso mas é JavaScript no fulter que sai mudando de um inteiro na hora que carrega a página funcionou tá valendo"
+    ],
+    [
+      608,
+      "funcionou entregou E pior que assim ela integrada ela fazia uma propaganda acho que não sei se faz ainda faz tempo que eu não tenho contato do site que tinham maior destaque um determinado período E aí olhava assim como é que a galera tá fazendo isso porque não tem um tema que faz isso aconteceu mais já faz uns anos mas a galera falou falando que o site deles em produção três anos atrás ou quatro no meio dos HTML template lá com chamada e pega pega enfim"
+    ],
+    [
+      657,
+      "eu gosto muito de ouvir os podcast que a Arco Verde esqueceu o primeiro nome dela é uma brasileira que ela trabalha no steck over ela fala que por mais que seja produção acho que se eu não me engano é rodado em ser charque o [Música] não sei se antigamente também era no JavaScript em produção acho que por mais grande que pareça todo mundo passa um pouquinho por isso na época de 2010 mais ou menos acho que era uma janta era bem no começo ainda 2010 2011 a UOL tinha uma plataforma que"
+    ],
+    [
+      706,
+      "eles usava Magento um e era mais ou menos isso que tu falou da loja integrada você não podia mexer em tema nem nada era um tema padrão cristinho que só mudava a cor se você quisesse mexer em alguma coisa tu pegava um JavaScript jogava lá e ele alterava o sei lá o botão lá quando carregava a página Nossa era um sofrimento dos inferno tipo era mais gente na época acho que era um ponto ponto sim pessoalmente quando você vai ver questão de performance tudo eu até comentar por exemplo uma janta ele permite consegue lá pela de mim e adicional"
+    ],
+    [
+      752,
+      "um JavaScript ali vai ser carregado de repente você fez um depósito você percebeu quebrou alguma coisa de front e dá para resolver com jovens tudo de novo dependendo da loja [Música] e eu queria um fazer uma pergunta para vocês três na verdade sobre o que que vocês acham que é o maior desafio não é Como assim de qualquer coisa assim no geral assim para vocês que que é o maior"
+    ],
+    [
+      798,
+      "desafio da minha parte eu diria que a coisa que pelo menos Eu preocupo mais sou muito da área técnica tá pessoal tem que fazer sabendo aqui que obviamente tem outras preocupações que valem técnico eu sou mais focado técnico é questão de escalabilidade cara você vai integrar as paradas de terceiro no meio algumas regras básica que você não fizer vai dar b.o.lzinho razoável sempre imagina tu"
+    ],
+    [
+      845,
+      "que tinha de tema customizado fazer look nos produtos no catálogo e dava um load no modo do produto para pegar atributo faltando fazer aquelas querem n + 1 inferno da minha parte eu diria que escalabilidade vocês sendo preocupar constantemente o negócio vira macarrão e sustentável com o tempo não é verdade acho que pegaram um gancho um pouco com que o Ivan disse cara tem muitos desafios a minha visão é limitada muito pela área técnica quando eu tive um pouco mais de contato ali com a parte negocial tentar fazer a tradução de regra de negócio"
+    ],
+    [
+      891,
+      "eu diria que um desafio é conseguir pegar no meio termo de do Desejo do negócio do que vale a pena fazer com a ferramenta eu gosto muito do princípio de Pareto de que você consegue atingir 80% do resultado com 20% do esforço porque muitas vezes o cliente levanta umas regras de negócio levanta umas demandas muito grande para conseguir resolver aquilo e talvez a gente conseguir podar algumas coisinhas ainda vai trazer um valor e vai despencar bastante o esforço até puxando o gancho de de algo muito tempo atrás quando eu"
+    ],
+    [
+      936,
+      "comecei mexer com ti programar Eu comecei mais com a parte de desktop eu sempre desenvolvi assim pensando ah vai ter uma vou fazer essa funcionalidade vai ser muito legal e aí quando eu vi o usuário dos anos às vezes nem usavam aquilo ali então com o tempo foi aprendendo meu vamos para o simples o tal do MVP que dificilmente é só um MVP né mas joga o mínimo e começa a sentir o que o usuário tem de demanda que o usuário precisa para a gente conseguir Evolution daí tem gastar muito esforço em coisa que de repente não vai ser nem usado e eu viria isso mais como a parte de nós Lógico que tem a parte de meio de pagamento"
+    ],
+    [
+      983,
+      "eu acho que muito também que nem o nível de sair da escalabilidade e a gente tem que pensar em volume e principalmente quando a gente está desenvolvendo local a gente está testando com uma massa de dados com pequena com um caso muito pequeno e de repente quando a gente leva isso para o ambiente de produção que vai ter um volume maior nem sempre você vai ficar conseguindo usar models nem sempre você vai conseguir ficar usando o máximo de recurso você vai ter risco de explorar as vezes memórias você vai ter um risco de performance muito grande então é importante dar uma olhada nessa questão de performance e direita também padrões de projeto tentar seguir o padrão para não virar um problema de manutenção a média longo"
+    ],
+    [
+      1028,
+      "prazo um chegar aquele aquela situação de hoje alguns meses você tem um sentimento de que é mais fácil de jogar fora e fazer de novo do que conseguir corrigir aquilo ali e me lembro quando chega cliente novo que a gente vai passar da suporte uma loja que já existe foi criado por terceiros Quando você vai ver aquilo já passou por mais de um na verdade um time Mas você abre app Gold tem uns dois vendar diferente meu Deus e tudo não é nada não quando vê tá limpo vendo as instrução lá não baixo o zip aqui"
+    ],
+    [
+      1073,
+      "compartilha só lembro de fazer um backup do banco de proudia antes Mas confio o resto os arquivos é um símbolo de não sei cor de homem aí fica um espaço branco [Música]"
+    ],
+    [
+      1119,
+      "puxou ali já fazer backup eu ia falar um pouquinho o meu ver assim puxando até para confiabilidade ali do cliente eu acho que também é um top legal para constar aqui a segurança de dados eu acho que até tá valendo uma documentação antes de começar o podcast que fizeram até um estudo que 50% dizer comics que desistem né nesse Da Lógica e tal É porque tem essa não tem essa confiabilidade na segurança de dados a gente tem até ali o nosso GP dele que era de geral de segurança de dados para e outros Claro outros tipos"
+    ],
+    [
+      1165,
+      "de processos ali que nós programadores podemos fazer ali na parte de segurança mas é bem interessante isso acho que é confiabilidade do cliente ali na hora de dos projetos acho que é uma das coisas fundamentais assim ao meu ver não só a parte técnica mas trazendo assim o sentimento do da parte comercial assim do cliente é verdade isso daí também é bem mas essa essa data que tu viu é do Brasil do mundo eu acho que global é até pegar ele disse faz total sentido acho que"
+    ],
+    [
+      1211,
+      "algo que aqui a gente ainda não se preocupou muito por conta da LGPD ela ter feito positivo muito recente ela teve um prazo muito longo de adaptação adiou várias vezes o efeito positivo algo engana a primeira empresa que foi multada por não comprar LGPD foi acho que uma duas semanas atrás É bem recente na Europa a gente já tem a GPS funcionando mais tempo Estados Unidos a gente já tem uma não sei qual é o equivalente lá mas já tem fez mais nesse sentido há mais tempo então acho que o pessoal já tem mais essa preocupação mesmo nos projetos que eu participo a gente tenta levantar esses pontos aí o pessoal ainda leva meio aqui de boa não liga"
+    ],
+    [
+      1256,
+      "muito mas eu confio muito eu tenho para mim que nos próximos meses aí no máximo um ano dois anos isso daí vai começar a virar uma preocupação muito presente nos projetos que vai começar a doer o cliente ali na operação da loja inclusive teve época que eu trabalhei para uma empresa do Canadá eles tinham um cliente lá que ele não era do LGPD né Só que era de acessibilidade o governo lá ele tem um sistema que tipo monitora não sei bem como é que eles fazem mas eles monitora o site para ver se eles são acessível então na regra"
+    ],
+    [
+      1302,
+      "deles né tem um padrão que ele tem que usar tinha um cliente lá que ele foi multado e não sei quantos mil dólar lá por causa da acessibilidade do site e daí tipo Eles ficaram doido para arrumar tudo enquanto antes né porque senão eles iam ser multado de novo daí a gente ficou um tempão arrumando aquela galera que coloca um clique em botão de submitir de forma no Brasil tem uma plataforma que mede a acessibilidade do governo também chama Asus a gente participa de um projeto que era para uma instituição que ela é regido também por alguns trâmites do governo e a gente tinha que atender"
+    ],
+    [
+      1347,
+      "ao índice que essa asa dela gerava para a gente de acessibilidade e meu Deus difícil a gente acha que um site está acessível às vezes mas começa a ver um detalhezinhos ali que não passa um tablet num determinado botão ou tá passando coisa que não tem sentido é muito detalhe A gente ficou mas que mais de mês tentando resolver tudo que ele os problemas que a gente achava numa janta eu nem sei se já tá 100% acho que nem nem deve estar se importando né então sei lá uns 70% que a gente fez lá é mas a minha visão ali eu acho que Um Desafio grande que o Ivan falou eu"
+    ],
+    [
+      1392,
+      "acho que parte técnica é essa daí eu acho que é bem isso que ele falou mesmo mas é todo esse tempo que eu trabalhei com uma gente uma coisa que que eu achei que era um grande desafio é você ser visto na internet que geralmente a gente fazia um site todo bonito rápido mas não tinha tipo conversão e só que isso daí entra em outro detalhe também né que é o marketing que a gente eu não tenho muita experiência com marketing né mas tem um ponto que é que eu gostava também de bater que é o s ou né Eu sempre gostei de estudar bastante esse ou técnicas ou para sempre tentar"
+    ],
+    [
+      1439,
+      "aplicar no site que geralmente eu penso uma loja virtual como sendo tipo uns porta tu vai abrir uma loja aí tu abre ela no meio do mato sem ninguém por perto para mim isso daí é um é comercial você vai abrir ela lá no meio do mato e ninguém sabe que ela existe aí você tem que trazer público para ele mas é isso daí entra no outro outro assunto de marketing que a gente pode até fazer um podcast achar alguém que que tenha experiência no caso mas eu acho que o Um Desafio Sempre achei que era esse tipo trazer pessoa para converter Tipo às vezes tem até caso"
+    ],
+    [
+      1485,
+      "assim que o site é horrível ruim de Navegar e o cara vê ele para e lógico que quanto melhor vai vender mais né mas eu acho que é um ponto que eu achei bem interessante assim no tempo que eu que eu já trabalhei é esse daí não sei até lembrei agora na último time que eu tô trabalhando o piou tava focado nisso se eu tem que aparecer a gente tem que otimizar ali os mecanismo de busca de qualquer forma meta tag se for uma coisinha a gente tem que colocar então o médico é muito importante assim Aí também tem a questão você falou do"
+    ],
+    [
+      1530,
+      "marketing divulgação tem coisa assim para fazer né para divulgar É bem interessante alteram com o tempo né então o que era relevante para si ou a em 2015 2014 quando estava entrando ou até 2010 aí como a gente um já não é mais o que é relevante Talvez hoje em dia pegando como a gente ele foi construído já de um algumas tecnologias um pouco mais antigas por exemplo temos de performance ele nem sempre por padrão pegando ele da"
+    ],
+    [
+      1575,
+      "caixinha e colocando para funcionar ele talvez não vá atingir resultados muitos muito bons a gente tem que fazer alguns ajustes para conseguir rankear um pouco melhor até uma das palestras que ocorreram aí no Meet Magento não esse último anterior foi de uma nova mudança que está sendo É bem recente que eles também estão considerando as avaliações dos usuários dentro de uma página de produto etc para rankear você melhor então a todo momento a gente tem que estar correndo atrás de uma coisa nova porque os mecanismos de busca estão buscando coisas novas para dizer quem é relevante ou não tem que estar como organismo vivo correndo atrás aí dessas dessas alterações novas"
+    ],
+    [
+      1620,
+      "é uma dor bem recorrente assim né Você sempre tem é igual a nossa área também de tecnologia no caso né Sempre tem que estar evoluindo se não fica para trás você quer fazer alguma pergunta amor o Thiago se sentiu ali e tava trabalhando em outro frameworks e quando entrou numa gente qual foi a diferença assim de um para o outro que que você sentiu assim que que o barrentou a primeira sentimento que mais gente te trouxe assim mais coisa boa ou menos assim medo"
+    ],
+    [
+      1665,
+      "não tô brincando eu acho feio bem burocrático a hora que eu olhei aqueles XML uma coisa que eu achei muito legal era a organização Acho que qualquer qualquer framer que até numa gente a gente consegue sair um pouco do que é a organização padrão dele a gente consegue ter uma organização Nossa ali tem que fugindo dos padrões mas acaba sendo um pouco mais difícil de manter não adianta fazer um módulo meu a pasta com que ninguém vai entender colocando regra de negócio uma parte xpto sendo que alguém que vai dar manutenção vai procurar uma moda alguma coisa do tipo então não dá para a gente querer sair muito fora disso para não confundir a manutenção depois"
+    ],
+    [
+      1711,
+      "mas Gente eu achei bem muito bem organizado a estrutura eu achei sensacional o mecanismo de plugins a gente poder fazer intervenção antes de um método depois de um método em torno de um método observes legal mas é uma coisa também muito comum em frameworks aí os eventos mas plugins eu achei bem legal a gente conseguir fazer esse tipo de intervenção em classe sem ter que mexer num código dos outros no código da venda eu até não um código de um outro fornecedor com o tempo eu comecei a gostar do XML entender um pouquinho melhor o quanto eles são importantes para [Música] rodar ou toda mecanismo de um Magento"
+    ],
+    [
+      1758,
+      "fazer meio que a compilação ali para poder rodar ele em produção então no começo até um pouquinho mas depois que fui entendendo um pouquinho melhor a organização os porque desses montes de arquivos começou a fazer sentido e me trouxe Muito conforto porque é um código muito gostoso na manutenção assim considerando-se e os padrões tem que pegar um já peguei código aqui dentro do de alguns módulos parecia que tinha sido escrito em pegar até 5.2 as funções malucas lá funcionava mas era mais chatinha da manutenção se a gente segue um pouquinho organização numa gente é muito gostoso de dar manutenção a gente tem uma segurança manutenção e saber que ele vai"
+    ],
+    [
+      1803,
+      "vai corresponder independente do tamanho da escala que isso posso tomar e um ponto que para mim foi um pouquinho difícil ainda é um pouquinho difícil é o Knockout Eu tenho um pouco dificuldade de bugre do Knockout que de repente você vai tentar rodar um template ali com os dados que está pegando pelo diabo script não funciona você não tem um erro para te mostrar o que que tá aonde que tá dando problema então você tem que ir meio que linha a linha do Java script tem que ver se você não fez um alto fechamento numa batalha HTML que não podia tem vários detalhes não é tão tão simples de debugar tão simples de"
+    ],
+    [
+      1848,
+      "encontrar quanto alguma coisa por exemplo no PHP ajuda Nesse quesito depois a gente até pode pensar o material pessoal por favor XML cara eu também sentia muito isso a quem não conhece mais longa data sabe o quanto é o diabo XML tipo para valer eu realmente não gostava só que argumento que a sacada do XML é você poder customizar em cima de um outro que já existe só o trecho que você precisa Cascatinha tudo é só você colocar"
+    ],
+    [
+      1893,
+      "dependência no seu módulo cara show de bola show de bola a gente tem também depois a gente troca uma ideia o pessoal tem o lance dos xsd você faz o link em tempo real com as tags atributo e tal pouco uma boa dor de cabeça né aonde você vê qualquer declarar seus atributos para não parecer muito aleatório tá ali salvando E você já trabalhou com quais fermework chamado CodeIgniter sei nem se vocês"
+    ],
+    [
+      1939,
+      "conhecem acho que eu tô entregando a idade já 2009/2010 acho que é a primeira vez que tive contato com ele é um Framework muito gostosinho de trabalhar e era bem descompactou os IPS subiu FTP Tá show de bola mexe direto no código 0 composer era muito simples era muito simples só que juntamente por conta da simplicidade dele era muito fácil de você trabalhar ele era bem focado no padrão de mvc tinha ali o básico que você precisava de Framework conexão com banco Alguns helps tem até alguns também outros De Cash alguma coisa biblioteca de medo etc então era bem no modelo de Ah eu preciso fazer uma"
+    ],
+    [
+      1985,
+      "aplicação pequena média aqui é rapidinho pulo aquele Bootstrap de fazer as coisas que são mais triviais né já pega a boa parte aí que quase todos os temas acabam tendo que utilizar a gente acaba pegando pronto ali e subir o que a gente precisava meio que de regra de negócios mexer bastante com o CodeIgniter 2 com 3 depois a na versão 4 Demorou muito para lançar não cheguei a ter contato depois do três eu particular e aí foi meu cacho que eu acabei Trabalhando um pouco mais de tempo comecei com Laravel os cinco se eu não me engano 5.15.2 não lembro e acho que foi uma evolução natural ele"
+    ],
+    [
+      2030,
+      "já tinha uma maturidade maior do CodeIgniter já tinha alguns recursos bem legais que era trades conseguia personalizar bem os projetos fazer uma manutenção legal com os projetos e desenvolver bem rápido com ele também e em paralelo eu acabei tendo algum contato com Symfony e com o Phalcon e chega um pouquinho com Symfony com Slim ali para fazer algumas apis gosto bastante do Symfony que ele te dá uma liberdade gigantesca para você organizar o seu projeto diferente era por exemplo do Largo que ele já tem uma uma estrutura meio que ó você segue por aqui por mais que você possa sair fora daquela estrutura Você tem uma estrutura base que Muito provavelmente você acaba"
+    ],
+    [
+      2075,
+      "seguindo você consegue construir bem em cima da sua própria estrutura bem legal mas é um Framework que acabou sendo Não era tanta fama é um framer que ele roda como uma extensão do próprio PHP Então você tem uma habilidade você tem a possibilidade de adicionar uma extensão no teu servidor Você pode adicionar o Phalcon e por rodar com uma extensão é muito mais rápido ele acaba tendo uma performance muito legal e ele bebe um pouquinho da fonte do Sinpro e você consegue ter várias estruturas Como customizar muita estrutura do seu projeto como ele roda como uma extensão"
+    ],
+    [
+      2121,
+      "você não vai ter os arquivos do Framework ali na tua mão você consegue fazer um projetinho com as basicamente com as classes que você precisa com os arquivos de configurações iniciais e seguir a organização que fizer mais sentido por projeto que que for contexto é e comparado com esses problemas que você já usou comparando com mais gente assim que que tu vê ele de ruim é bom ou diferente assim são duas propostas bem distintas né o Magento é um muito focado Aliás ele é completamente focado para para ecommerce"
+    ],
+    [
+      2166,
+      "há um tempo atrás eu cheguei a ver um artigo em que consiga pegar um framer com a gente né o pacotemer e construir um blog só com o framer funciona você tem ali o admin você consegue Construir ali a administração de poça consegue ter um Frontier só que dá muito mais trabalho do que você tentar desenvolver um blog por exemplo com um [Música] largos como linguagem de programação você Muito provavelmente consegue fazer qualquer coisa com qualquer um com qualquer uma você vai ter mais trabalho outros vai ter menos porque cada um tem um propósito diferente"
+    ],
+    [
+      2213,
+      "então uma janta tem um propósito muito exato que é ser um econo possibilidade recursos no entorno desse universo de e-commerce e ele faz isso extremamente bem Tanto para sensibilidade dele para organização do projeto para escala como a gente já disse anteriormente uma gente ele por padrão já tem uma estrutura muito boa que te permite estender muito bem a funcionalidades que ele já tem que te permite alterar as funcionalidades que ele já tem e tudo isso sem se preocupar tanto com escala se a gente pensar aí por padrão uma steck padrão de uma gente"
+    ],
+    [
+      2258,
+      "rodando com vermes rodando com elastic cara você pode colocar isso para milhares dezenas e milhares de usuário ele vai atender vai ter que aumentar infra mas vai atender a evolução do código por mais regras de negócio que existe então vai ter um pouco menos de dor de cabeça para fazer essa manutenção de código já um Framework você tem esses recursos mas eles já não são meio que ativos por padrão então se você quer melhorar um pouco performance da sua aplicação e fazer o uso de Cash você tem que definir como testes vão rodar tem que fazer essas integrações a"
+    ],
+    [
+      2303,
+      "definição do que vai ser cacheado ou não acaba tendo que ser feito uma massagem implementações na mão e até mesmo a escala você vai pensar em desenvolver uma aplicação que ela vai ter uma escala muito grande um volume muito grande de acessos você tem que começar que tentar a tua aplicação já tentando e também uma escala de fazer manutenção desses códigos depois não adianta você colocar conforme vai tendo demanda e colocando Controller novo dentro de uma pasta controle de repente tem uma pasta com 300 controllers misturadas Então tem que"
+    ],
+    [
+      2348,
+      "pensar muito bem Como que vai fazer arquitetura dessa aplicação para que seja possível manter isso daí a média longo prazo coisa que por padrão não é não é o padrão já do framer o framer ele te dá a liberdade como ele é algo bem mais genérico não é específico para um contexto você tem Total Liberdade de dizer como que você vai organizar essas pastas [Música] sim não pode continuar esse ponto [Música] acho que a facilidade de aplicar novas tecnologias Foi algo que eu senti também uma gente ele é um pouco mais engessado para você aplicar novas tecnologias"
+    ],
+    [
+      2394,
+      "como eles estão evoluindo aí muito mais rapidamente Muito provavelmente eles já estão acompanhando as tecnologias mais recentes para Fronte para Beck etc o Magento ele é um pouco mais conservador para isso e não necessariamente algo ruim Particularmente eu acho algo muito bom porque quando você tem um econômico você não pode ficar você cresce ele em regras de negócio tem uma série de customizações você não consegue ficar atualizando a todo tempo para atender as tecnologias mais recentes nós teria que provavelmente ter uma equipe só para ficar fazendo a atualização é um Você tem uma maturidade de uma tecnologia mais conservadora para um projeto desse de um e-commerson um"
+    ],
+    [
+      2439,
+      "projeto grande faz bastante sentido dá para a gente colocar ali um react na frente do Magento [Música] Mas você tem que pesar muito se vale a pena os cursos envolvidos a manutenção disso De repente você coloca um recurso ali daqui a pouco só uma nova biblioteca uma nova versão da biblioteca quebra compatibilidade com a com que você tinha o Magento em si ele não acontece tanta queda a gente teve mudança mais recente aí da dois quatro três para dois quatro quatro em diante que mudou até a versão de PHP alguns projetos dá um pouquinho mais de trabalho mas não é uma migração tão dolorosa faz uns ajustes de PHP mas não é uma"
+    ],
+    [
+      2485,
+      "navegação tão dolorosa de ser realizado isso acaba impactando muito no curso total de propriedade [Música] s com framer que você vai encontrar a mão de obra muito mais fácil Muito provavelmente encontra bem mais mão de obra para lá viu assim foi do que para Magento então acaba uma gente ele tem uma mão de obra um pouquinho mais cara que acaba encarecendo um pouquinho o curso de propriedade dele por conta de ter um pouquinho mais difícil de você encontrar pessoal ser uma tecnologia um pouco mais conservadora exigir um pouquinho mais de padrões ali para conseguir desenvolver Esses códigos de sejam possíveis de manutenção a média longo prazo"
+    ],
+    [
+      2534,
+      "sim e acho que a curva de aprendizado também e um Framework você tem ali aprenda a fazer um blog em 15 minutos você vai precisar de um pouquinho mais de tempo acho que todo frio que é muito mais fácil mais gente no que o número de arquivos do outro filme hoje tá dois arquivos tem que ter uns 10 arquivos tem seus pais e contras também né"
+    ],
+    [
+      2586,
+      "Eu não sei que lá Acontece uma gente ele foi pensado para ser sensível infinitamente então ele aceita muitas possibilidades você pode usar o reptm que o processo filas Mas ele também tem uma adapter se quiser ou criar um próprio usar o outro lá você pode usar moral da história essas áreas que a gente sente que tem muita gente precisa de muito trabalho para pouco resultado geralmente é a deixa para você mesmo que é uma abstração própria para você usar igual até o modo dos corvento mesmo de fila é essencialmente isso eles em vez de você usar arquivos ml PHP diab4 da fila acabou morreu gente que a galera"
+    ],
+    [
+      2632,
+      "também pode ficar usar mais isso Magento ele é pensado para tipo atender todas as cidades possíveis Então essa acaba fazendo as coisas que cabe a cada um é construir Abstrações próprias as coisas que é mais corriqueira e repetitiva aí você economiza muito tempo aí sim aí fica o máximo né Legal perfeito acho que E aí para o quarto não adianta o modo criar coisa nova Meu Deus velho é muito opçãozinha muito vermelha muito decoração um servo vai vir naquilo ali"
+    ],
+    [
+      2677,
+      "vou jogar videogame tchau upgrade ali do Thomas o Ivan também ele tem uma experiência boa como pegou ele não tem eu não peguei um por dois mas dentro do um peguei tipo assim 1.4 para 1.9 uma coisa maiorzinha assim dois até que eu não peguei migração muito grande não o máximo 2724 É sério já sofreu um bocado que você é o dou um por dois é tipo não tem como tu fazer um upgrade tem que literalmente"
+    ],
+    [
+      2722,
+      "instalar uma nova loja e subiu fazer importações aproveita muitos conceitos numa gente um especialmente questão do evento os atributos organizado porém praticamente o fêmea tirando o banco de dados uma coisa que eu queria perguntar ali eu tive pouca experiência com outros eu trabalhei com o Code Como é que é o nome daquele lá que tu falou mas foi muita pouca coisa assim trabalhei também com Wordpress"
+    ],
+    [
+      2768,
+      "e alguns uns outros plataformas de e-commerce também pensando em performance tem uma grande diferença CN performance assim nos que você já trabalhou executando código no caso cara pensando no nesse sistema nesse frameworks na caixinha completamente mas como tinha dito o Magento ele já vem focado Se você pegar ele na estrutura com ela é tipo um Cash na frente um CD"
+    ],
+    [
+      2814,
+      "ele vai dar muito bem o processamento das requisições do Magento ele é um pouco mais pesado imaginando que a gente se a gente tirasse aquela camada do mestre na frente eliminasse ali os caches do Magento ele o processamento da requisição numa gente Ele é bem mais pesado tem ele passa por muitas coisas ou a estrutura para ele conseguir colocar os plugins ele vai custar um pouquinho ao passo que uma aplicação que ela desenvolvida já para ter um caminho muito bem definido naturalmente ela vai ter aquele caminho mais curto ela vai conseguir processar"
+    ],
+    [
+      2859,
+      "aquilo lá mais rápido mas a gente pensando com esses outros recursos com essas outras coisas que a gente pode colocar para ganhar performance cara chegar eles competem tranquilamente você pode catar uma aplicação em Laravel o código night ali colocar uma camada de Cash para conteúdo mais que não tem tanta dinamicidade e você pode colocar cash até para requisições que elas vão ser chamadas repetidas ou caixa de configuração como a gente usa muito para a gente não ter que ficar lendo direto de banco e etc Então acho que dos dois das duas maneiras Independente de linguagem de framer que se a gente utiliza esse"
+    ],
+    [
+      2904,
+      "recurso a gente consegue ter resultados muito próximos instantâneo carregamento que eu acho que o Magento 2 ele foi pensado dessa forma aí mesmo para takesh para ter vários Cash mesmo porque eu lembro quando eu me criei eu saí do meu jeito Um que mais entrou um roda e sem 200 mega de memória lá de boa né Aí eu fui lá para o Magento um desabilitei todos os Cash eu tentei rodar no meu computador não mudou nada chegou a travar o canal não tem sentido porque imagina tu não rodava eu debilitava todos os Cash dele"
+    ],
+    [
+      2949,
+      "e funcionavam de boa é mas a gente vai porque que não tá funcionando usava 8GB né porque eu tinha 8 GB de memória lá já era que se a gente pensar você tá desenvolvendo ela com prestar naturalmente local testando uma requisição outra pouco os dados Vai tranquilo pegar uma aplicação dessa jogar ela para uma escala aí de dezena centenas de milhares de acesso tem Cash cara tu tem uma infra absurda é Um Desafio muito comum e o Magento como você disse Acho que ele já nasceu com essa premissa nasceu com esse cuidado"
+    ],
+    [
+      2994,
+      "Eu também me acho isso que falar mesmo não sei se vocês têm alguma mais alguma pergunta técnica e entrar logo no pessoal agora quero saber como teu tempo quando você entrou na tecnologia não precisa ser só numa gente mas você consegue lidar com ansiedade a gente trabalha remoto a gente sabe que é bem difícil separar o trabalho na vida profissional com a pessoal queria saber um pouco da tua rotina assim como desenvolvedor E como você lida com a tua ansiedade ou se você não tem assim porque como o machado fala eu sou muito ansiosa eu sou ansiosa da casa"
+    ],
+    [
+      3039,
+      "eu não quiser passo a passo se eu não separar 6 horas passei aqui vou fazer mais coisas eu não consigo funcionar ele não se deixar ele vai madrugada dentro é dele né Cada pessoa tem uma personalidade eu queria saber como você lida com isso perfeito eu acho que hoje em dia eu não me considero tão ansioso nos momentos Atuais Eu tenho experiência de home office há pouco tempo há um ano e meio gostei bastante bastante acho legal a parte de escritório mas um híbrido talvez aí 100% escritório é"
+    ],
+    [
+      3085,
+      "complicado até porque é por isso que eu trabalhava era em outra cidade pegava piso direto era bem complicado mas eu não me considero uma pessoa muito ansiosa Eu já fui muito ansioso acho que na época que eu tava trabalhando e fazendo o cursinho pré-vestibular para tentar fazer faculdade foi a época que mais me bateu a ansiedade era uma rotina bem corrida bem puxada e naquela época que me ajudou muito a me entender melhor e controlar bem ansiedade foi fazer um tempo de terapia Isso mudou muito minha perspectiva com algumas coisas me fez entender"
+    ],
+    [
+      3130,
+      "algumas coisas entender que eu consigo organizar meu dia eu consigo organizar minhas atividades mas eu tenho que entender também que eu tenho limitações então eu sempre tento ter muito ser muito transparente como um time com o master Pill etc demanda chave então tá a gente tem a b c d para fazer pera lá consigo ir até aqui não adianta a gente querer segurar um monte de coisa porque alguma ou todas vão sair meio que mal feitas ou alguma não vai sair então eu gosto de deixar claro"
+    ],
+    [
+      3176,
+      "[Música] a organização todas as tarefas que tem para ser feitas talvez priorizar elas e tentar entender os limites se dá para fazer ou não eu me preocupava muito querendo abraçar o mundo e tentar dar conta de tudo e não vai dar a gente não vai conseguir resolver a hora que a gente terminar de resolver os 10 problemas de hoje vão vir outros 10 novos então respira vamos fazer até onde deu então eu gosto de tentar priorizar as atividades e tentar fazer dentro do meu limite Eu também gosto de estipular horários tentar ter uma rotina Às vezes tem que sair um pouco fora dependendo tem algum"
+    ],
+    [
+      3221,
+      "incidente Uma demanda mais urgente um prazo estourando a gente acaba estralando um pouco mas eu acabo tentando ter um horário para começar um horário para terminar para mim me desligar e cuidar de casa cuidar de relacionamento amigos tem um momento ali para mim e desligar mesmo e acho que é algo que me ajudou a bastante também a não ficar tão ansioso quando o pau tá quebrando nas demandas foram os esportes em geral mas trazendo mais para os que eu tenho praticado mais o é o queremismo"
+    ],
+    [
+      3266,
+      "jiu-jitsu são esportes que você se coloca em situações que não são que às vezes não são muito confortáveis no jiu-jitsu você tem alguém que está te estrangulando tá te amassando e tem que estar Deixa eu pensar como é que eu saio disso você começa a lidar com situações de confortáveis e você para analisa a situação tenta pensar alguma maneira de contornar e vai trazendo uma Calma vai trazendo acho que um senso de do redor da gente aí do dos problemas um pouco mais que ajuda a amenizar controlar um pouco mais ansiedade"
+    ],
+    [
+      3321,
+      "muitas situações complicadas do mesmo legal a gente vai conversando em vez de conversar sobre outra coisa a gente vai conversando nosso dia a dia e o nosso dia a dia 90% tecnologia e programação Então vai tá precisando do assunto é isso mas a gente vai trocando farpa trocando experiência né aprendendo e eu sempre meu psicólogo é ele ele não esquenta com nada ele é o contrário totalmente ao contrário de mim e não esquenta com nada tudo para ele tá bom enquanto mais problema melhor ele fica"
+    ],
+    [
+      3367,
+      "muito feliz em resolver os banhos e afins né mas eu ele que me conforta então [Música] alguém que gosta de problema tem direito me esquecido fazer juros aqui a minha esposa me ajuda muito ela é psicóloga parei de gastar com psicólogo ela me ajuda para caramba não me controlar tem uma pessoa e ainda mais que agora não era da mesma área né eu trabalhava com na farmácia e tal de manipulação"
+    ],
+    [
+      3412,
+      "então não era não trabalhava remoto não trabalhava com tecnologia então é um tudo totalmente novo eu vim Paraná sou do Rio de Janeiro Então tudo foi do zero mesmo comecei tudo do zero e não tem que reclamar porque tem alguém 20 anos de experiência aí me ajudando não tem preço velho aprendendo muito todo dia e toda hora e a gente tava conversando antes você falou tem 15 anos 20 anos mais jeito mas sempre tem uma coisa nova Ah não sabia disso aprendi semana passada aí se a gente vai passando isso né para gente aqui né conversando quando a gente tem oportunidade de divulgar também desconto conversar com vocês também para passar"
+    ],
+    [
+      3458,
+      "esse conhecimento legal é uma coisa que a gente tá fazendo bastante também de andar de BMX vocês conhecem aquelas bicicletinhas aí eu vou bem longe A gente chama de crase Eu lembro dessa acho que lá em Curitiba também de chamada de cross uma época e eu pego ela e saiu correndo bem louco pulando meio frio e já caiu umas duas vezes ele é divertido"
+    ],
+    [
+      3503,
+      "fisicamente já virou bodybuilder Então mas Brincadeiras à parte mais é porque eu tinha trocado de serviço no início do ano aí eu acabei controlando um pouco a questão de tempo agora eu tô olhando nos outros questões também mudança e tal vou ver se eu consigo voltar até o fim do ano e pegar para valer que eu lembro que antes da pandemia começar eu tava fazendo firme foi a primeira barra única vez na vida que eu fiz firme e realmente faz bem"
+    ],
+    [
+      3549,
+      "para caramba esse negócio de cuidado físico não só físico mas até psicológico é interessante tem que comprar uma BMX também cara eu não tenho destreza Cara isso não ia dar certo uma vez a merda tava nós tava num parque ali ela tava andando bem de boa assim de repente ela ela foi passar num lugar que tinha barro assim né em vez da volta para um lugar que não tem lá ela foi passar bem no meio aí Travou a roda da frente ela caiu duas vezes no mesmo lugar eu escorreguei eu caí no barro só que a roda já tava cheio de lama Então ela deslizou de novo"
+    ],
+    [
+      3595,
+      "lá na frente eu cai duas vezes e eu dava muito [Risadas] eu tava mais preocupado com a bicicleta né que é muito cara e coisa mais diferente que eu fiz foi andar de caiaque eu não sei nem nadar Nossa credo Eu não gosto de água a gente não tem coragem"
+    ],
+    [
+      3643,
+      "foi uma viagem era tanto a negócios Quanto depois no fim de semana no lazer com a empresa a empresa que tava antes até que o J tá agora o Dix Kaiak você manda as fotos depois advertido a ideia inicialmente era andar no mar para poder chegar uma outra área uma outra praia tinha um pouco mais isolado só que eu pensei Cara eu não sei nadar imagina o seu capota que isso dá qualquer coisa não é a lembrança que eu quero levar nesse momento para intestino um jeito alternativo e realmente tinha aí eu fiz uma trilha lá diferente e tal pegou beleza só que lá tinha um rio que zagava no mar e aí como eu tava desaguando ali era bem baixo é bem relativamente Raso então assim eu"
+    ],
+    [
+      3688,
+      "consegui ver o fundo tava no meio cintura tranquilo fui entrando fui entrando foi até lá na frente e tal voltei achei bom eu estava conversando aí não que chegou lá não quer pastar tinha um ri era mais Raso eu queria coragem foi com o pessoal resolveu para mim rio era só no começo meu filho Se eu soubesse eu não tinha ido ainda bem que eu não sabia porque foi bom jacaré lá Você tem uma pergunta para ele mais específico tem alguma feature bug ou mesmo projeto"
+    ],
+    [
+      3735,
+      "cara gravou-se na sua mente Você lembra até hoje alguma coisa maior que aconteceu nossa Acho que cada projeto tem uma um contexto uma característica muito diferente né Cada empresa quando eu comecei ali a minha jornada no e-commerce com a primeira empresa que eu peguei mais a fundo mais gente eu olhava esse negócio e pensava Nossa muito complexo bastante coisa é que é só lugar que eu trabalho que tem essas doideira ah cada projeto que eu peguei tinha uma doideira diferente mas cara que marcaram bastante"
+    ],
+    [
+      3781,
+      "primeiro projeto é um projeto que eu tenho um sentimento muito bom por ele pela equipe que eu pude formar lá e pelos desafios e também por ter sido o projeto que me alavancou muito na Magento eu tive dois outros projetos também que foram tem um carinho especial um foi uma instituição nacional que ela em todos os estados a gente tinha uma loja por estado e o projeto chamado que não é muito comum nos que eu tive contato que era desenvolver todas as integrações dentro de uma agenda era responsável era ativo para fazer todas as integrações"
+    ],
+    [
+      3827,
+      "e eram as três quatro interações de produtos em a mais outro sistemas integração com RP no fim era umas 78 integrações e foi bem doido colocar esse monte de integração lá dentro performance bem complicado foi um desafio bem grande por último eu tive oportunidade também de trabalhar em um projeto e era de uma empresa de auto peças para linha pesada a galera muito legal do cliente e era um projeto que acho que um projeto um código mais cagado que eu já peguei até perdão pela palavra"
+    ],
+    [
+      3872,
+      "Nossa Senhora a hora que eu catei aquele projeto para uma das primeiras demanda que passaram para mim era corrigir imposto no check-out e que tinha substituição tributária eu começava a olhar a tentar entender como que tava sendo feito o cálculo lá aí eu não achava modo que fazia esses cálculos vou puxando de onde que vem encontrei dois phtml cada phtml tinha umas mil linhas com regra de negócio dentro do phtml Aí eu falei não cara fudeu isso lá na frente vai virar uma bola de neve mas deu certo de corrigir foi foi consertando parte foi com Java script"
+    ],
+    [
+      3919,
+      "para mostrar para mudar como era amostrada Só porque não pega porque até que não pediu não tava integrando beleza mas foi até do lado do cliente que ele que o cara até disse para mim algo que a gente até acha na literatura de computação de código de arquitetura limpa código Limpo que é a regra do escoteiro lá né tentar deixar Sempre o lugar que a gente está passando um pouquinho melhor cada vez que a gente passar ali ele disse que essas palavras mas ele disse puxa a gente não tem como parar hoje para reconstruir o check-out dá para gente parar dois meses comer esse hoje era só eu desenvolvedor no projeto meio período por dia não dá para parar e ficar dois meses reconstruindo"
+    ],
+    [
+      3966,
+      "toca aí do jeito que der e cada vez que você passar Tenta dar uma melhoradinha e foi Como diz aí vieram outros desafios dessa empresa eram [Música] era um e-commerce que eu gostava muito por conta dessa particularidade tem um código bem complicado e apesar de ter esse código bem complicado que veio para a gente já todo ferrado não é Cronos que tinha um faturamento muito expressivo não funcionava que era uma beleza então eu sempre refletir assim tá errado de padrão mas funciona e vende e vende muito mais do que projetos que eu já tive contato que tava com o código lindo ali para mim foi um projeto que me fez"
+    ],
+    [
+      4012,
+      "refletir bastante e dá o braço a torcer que às vezes a gente tem que largar a mão um pouco de padrões ali para as vezes conseguir integrar entregar o que faz sentido para o negócio Concordo a primeira empresa que eu passei assim que eu cheguei imagine um tinha um arquivo CSS chamado Styles A loja inteira até aqui últimas 5000 linha algo assim era entre 5 e 10 ao longo de quatro anos e meio isso que eu fiquei nessa empresa a gente fez toda uma customizada com em vários pedaços primeiros o leste depois de meio que eu"
+    ],
+    [
+      4058,
+      "passasse por fim tava bem bacana ele não tem nível pesca essa mesmo que você comentou de fazer aos poucos sobre demanda para melhorar se é melhor e tem uma outra coisa também as coisas que dá mais trabalho também é que dá mais satisfação de ver pronto depois tá quebrando a cabeça estressante mas é o que você vai funcionar né bacana Valeu o esforço demais eu não entendo de imposto assim a gente recebe esse tipo de demanda para corrigir vem os dados a gente faz alguns cálculos mas perguntar para mim Que impostos captando nem ideia o que o RP tá me mandando mas a hora que que realmente concluiu ali A galera falou meu tá batendo os valores Nossa que doideira"
+    ],
+    [
+      4104,
+      "não sei nem como que tá batendo Beleza cara você falou comentário você falou comentário eu lembrei dentro desse phtml tinha um comentário Isso aqui é uma gambiarra até hoje eu deixei lá de capricho até hoje está lá também faz parte da nossa vida não tem como fugir"
+    ],
+    [
+      4149,
+      "um tinha uma empresa de meio de pagamento meio grande aí no Brasil que no modo deles tinham isso aí acho que não dá para falar o nome né [Música] ou não ou não se tiver funcionando não vai mudar não é só aproveitando também que você tem esse background com outras coisas além de e-commerce tudo assim o que que você teve experiência antes que você achou bacana sei lá te deu uns insights interessantes talvez até além da programação gostou de regra de negócio todo o pessoal já até com o aplicativo"
+    ],
+    [
+      4194,
+      "desktop outros tipos de Framework teve algum outro experiência antes de comer que você achou interessante também te deu umas ideias ali interessante para cantar talvez até que você trouxe alguns conceitos inclusive Se você saísse do Magento e tu ia para qual plataforma ou qualquer coisa eu não sei fazer arte nenhuma não sei nem tocar instrumento musical eu dei uma pincelada um pouco com Flutter fiz um projetinho pessoal lá meus pais eles são mais idosos e não manjou muito de"
+    ],
+    [
+      4241,
+      "mexer com celular eu acabei fazendo um sites de notícia da cidade distrai ali os links de notícias e estava num banco e aí eu montei um aplicativo infrater para fazer essa listagem eles poderem pesquisar as coisas aí e eu gostei de mexer com Flutter dá uma linguagem que tem um paradigma um pouco diferente Achei bem interessante talvez algo mobile sei lá seria interessante ou alguma coisa na área de ciências acho uma área bem bem bacana também e sobre experiências anteriores eu não tive"
+    ],
+    [
+      4286,
+      "grandes experiências de grandes softwares antes de eu ir para esse Universo de comer se eu trabalhava numa [Música] unidade na Secretaria de Educação na minha cidade e a maioria dos projetos que eu desenvolvi eram projetos a só que eu tava desenvolvendo a gente não tinha uma equipe de desenvolvimento então era o único que desenvolvia soluções ali dentro da educação então nunca tive muito um parâmetro de trabalhar em equipe falando em desenvolvimento né a scream metodo de viagem geral então era meio que do jeito que eu fizesse tocar aí a tocando mas eu acabei tendo a"
+    ],
+    [
+      4331,
+      "oportunidade de desenvolver alguns pequenos desafios ali que foram interessantes um que eu gostei de ter desenvolvido foi um aplicativo como aplicação para fazer prova online então que é feito ali um back Angel onde o pessoal conseguir cadastrar as provas Deus resultados e foi a primeira aplicação que eu fiz que teve uma utilização em maior escala eu cheguei a gente chegou operar ela com 900 alunos fazendo a avaliação ao mesmo tempo então acho que foi a primeira vez que eu tive um desafio assim de começar a pensar em escala como que eu vou conseguir entregar rápido como que eu vou conseguir processar isso aí não só aumentando capacidade de servidor"
+    ],
+    [
+      4379,
+      "acabei trabalhando um pouquinho com o Cash da queixar as questões fechar as alternativas fazer alguns mecanismos de embaralhadas alternativas e as questões para mostrar para os alunos porque às vezes eles tentavam um pouco próximo não podia não era legal eles verem as mesmas questões ali e para as experiências anteriores foi uma das que acabou me agregando um pouquinho mais para poder seguir aí com um desafio de escala um pouco maior que é e-commerce é interessante Tem coisas que às vezes é bem fora da área e acaba que a gente pode usar e aproveita seja o conceito"
+    ],
+    [
+      4426,
+      "eu tinha um projeto foi muito curtinho mas mas por curiosidade aqui na minha cidade tem uma universidade que o pessoal desenvolve alguns programas de Mestrado aplicando tecnologia para criação animal no desenvolvimento animal e eu tinha amizade com uma pessoa que tava fazendo amizade fazendo mestrado lá que a proposta a proposta do projeto dela é através da foto do pasto você conseguir processar e dizer se tá faltando nutriente no solo ou se tá em excesso ou se tá no ideal para atingir o maior potencial do Gado para ele produzir mais carne"
+    ],
+    [
+      4471,
+      "ao leite não me recordo e não sei porque a pessoa escolheu fazer isso em PHP mas ela deve ter tido algum motivo obscuro para isso precisava processar a imagem em PHP e pega p não é o melhor dos mundos para a gente processar a imagem aí ele precisava que desenvolvesse bibliotecas para a partir da foto da Grama você identificar Quais são os pixels da do pasto fazer uma média do RGB disso que a partir dessa média do RGB ele conseguia cruzar com a base de dados de que ele já tinha alimentado com fotos de da do pasto com nutriente baixo com"
+    ],
+    [
+      4518,
+      "excesso do nutriente com nutriente no valor essencial E aí conforme cruzava essa informação de RGB é que ele conseguia dizer Opa tá mais próximo de um de um pasto que tá com excesso de nutriente mais próximo de um que tá com déficit de nutriente a partir disso ele conseguia dizer o que que precisava complementar na no solo ali e o cara me jogou para mim uns paper científico lá aqui as formas você consegue montar uma biblioteca para fazer esses negócios aí e fala um desafio bem doido e rolou deu para fazer essa biblioteca distrair foi bem legal conhecer os algoritmos Onde você consegue extrair um objeto de uma foto meio que excluindo o fundo"
+    ],
+    [
+      4565,
+      "melhorar isso para conseguir saber da onde que você tem que pegar os pixels para saber que Pixel que era planta para isso você conseguir tirar o RGB e fazer o cruzamento com a base que ele tinha lá um desafio bem eu achei foi uma coisa que eu nunca imaginei que funcionava assim não acho que é o melhor dos mundos fazer com PHP acabou sendo bem gostoso quando funcionou eu aqui mal conseguia distinguir verde claro verde escuro tá é uma aplicação realmente bem diferente bem fora da curva Não nunca imaginei isso mas tinha que processar em fila cara não se não vai estar em malte PHP para ser a imagem é lento demais [Música]"
+    ],
+    [
+      4611,
+      "um projeto que tem aquele esquema de absorção de produto na parte do produto né montando o produto ali Real Time meu Deus é aquela que vem de mil e poucos dos mil e poucos em que você falou aquele não né Tem mais de um meu Deus cara Meu Deus velho dá trabalho imagem pega a pena não é um bom casal não tiver mais nenhuma pergunta você pode fazer a última lá mesmo que a gente faz parte técnica não tenho mas mais para o Thiago a gente respondeu nos"
+    ],
+    [
+      4657,
+      "outros demais podcast mas se quiser ir todo mundo dá vontade para falar responder também o qual conselho você daria o seu eu do passado que tá começando na área de tecnologia ou maior Conselho é que sim porque você daria eu considerei que é uma área que eu gosto demais eu sempre gostei bastante disso então acho que foi uma boa escolha mas eu diria para eu arriscar um pouco mais Eu sempre tive muito presente comigo um sentimento de eu nunca tava pronto que eu sempre"
+    ],
+    [
+      4704,
+      "sentia que faltava algo para mim me aplicar para vagas ou para alguns desafios é alguns anos atrás esse sentimento Era bastante presente então eu não arriscava tanto eu sempre pensava Puxa vida eu vou para tal empresa lá tem fulano de tal lá eles tem projetos gigantescos Nossa Senhora será que eu consigo responder será que todo mundo lá vai ser altos Gerais aí da tecnologia e de repente a gente vai ver que projetos gigantescos são tocados pessoas comuns que são muito boas em determinadas coisas às vezes não são tão boas em outras e também eram sobe bug vai correr de bug e eu sempre tinha isso de Não ainda não tô pronto"
+    ],
+    [
+      4752,
+      "[Música] Então isso que me segurou um pouco e algo que levou um tempo para mim pegar um pouco mais eu acho um pouco diferente é conhecer mais a fundo mas as entranhas as tecnologias que a gente acaba trabalhando mais lógico que a gente não vai conseguir mexer com tudo mas por exemplo no caso do PHP é muito bacana você entender um pouquinho mais a fundo do PHP para entender as limitações dele um exemplo PHP não é uma linguagem muito boa para trabalhar números absurdamente altos grandes"
+    ],
+    [
+      4799,
+      "ele tem bibliotecas para você fazer isso mas nativamente ele não é uma linguagem porque foi preparada para fazer esse tipo de trabalho [Música] estava script ou boa parte das linguagens de espadas praticamente espadas é interessante você conhecer as limitações dela porque de repente você vai ter uma só uma ali 0.0.2 você vai ver que vai dar uma dízima você vai descobrir que dá uma dízima e não sabe porque já tive caso de que pedido não integrava né a gente foi ver 0.1 + 0.2 no Java zero ponto três tá zero ponto três um monte de zero e 19 lá no final e às vezes fica travado isso daí e acabei me aprofundando um pouco mais"
+    ],
+    [
+      4844,
+      "não te conhecendo um pouco mais essas limitações é uma ferramenta que me ajudou muito foi o HackerRank porque daí vocês já chegaram a brincar um pouquinho com ele ele te propõe alguns desafios você consegue fazer ali algumas questões ele vai trazer algumas questões algumas demandas você tem que escrever um código na linguagem que você quiser para resolver aquilo ali depois que você escreveu você põe para testar ele vai rodar ali não me recorde exato mas acho que 20 24 testes em cima do código colocando alguns inputs e vai sair alguns outputs ali se deu certo ou não e ele de repente você olha para o teu código e fala meu a lógica tá perfeita você começa a ver execução do teste Passa Passa Passa chega lá para o 15 ou"
+    ],
+    [
+      4890,
+      "começa a dar pau não vai não vai tá tudo certo e aí você começa a pesquisar Te enxerga a pesquisar o porquê que isso tá dando errado começa a ver os inputs demolir o código para ver porque tá quebrando você começa a entender a alimentação da linguagem mas se entender aonde que ela começa a quebrar e [Música] quando a gente mexe com com escala e isso acaba fazendo um pouquinho de diferença você não pode sair usando um Model só porque Ah é mais fácil você vai usar os métodos Ali vai passar por toda a regra de negócio de usar um Model um volume muito grande de dados a conversão para Model vai ter um curso Então é legal você conhecer esses detalhes para"
+    ],
+    [
+      4936,
+      "tá um pouquinho mais prevenido com os desafios que podem aparecer Eu lembro que foi essa plataforma que eu usei mas no mínimo era uma proposta ideia parecida é interessante também que ela te mostrava a situação que outras pessoas usaram tinha até uma pessoa literalmente isso mas aquele code golfe Qual a versão mais enxuta possível para chegar nesse resultado é bacaninha mais galera quando for mexer com dinheiro quatro casos de precisão desse mal não usa fonte vai dar ruim realmente é um bom ponto interessante essa plataforma Eu não conhecia ela vou dar uma analisada nela"
+    ],
+    [
+      4986,
+      "bom a gente já tá uma hora e meia já quase do podcast dá acho que já dá para nós finalizando já quer finalizar aí eu tô a partir tranquilo foi bacana o background do Thiago Especialmente porque estão ele tinha dia antes do econom algumas perspectivas diferentes da coisa você faz bacanas que ele teve eu queria agradecer eu Thiago aprendi demais eu não tenho tanto assim eu tentei falar um pouco do que acontece mais"
+    ],
+    [
+      5031,
+      "pessoalmente eu tenho dois anos uma gente nunca sai eu comecei numa gente estou até hoje numa gente então não tenho como comparar muito com outro Framework Mas aprendi demais só agradecer mesmo ao Thiago qualquer coisa tá sempre aqui é isso para aliviar a ansiedade pessoal Quero Agradecer demais vocês aí pelo convite tem muito bacana tava com friozinho na barriga eu admiro demais vocês aí eu sei que você já tem bastante estrada aí de"
+    ],
+    [
+      5077,
+      "Magento Cada um na sua área eu ainda me considero um peixe bem pequenininho dentro de uma janta acho que tem que aprender para caramba ainda é uma plataforma que eu me apaixonei acho que eu vou correr atrás de fazer cada vez mais ela e muito obrigado pelo convite qualquer coisa que vocês precisarem por aí todo dia pegando Pokémon ali é para fechar aqui vamos estudar inglês né [Risadas] eu queria agradecer também a participação de todo mundo ali especialmente você que aceitou essa"
+    ],
+    [
+      5127,
+      "esse podcast né para fazer que não é qualquer um que aceita assim né mas tô aceitou ali gostei Aprendi muita coisa com você ele é muitas dicas ali eu vou usar já e eu também quero agradecer quem tiver assistindo né que é gravado Mas quem tiver ali online pode dar um like ali compartilhar ajudar nós ali e Valeu aí pessoal a gente fica online em tempo pode mandar pergunta no chat quem tiver no final aí quem acompanha até agora valeu aí até mais valeu gente"
+    ]
+  ]
+}

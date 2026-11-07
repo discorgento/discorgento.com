@@ -6,7 +6,8 @@
     "baseUrl": ".",
     "paths": {
       "~/*": ["./src/*"],
-      "virtual:discorgento-thumb-cache": ["./plugins/thumb-cache.d.ts"]
+      "virtual:discorgento-thumb-cache": ["./plugins/thumb-cache.d.ts"],
+      "virtual:discorgento-episode-index": ["./plugins/episode-index.d.ts"]
     },
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true

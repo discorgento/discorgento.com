@@ -48,6 +48,12 @@
       }
     },
     {
+      "includes": ["src/content/**/*.md"],
+      "formatter": {
+        "enabled": false
+      }
+    },
+    {
       "includes": ["public/**/*.svg"],
       "linter": {
         "rules": {

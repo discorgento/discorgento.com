@@ -52,7 +52,8 @@ const privacyHref = getRelativeLocaleUrl(locale, '/privacidade');
   const MAX_AGE_MS = 180 * 24 * 60 * 60 * 1000;
   // Bump when what is being consented to changes, so an old record no longer
   // counts and the banner asks again instead of silently reusing stale consent.
-  const CONSENT_VERSION = 1;
+  // v2: the same consent now also loads the YouTube player on episode pages.
+  const CONSENT_VERSION = 2;
 
   const win = window as unknown as Record<string, unknown> & {
     dataLayer?: unknown[];
@@ -172,6 +173,18 @@ const privacyHref = getRelativeLocaleUrl(locale, '/privacidade');
 
   const banner = document.querySelector<HTMLElement>('[data-consent]');
 
+  /**
+   * Tell the rest of the page what the visitor chose. Other scripts (the episode
+   * player) read `data-consent` on <html> at startup and listen for the event,
+   * so neither depends on which script happens to run first.
+   */
+  function announce(granted: boolean): void {
+    document.documentElement.dataset.consent = granted ? 'granted' : 'denied';
+    window.dispatchEvent(
+      new CustomEvent('dg:consent', { detail: { granted } }),
+    );
+  }
+
   function show(): void {
     if (!banner) return;
     banner.hidden = false;
@@ -184,6 +197,7 @@ const privacyHref = getRelativeLocaleUrl(locale, '/privacidade');
   }
 
   const stored = read();
+  announce(stored?.analytics === true);
   if (stored?.analytics) {
     loadGA();
   } else {
@@ -198,10 +212,12 @@ const privacyHref = getRelativeLocaleUrl(locale, '/privacidade');
     if (target.closest('[data-consent-accept]')) {
       save(true);
       loadGA();
+      announce(true);
       hide();
     } else if (target.closest('[data-consent-reject]')) {
       save(false);
       revokeGA();
+      announce(false);
       hide();
     }
   });

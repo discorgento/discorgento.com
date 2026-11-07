@@ -1,0 +1,334 @@
+{
+  "source": "youtube-auto-captions",
+  "language": "pt-BR",
+  "segments": [
+    [
+      8,
+      "fala pessoal aqui quem fala é o Jonas com mais um episódio do podcast da discorgento para quem não conhece o discorgento é um servidor do discord sobre mais específico de Magento Mas tem várias tecnologi lá dentro e hoje a gente tá com com a ideia de falar um pouco sobre headless vai ser um assunto bem legal pra gente falar porque eu eu nunca trabalhei bem a fundo com headless e tenho bastante ideia de como funciona mas não cheguei a trabalhar e e temos aqui também a aost Mary quer apresentar mar é a host Tô brincando é só Mary Mary Jane"
+    ],
+    [
+      55,
+      "Mary Iron como vocês quiserem chamar Machado falou falar um pqu de headless também nunca trabalhei na verdade até o ano passado quando o machado me falou sobre o assunto eh eu não sabia Basicamente nada nem sabia que existia mas hoje a gente vai ter um especialista aqui para falar um pouquinho com a gente é o Raul piko não sei se tô pronunciando certo é isso mesmo Sakai Sakai quer se apresentar dar uma introdução tudo bem é prazer eu sou Raul Sakai algumas pessoas devem conhecer eu tenho um servidor parceiro de vocês de nerd onde eu dou aulas de Magento né No momento não tô dando sobre PWA ainda a gente vai falar ainda porque eu ainda não dei aula sobre PW também nessa história de PWA e tô bastante animado"
+    ],
+    [
+      101,
+      "Vamos nessa como eu e machada acabou de falar agora a gente não não sabe a fundo o que que é eh assim por alto assim eu sei que é é é um sistema de gestão de conteúdos onde eles vai separar o back e o front mas eu não sei a fundo como funciona se tu quiser dar uma introdução mais ou menos o que que é realmente o headless Tá então vamos lá Vamos separar em duas partes tá que todo mundo confunde as coisas entre PWA e headless headless é uma coisa e o PWA ele engloba o headless mas trazendo algumas coisas a mais Então a ideia do headless literalmente aquela coisa sem cabeça tá então é um corpo que não tem a cabeça então você tem o corpo do site mas aquele não tem a estrutura"
+    ],
+    [
+      147,
+      "do site ali dentro você não vai ter acesso direto ao banco você não tem normalmente não é server renderer Então não é um servidor que renderiza o HTML da página normalmente é um HTML com JavaScript consome apis e traz tá E vamos desmistificar porque não é aquela coisa headless não quer dizer ah é react com GraphQL não headless é uma tecnologia de que o front end vai rodar totalmente separado do backend e a comunicação é estritamente por apis seja ela rest stope GraphQL como vocês quiserem tratar o front end ele pode ser como vocês quiserem tá então existe até uma teoria de que você pode ter server Side rendering mesmo com headless porque"
+    ],
+    [
+      194,
+      "nada impede que esse server Side que vai fazer o rendering seja um node consuma uma API por trás e já renderize as coisas na página então tem várias maneiras de você trabalhar isso no Magento que é o que a gente mais trabalha no nosso dia a dia conhecido como PWA ou Venia storefront que é o PWA Studio por quê PWA são os progressive Web Apps isso se eu não me engano quem começou um tempo atrás foi a própria Google onde aquele famoso site que ele dá a opção de você baixar o aplicativo do site ele instala como se fosse um aplicativo e ele abre parecendo aplicativo mas ele ainda é um navegador que ele tem a cor lá em cima do seu site na barra de cima e ele vai trabalhar algumas integrações melhores com o seu celular como por exemplo ele vai conseguir trazer coisas offline"
+    ],
+    [
+      240,
+      "então tipo ah tá offline mas eu quero manter os itens do carrinho a gente consegue trabalhar algumas coisas diferentes a gente consegue trabalhar melhor com service workers para trabalhar melhor processo assíncrono e conseguir melhorar a performance do frontend então Muita gente me pergunta né se realmente é melhor sem discussão a tecnologia do PWA é muito melhor do que o que a gente chama de monolito né que é trabalhar tudo junto porém Como tudo tem o tradeoff a gente tem que escolher o que a gente vai trabalhar na hora de se do trabalho é exato e também tem eu tinha uma dúvida mas ele é melhor no sentido pro eu acho que é né com certeza não muito pelo contrário é é pior pro no caso é exatamente então"
+    ],
+    [
+      286,
+      "inclusive o primeiro me Magento desse ano deu uma palestra sobre isso né PW head Ser ou não ser e a questão porque o negócio é o seguinte tem muito Hype né eu falo tem muito Hype ah todo mundo quer ser headless todo mundo quer ser PWA todo mundo quer seu estado da arte mas trabalhando com negócios eu percebi que você tem que ter um meio termo das coisas você não pode sempre querer o estado da arte que vai complicar a vida então vamos falar de uma agento hoje como funciona aqui a nossa nosso mundo né como funciona o monolito do Magento você faz a tabela do banco de dados você faz seus models você faz os helpers os blocos aí o cara do backend faz aquele frontend todo cagado aquele HTML mal feito um JavaScript Meia Boca Sem CSS"
+    ],
+    [
+      331,
+      "nenhum fala front tá aí tá funcionando agora você se vira beleza aí o front vai lá olha o que o cara fez tira uma dúvida com ele arruma front deixa bonitinho faz um JS mais bonito faz todo o CSS faz o mobile first faz tudo redondinho resolvido vamos fazer o mesmo processo com headless o PWA até a parte do MOD você vai fazer igual só que você não implementa no front end aí você cria um esquema do GraphQL para fazer declaração de esquema aí você cria o resolver você implementa o resolver você documenta isso pro cara do Fronte que ele vai receber criar o esima implementar no Apollo criar o componente implementar na página então assim a chance de erro do processo é muito maior porque você tem"
+    ],
+    [
+      376,
+      "alguma coisa por exemplo o que o backend faz uma release não necessariamente frontend já consome e isso já viá muito desencontro do backend fazer uma coisa o frontend não tá tão bem alinhado então para trabalhar PWA não tem aquela coisa tem time de back de front não tem que ser um time só ainda porque se o time não conversar muito bem vai dar ruim eu já vi isso da ruim uhum iso é isso que comentar é que a dinâmica é separar o back com o Fronte mas como trabalha isso tem que ser bem todo mundo tá bem junto bem Tem uma comunicação bem exato E aí é onde os Líder técnicos scas começa a puxar os cabelos né porque o back termina mas às vezes você Moca pi pro Fronte ele até faz mas Cara você sabe"
+    ],
+    [
+      421,
+      "aquela coisa né a gente moca as coisas mas na hora que você conecta os bagulhos ou encaixa n às vezes encaixa Às vezes o dado veio uma vírgula diferente que o front não esperava começa a bugar E aí leva mais tempo então assim tecnológicamente não tem como falar Não não é melhor é melhor só que eu fiz uma conta isso com os meus clientes uma vez e Inclusive a gente tirou a minara Foods de Carnes dpw pro monolito já por causa disso tá que é o seguinte se você fizer a conta de você fizer um monolito bem feito tá com todas as boas práticas para ter uma performance decente e no final sabe quando você terminou cara já passei aqueles primeiros 3 anos 4 anos do projeto que tem aquele monte de evolução Aquele monte de feature nove cara você é uma atualização zinha aqui a gente manté"
+    ],
+    [
+      467,
+      "uma agento atualizado eu não tenho mais aquele monte de features aindo eu tenho uma aqui uma ali mas eu não tenho mais aquele Rush né que a gente fala que é fazer todas as sprints rodarem ter as features sair do MVP estabilizar o projeto quando você passa desse ponto de projeto estabilizado estou crescendo mais devagarzinho Estou escolhendo para onde eu vou crescer que que você faz você muda pro PWA porque a sua plataforma já tá estável seu negócio já está Maduro e essa mudança pro PWA te custa menos você refazer depois o projeto em PWA do que começar o projeto do zero em PWA is é mais barato entendi eo é mais rápido bem mais rápido e Mas comparando com Mag normal assim"
+    ],
+    [
+      513,
+      "for fazer o mesmo projeto refazer no caso isso depende tá depende muito por você tem tipo a gente sabe como é código né a gente tem projetos e projetos eu sou muito defensor do não mexer onde não se deve num n que eu acho que ficou muito queimado no mercado porque ente buga para caramba os magent que eu vejo por aí só que eu vou ver os códigos que o pessoal faz gente é 30 módulo instalado e código assim sobrescrevendo coisa que não precisa muita coisa que faz não precisa sim sabe o Dev ele não se preocupa em saber uma vez eu tive um Dev que fez uma"
+    ],
+    [
+      558,
+      "customização no Adobe Commerce Cloud que é enterprise para não mostrar preço para cliente que não tá logado eu quis matar o cara porque é uma config do admin do gente na commerce é só você estudar a plataforma Então e se você fizer um projeto muito bem feito muito bem estruturado onde você tem os models Você tem os repositories Model é um Model não é só regra de negócio jogada para tudo quant é lado você tem uma orientação objeto bem feita quando você transforma isso por PWA você só tem que criar os resolvers a mais você tem que implementar os end points de GraphQL e passar isso pro front trazer suas customizações agora se esse processo não tá bem feito dessa maneira você vai ter que acabar"
+    ],
+    [
+      605,
+      "que ter que resolvendo muita coisa dentro do resolver recriando muito Da Lógica que você fez para dentro do resolver E aí isso pode te gerar problema e atraso Hum entendi interessante Então basicamente o RL e uma Magento normal lá Não não é muito diferente assim de dificuldade desenvolv assim tempo de desenvolvimento Então se você for colocar do backend não tem tanto Vamos separar duas coisas uma da diferença de desenvolvimento e um do tempo de desenvolvimento tá a diferença de desenvolvimento realmente não existe tanto por quê você vai ter que expor as"
+    ],
+    [
+      651,
+      "suas lógicas de negócio ali as suas todas as suas regras através de api tá só que em vez de ser api rest padrão do magente vai ter que implementar um GraphQL tanto que tem muito módulo que você compra que você tem o módulo e você tem o módulo GraphQL né para você poder implementar ele no headless no PWA então da parte do desenvolvimento não muda muito a diferença é que você tem que fazer o implementação agora de tempo muda por você ainda além de fazer o código comum Você ainda tem que fazer esta nova implementação e se você faz direto no PWA qual é o problema quando você faz no monolito o vai lá começa a jogar uns códigos HTML nada a ver lá no meio da página só para testar funcionalidade fazer o submetido form"
+    ],
+    [
+      696,
+      "fazer uns Beleza vai quando você faz direto no PWA ele vai interagir com tudo por api ele não tem um frontend para testar então tudo que ele vê é dado dado que entra e dado que sai então ele vai ter mais trabalho para testar isso e ter certeza que a funcionalidade no final tá certo a gente vai ter um trabalho maior para organizar esses testes por não é mais Aquele caso Ah entra nessa página faz isso faz aquilo e faz o fluxo não pro backend agora nesse cenário você tem que enviar este dado para ap receber esse nesse cenário você tem que fazer essa query e receceber esse essa estrutura então o teste ele fica mais complicado e mais suscetível a erro então o custo de tempo aumenta Uhum é uma outra dúvida que eu"
+    ],
+    [
+      742,
+      "tava que eu tinha bastante era vamos supor eu vou lá na numa empresa e e compra um módulo do Magento aí eu instalo ele no no pwl vai funcionar ou eu vou ter que fazer todo Fronte pro meu tema por exemplo isso depende se ele tiver já as apis já no caso gra é se alguns módulos Eles já te entregam os componentes do Venia hum STF do PWA Studio e os GraphQL já implementados tá o que Isso facilita a sua vida porém Apesar de ele te entregar a implementação do ven ali Você ainda vai ter que implementar no seu layout ainda"
+    ],
+    [
+      788,
+      "vai ter que implementar então é Diferente de quando você instala o módulo no monolito que ele vai injeta via XML onde ele precisa e tá lá hum é um processo ainda Apesar deles te facilitarem ainda é um processo diferente agora se o módulo não der suporte ao headless aí Ih amigão aí tá na roça vai ter que criar o processo em inteiro vai ter que estudar o módulo como ele funciona para poder criar os resolvers E aí você criar os end points de GraphQL para trabalhar e na tua experiência aí você viu muitos módulos feito para PWA ou não tem muitos Olha eu diria que é pouco mas a tendência tá a aumentar porque a Adobe em si tá empurrando muito PWA tá principalmente"
+    ],
+    [
+      833,
+      "na parte do Adobe Commerce eles estão empurrando muito PWA forte agora o que que eu sou um pouco contra como muitas medidas que a adob tomou nos últimos anos sou muito contra algumas coisas que aconteceram muita gente mas por é mas por causa disso porque eh ao invés deles trabalharem a minha visão tá ao invés deles trabalharem ao redor do que já existe existe Principalmente para o b2b algumas coisas que eles estão querendo injetar muita força então por exemplo entrou o quando eles entraram achei muito bom que eles entraram com Adobe Sensei né Para você fazer recomendação aí eles entraram com Live Search Só que todo mundo que usa o Live Search até hoje infelizmente ninguém me deu uma todos os"
+    ],
+    [
+      880,
+      "testes que eu fiz e que meus clientes tentaram nenhum teve um resultado bom ainda né ainda gera muito problema gera muita coisa eles entraram agora com Adobe catalog que é para você acabar com a limitação de catálogo do Magento que é o quê é a é a Cash do Varnish né customer group stor vi página então muito cliente fala não eu quero um catálogo totalmente dinâmico Fala irmão o Magento não trabalha para você fazer is tem que fazer PWA tá é aí que o PWA eu acho que ele entra com obrigatório para Magento Cara eu tenho um catálogo b2b que é abusivamente customizado o cálculo do catálogo vem até de Fora sabe então assim beleza aí você não tem escolha Você tem Duas escolhas ou você faz PWA ou você transforma as páginas de"
+    ],
+    [
+      926,
+      "categoria emem páginas PWA ou seja páginas que não tem o produto e elas carregam de maneira assíncrona headless aquela parte né você carrega de maneira assíncrona o catálogo para mostrar ali o que você pode ter um problema de performance às vezes bem feito até dá para fazer Tá mas é bem mais complicado exatamente para você evitar esse problema da Cash Então acho que eles estão empurrando muito isso porque no Head você tira um pouco dessa limitação da Cash do vern legal mas mas dito isso tudo essa complexibilidade você assim poderia falar mais menos quando usar ou não usar o head Ou você tem alguma situação onde você não"
+    ],
+    [
+      971,
+      "aconselha por nada utilizar sim o meu conselho é o seguinte se você conseguir respeitar a estrutura de cas do Magento Nunca comece um projeto realmente nunca eu sei que é muito contraditório dizer isso muita gente brigou comigo até depois do me magent quando eu falei isso que é vai sair caro vai ser dor de cabeça cliente vai dar dor de cabeça porque PWA a gente sabe projeto normalmente atrasa né monte de co t a le de Murphy 24x tudo da desculpa tudo da bosta você só não sabe quando nem onde tudo D ruim verdade né então PW só pior é isso porque você"
+    ],
+    [
+      1016,
+      "tem duas coisas separadas então tem duas coisas para debugar tem o UPWARD server Você tem o headless ali na frente você vai ter um monte de coisa para você trabalhar então fica mais complicado o processo agora tem dois casos que eu indico o PWA que seria tenho dinheiro tô cagando ten dinheiro e ten o tempo Beleza vai tá certo tô cagando tô cagando dinheiro no negócio aqui consigo fazer vai faz porque vai valer a pena a tecnologia vale a pena não tem como falar que não vale é mais rápido performance é melhor tem na no começo mas depois a longo prazo vai vir vai retornar mais exatamente agora se você tem uma regra que você fala cara eu não consigo respeitar a regra do Magento De Cash Eu"
+    ],
+    [
+      1062,
+      "preciso de uma Cash mais granular precisa de uma coisa diferente Beleza então o monolito não vai te servir por tem até como você fazer tem como você sem mexer no próprio Varnish na config dele através do Magento você mudar o ex Magento very que ele manda ali nas variáveis de configuração dele para injetar mais só que qual o problema você aumenta a dimensão de Cache seja você aumentando esse footprint de Cache você vai ter menos páginas cacheadas paraos seus clientes você vai gerar maior problema de performance tá Então nesse nesse caso eu conselharia iniciar com PWA o outro caso é estabilize minha plataforma não tô crescendo mais tanto tá legal eu tenho uma feature outra que entra aqui de vez"
+    ],
+    [
+      1107,
+      "em quando é mais suporte bug Agora eu quero fazer a minha performance fazer venda Beleza agora você pode ir para PWA que vai pagar 100% porque se você não tem mais desenvolvimento esse custo que você vai pagar você vai ganhar tudo em performance entendi e uma outra dúvida que eu tinha bastante é sobre a performance emci de velocidade do site e se Como que tá o PWA o headers sobre isso performance e se olha de performance naturalmente o frontend é mais rápido tá eh por ele imprime menos HTML muitos head eles imprimem menos CSS"
+    ],
+    [
+      1154,
+      "pra página então ele usa menos JavaScript que para mim é uma coisa que eu já até pensei em refazer o front Hand do Magento removendo Aquele monte de biblioteca desnecessária né que na home page você carrega acho que 272 arquivos média você carrega de JavaScript quando Cara na boa porque você vai usar um jquery cookie você pode criar uma Library de cookie ali simples de JavaScript que hoje tá muito fácil fazer o handle né hoje tem tem muita biblioteca que eu vejo ali que não é necessária hoje você trabalhar poderiam ser códigos bem menores né Eu entendo a questão que eles falam Ah tem que ter compatibilidade tem que ser fácil do mercado usar mas mesmo assim muita coisa eu acho que ainda é preguiça para falar a verdade tá para deixar mais rápido porque é isso ele o frontend ele é"
+    ],
+    [
+      1200,
+      "naturalmente mais rápido ele tem menos tempo de execução de JavaScript o toda aquela parte que você vai fazer do Lighthouse né ou do Google page Speed né do o time to First Bite ele é mais rápido porque a página HTML ele não tem renderização do Servidor então é tudo naturalmente mais rápido onde ele pode ficar mais lento se você não tomar cuidado como você faz as suas apis e os seus resolvers por ele não consome tudo de api pode ser que renderiza rid só ficar aquele catálogo ali ó um minuto para rolar Já carregou tudo mas tá devagar você aperta o botão Vai devagar Então o front end ele vai ser naturalmente mais rápido a não ser que você faça uma meleca muito grande ali ele vai ser naturalmente mais rápido mas ainda assim você precis tomar muito"
+    ],
+    [
+      1245,
+      "cuidado com o que você faz no backend para manter essa performance e e a questão de se como é que tá a questão de so desde que você respeite as boas práticas já não é mais um problema no início do headless era um problema porque o Google ele não executava JavaScript da página para fazer seo hoje ele faz tanto que uma das coisas de regras de se hoje é performance por isso que ele executa o JavaScript da página para saber a sua performance seu score e te dá um score maior ou não de so e não só de performance legal interessante saber isso machada adora performance Eu também eu sou sou tarado por perform"
+    ],
+    [
+      1290,
+      "para mim site de Adobe Commerce bom até de monolito é que responde em 50 msos até no máximo 150 Pior que é isso mesmo eu tava estudando bastante esse tempo aí bem legal mesmo quer fazer uma pergunta marij já é que a gente já deu uma introdução falou um pouquinho mas a gente não falou muito da tua carreira se você quiser dar uma introdução como você começou na tecnologia e Aonde você tá trabalhando hoje tá eh eu comecei muito cedo por causa do meu melhor amigo né ele me ensinou a programar quando eu tinha 12 anos ele é um ano mais velho que eu isso e com 14 Já comecei a trabalhar na época"
+    ],
+    [
+      1335,
+      "já Format os PC ali da do bairro né fazia as coisas e aí eu batia de porta em porta para vender site nas lojas da cidade na cara dura molecão consegui algumas coisas né A aí quando fiz 17 anos fui para São Paulo para estudar não fiz ti fiz design tá porque a minha visão aí fica dica para quem quer entrar na de tecnologia não faça Faculdade de Tecnologia sei que é muito contraditório falar Ah tá tá mas a Faculdade de Tecnologia ela não te prepara pro mercado se você estudar muito na Faculdade de Tecnologia ela vai te dar uma base porém a hora que você senta no mercado para ter seu primeiro trabalho não é do que você aprendeu é totalmente"
+    ],
+    [
+      1380,
+      "diferente Acabei de fazer an envolvimento sistema he tem nada a ver tem nada a ver eu cansei de pegar cara da USP que eu entrevistava falava cara você entende padrão de projeto entendo sabe o que é design pattern me dá um nome de três aí explica por cima como funciona dava branco no cara sabe e a coisa cara você vai trabalhar com integração você vai trabalhar com straty vai trabalhar com adap vai trabalhar com template tem um monte de coisa que você vai usar se você estudar eu falo pra galera faz site para jogar fora eu copiava site dos outros só para aprender a fazer só para ver como eu fazia nessa época Então eu fui fazer faculdade de design que eu queria entender o outro lado sempre teve sempre tem essa briga né designer frontend backend não se"
+    ],
+    [
+      1425,
+      "entende pessoal de marketing pessoal de negócio que aí eu acho que foi onde a minha carreira cresceu rápido que eu era uma das poucas pessoas dos escritórios que eu trabalhava que conseguia andar nos dois caminhos falar com o time de design falar com o time de marketing falar com o time de negócio e ainda trabalhar com o time de ti então trabalhei com algumas empresas meu primeiro grande projeto foi um me caí de para-quedas meu primeiro projeto foi um portal pós vendas da Volkswagen fazendo em Java groov and rails ess aí na época que não tinha border radios Galera Era border Radi tinha acabado de surgir você tinha que fazer as bordas era com tabela você colocava as imagens Quem lembra dessa época você fazia uma colocava imagem é imagem transparente"
+    ],
+    [
+      1471,
+      "assim dos C para fazer as bordas era un bagulho muito esquisito hoje Vocês não tem ideia como era front um tempo atrás era muito era muito diferente Aí eu fui trabalhar na época com VTEX antes de na época tava na 1.4 já tava começando a estudar Magento e aí foi meu pesadelo né cara trabalhar com VTEX não sei como tá hoje tem um tempo que eu não trabalho com VTEX mas era o pandemônio na minha vida juro para você customizar HTML da página você usava jquery é é era os bagulho muito esquisito era os bagulho muito esquisito E aí na época eu quis muito trabalhar como agento sair da agência abrir uma consultoria minha na época aí eu consegui um cliente"
+    ],
+    [
+      1517,
+      "sonoma né porque eles estão até até hoje então e aí depois de um tempo trabalhando com eles eles me chamaram para fazer parte do time falei ah tô com um cliente só cara vai me pagar fullt bom né vida de PJ aí eu fui de lá eu conheci o Bruno elisei que foi meu sócio que fez hoje o da STI hoje tem o modo do Pag Seguro eh acabou a gente trabalhou junto por um tempo acabou não dando muito certo Eh aí eu fui trabalhar com AD server fiz um trabalhei no desenvolvimento de um AD server chamado ded que foi comprado pela Wall Mas eu ainda trabalhava com Mag genteo fazia alguns Jobs por fora fazia alguns freelances e eu fiquei meio frustrado"
+    ],
+    [
+      1564,
+      "porque no final do desenvolvimento eles me colocaram para fazer banner customizado pros clientes e ficar atendendo telefone Nossa a eu não tinha vontade mais de trabalhar depois de um tempo e aí eu fui convidado para ser sócio de uma empresa fui trabalhar com eles a gente tinha desenvolvimento Magento tinha desenvolvimento customizado tinha um monte de coisa eh tive muito problema com esse meu sócio na época ele era um cara muito estúpido né Eh meus Dev ele levantava da mesa eu já levantava junto Porque eu sabia que el ia xingar algum devv por algum motivo né né era era horrível Aí eu recebi uma proposta para ir pro Rio de Janeiro Fui Morar no Rio de Janeiro 2 anos e meio eu fui ser gerente de software da Dufry hum eh foi meu"
+    ],
+    [
+      1610,
+      "primeiro grande projeto de verdade você acho que de Rio Grande foi porque a empresa que foi contratada na época não deu conta de entregar meu chefe virou assim para mim é então ó Sabe aquela salinha do 11º andar então é sua ele me pegava em casa 7 horas da manhã me deixava em casa 9 horas da noite em seis meses a gente conseguiu zerar o projeto fazer o projeto do zero lançamos o projeto a nível Brasil aí o pessoal de Fora gostou porque a duf é uma empresa internacional hoje eles são muito menores depois da pandemia mas antes eles valiam mais de 8 bilhões de dólares e a gente tinha feito Nacional eles queriam expandir o projeto né para fora só que eu não aguentei morar no Rio de Janeiro não não conseguia eu queria"
+    ],
+    [
+      1656,
+      "muito voltar para legal nossa é quente para burro eu morava em Ipanema no final assim porque quando eu mudei era muito bom porque eu mudei logo na Olimpíada Então tinha Polícia Armada e cada esquina aí eu morava em Ipanema e eu comecei a ouvir tiroteio toda sexta sábado domingo de casa normal eu sou carioca eu passei minha vida toda lá tô dois anos aqui no Paraná então normal se não tiver a até estranha é então falou é sável mesmo também é aí eu não era um negócio que eu não conseguia sabe para mim não não me fez muito bem aí eu acabei ia voltar para São Paulo eu ia ir para Renner na época para cuidar do e-commerce deles também só que aí a Infobase me chamou na época porque eles pegaram o projeto da Dufry para escalar"
+    ],
+    [
+      1701,
+      "Global aí eu abri a unidade de magito para eles em São Paulo e a gente em um ano fez 198 sites para Dufry um código só foi assim Acho que foi na época era o quinto maior projeto de imenda de todo mundo eu parei de contar em mais de 270 sites 11 infraestruturas separadas Era um negócio não tô brincando tinha mais de 700 ST views Era um negócio gigantesco e foi logo quando eu me especializei muito integração como a gente também que a gente fez um midor de integração que a gente usava laravel e RS era lindo a gente rodava mais de 8 bilhões de mensagens por mês no negócio era um bagulho bisonho também foi bem legal e dali a gente"
+    ],
+    [
+      1746,
+      "ganhou muita relevância no mercado né Infobase não tinha nada hoje Se não me engano é a terceira maior implementadora de magent do Brasil né então a gente pegou o projeto da yaro uma empresa gigante a gente pegou Minerva Nike sebrai Panini que foi meu projeto preferido que é o que eu mais gosto até hoje de dar uma olhada lá né nerdão eu imagina olha Fanini sempre gasta as coisas lá então cara foi muito projeto a gente fez muito projeto muito projeto relevante e a gente conseguia os projetos principalmente por dois motivos a gente tinha muito uma postura consultiva no projeto sabe a gente brigava realmente os clientes eles me amavam me odiavam a gente sempre falava isso porque eu brigava muito com meu cliente eu falava"
+    ],
+    [
+      1792,
+      "eu quero isso eu falava não vai funcionar vai dar ruim vamos fazer de outro jeito não não não vou fazer porque vai dar ruim eu não fazia Eu perdia o projeto mas não fazia a gente fazia um comercial muito pesado para ver se o projeto ia entrar se ele cabia pro Magento e a gente tomava muito cuidado com customização muito cuidado como projetos eram feitos tanto que eu acho que quando eu tava na Infobase que a gente tinha nunca perdeu um projeto por motivo técnico assim sabe Uhum Então nunca assim tiveram erros sempre tem erro em projeto sempr tem problema mas no final o projeto sempre se estabiliza de uma maneira muito fácil só que foi daí que surgiram as aulas né porque eu tinha muita"
+    ],
+    [
+      1838,
+      "dificuldade para contratar a Gente desculpa o mercado de Magento hoje tá faltando já né hoje falo que começou a ficar esquisito tá começando a faltar vaga né antes antes faltava profissional só que mesmo quando faltava profissional era muito difícil achar um profissional que entendia de mais gente era um cara que trabalhava com PHP e aquela coisa a gente sabe né que o PHP é muito criticado porque o profissional de PHP ele pouco se especializam em desenvolvimento e não em PHP em si né então fazer uma orientação objeto bem feito uma estrutura de código legal então você pega muito projeto PHP mal feito por causa disso porque o PHP é uma mãe eu falo você faz qualquer coisa literalmente você pode tacar uma função depois de um objeto é um negócio muito esquisito e funciona Pois é entendeu E"
+    ],
+    [
+      1885,
+      "aí você pega umas coisas muito esquisita e e eu vi que teve essa transição né o pessoal viu que as vagas tava pagando bem Monte gente PHP estudando Magento Tentando entrar mas sem entender o Magento em vez de ficar só reclamando eu começava a dar aula pro meu time duas vezes na semana eu parava o time ho gente dia sempre almoçava junto não tinha sala separada era todo mundo junto parava uma duas horas a cada dois dias para pegar o que a gente fez de errado mas você fica apontando tip fazer código com eles explicar conceito mostrar tudo e aí na pandemia Quando minha esposa viha fazendo isso de casa ela falava não você tem que gravar isso tem que colocar isso no arma eu falava não posso gravar isso aqui da Infobase aí ela me convenceu a começar a fazer o The IT Nerd Foi aí que eu criei o The IT Nerd que eu comecei a dar aula até eu dou aula já dou aula até hoje dou"
+    ],
+    [
+      1931,
+      "toda terça-feira às 9:30 aula e é isso que eu tô fazendo hoje acho que muita gente já me perguntou quando que eu vou fechar o curso né porque eles falam não hora que você terminar isso vai fechar ISO vai deixar pago não a minha ideia é que esse curso seja sempre gratuito porque hoje eu não eu não quero monetizar em cima do desenvolvedor eu estou monetizando isso hoje em cima de empresas então empresas que me viram fazendo curso me viram Formando profissionais hoje estão me procurando para montar time hoje estão me procurando para fazer treinamento customizado pro time deles e aí um treinamento que eu pego é a mesma coisa que se eu tivesse 100 alunos por seis meses então é uma maneira diferente que eu vi hoje tem vários cursos de Magento"
+    ],
+    [
+      1976,
+      "tem um Mag inteiro tem outros que você pode comprar mas você nunca sabe se é bom né pessoal sempre fala é muito superficial então da maneira que eu tô fazendo a gente entra muito no R code mesmo a gente já tá então que tá no YouTube tem muito pouco código até porque hoje tô com problema Tô com 40 horas de vídeo para editar e subir pro YouTube ainda e mas a gente faz e aí eu não tenho medo de mostrar erro sabe a última aula de ontem foi vergonhoso eu tentando customizar um knockout muito bizarro do admin do Magento lá eu apanhando a gente F foram 3S horas eu apanhando no negócio uhum beleza mas é bom o Dev mais júnior ver isso para saber cara como esse cara pensa como ele chega na solução ó até um cara que é experiente vai sofrer com a plataforma não desanima vamos lá ó como o cara pensa o que que ele Olha onde que"
+    ],
+    [
+      2022,
+      "ele busca as coisas às vezes eu até no começo com as partes mais simples eu provoco alguns erros de propósito para mostrar Opa bugou porque curso é muito happy way né você vai olhar assim é não é tudo bonitinho hora que você começa a fazer o código e bugou e agora que que eu faço às vezes tu copia exatamente o que o cara fez lá e buga é e você vê os curso é muito copypaste né ele copia de um canto pro outro eu não vou mentir eu tenho minhas referências o que eu faço eu já fiz esses códigos antes muitas vezes mas eu faço questão de lá de tal código de mostrar tem poucas coisas que eu copio tipo tem umas expressão regular muito maluca que eu tirei da cabeça um tempo atrás que eu não ia conseguir fazer hoje de novo fica meio Como sniped sabe beleza mas é aquele trecho aí você senta explica aquele trecho porque você montou daquele jeito"
+    ],
+    [
+      2067,
+      "mas esse é o conceito que eu tô tentando montar e a ideia é o que eu tô fazendo vai ser um módulo para São módulos paraa comunidade hoje a gente já tem três módulos prontos o módulo Core que ele adiciona algumas funcionalidades muito básicas como máscara coisas que o Magento não traz por padrão que é a base pros outros módulos a gente tem o módulo Brasil que ele não traduz mas nacionaliza a plataforma inteira transforma endereço em quatro linhas põe em busca CP V ali da CPF CNPJ altera checkout altera carrinho já deixa tudo sabe o básico bem feito tipo não faz nada muito incrível mas aquele processinho que você passa as primeiras duas semanas do projeto ajustando o negócio uhum Já tá pronto o outro que a"
+    ],
+    [
+      2112,
+      "gente tem que tá pronto de performance então ele não é nada mágico de performance também mas ele trabalha muito com a parte da da performance do front end do Magento que ele não implementa muita coisa então a gente implementa server push do http2 Pre Connect NS prefet então aquele básico você pode trazer a gente coloca ali também então por exemplo até o o titto que tá sempre com a gente ali nas aulas e no discord ali que a gente fica online se ajudando ele tá tentando subir primeiro o site de produção deles agora lá também Já conseguiram 10 pontos a mais de score do Google só de colocar o módulo Olha a gente tá colocando esses mesmos módulos agora pro time da mcf Digital usar em alguns projetos Então tá indo bem legal o módulo que a gente tá saindo agora são dois a gente tá sendo o"
+    ],
+    [
+      2158,
+      "módulo de wx que é para melhorar a experiência do usuário no geral Então vai adicionar eh cálculo de frete na página do produto e duas imagens que você passa o Hover troca a imagem do produto então a gente tá adicionando tipo wish list que a hora que o cliente já tá na wish list ele já fica marcado diferente coraçãozinho então tem vários detalhezinhos que a gente tá montando para melhorar essa IX e a gente tá esse que eu tô apanhando para caramba que é fazer size guide pra moda então aquele famoso guide que todo mundo faz com bloco estático a gente tá fazendo com crud no admin de maneira dinâmica só que fazendo com dynamic Rolls e dynamic colums para você montar então A ideia é a gente no final que a gente montar essa loja a gente tá montando a loja da origines que é d dininho Flávio o cara que fez esse"
+    ],
+    [
+      2204,
+      "grafite aqui atrás que não não é um fundo é um grafite mesmo gigante que tá aqui atrás tá muito da hora depois no final mostro para vocês ele inteiro por favor eh e ele tem uma uma loja de roupa uma loja própria dele uma marca própria que ele faz as ilustrações das roupas dele são bem legais chama origines e a ideia é o meu curso no final vai ser a loja dele só que ele concordou que a loja dele vai ser open source Ou seja a loja dele já tá no github a hora que ela sair pronta vai est lá no github todos os módulos vão entrar para package separado então A ideia é trazer pra comunidade módulos que a gente paga hoje então No final a gente vai fazer o módulo da LGPD a gente vai fazer eh várias outras coisas minha"
+    ],
+    [
+      2250,
+      "memória é horrível a gente até fez o Mind map em uma das aulas do projeto da organização lá a gente fez o projeto tudo bonitinho para montar Então vai sair todas essas features e a ideia é eu tô cansado de comprar módulo porcaria pro básico S sabe eu não tô falando vamos fazer um Marketplace mas cara LGPD vamos fazer cálculo de frash gente cálculo de frch na página de produto tem uns módulos que são gigantes negócio desse tamanho que você precisa fazer pro cálculo de frash na página de produto é uma API um um um frontend um bloco do frontend Sabe sim então A ideia é montar esse ecossistema pra comunidade que a comunidade contribua e a gente acabe um pouco com esses módulos mal feitos pro feijão com arroz bem interessante a ideia de vocês é muito massa mesmo tua iniciativa"
+    ],
+    [
+      2297,
+      "e tua didática aqui ensinando a gente fala muito bem parabéns mesmo obrigado é bem bom eu não Eu já tentei ser mais assim de falar assim mas eu eu até fiz o podcast para tentar falar melhor mesmo que eu não sou muito bom de de falar dois no caso a gente é muito travadão muito prospectivo mais na nossa mas eu tô vendo desde do primeiro podcast que a gente fez que a gente tá muito melhor falando e tal tentando se expressar melhor mas parabéns mesmo obrigado eu tenho uma dúvida a respeito do Magento tem famoso page build ali e como"
+    ],
+    [
+      2345,
+      "que funciona se existe alguma alguma coisa a respeito no no headless e como e como é feita se tem como é feita essa integração assim dos blocos e tal então no se eu não me engano no Venia storefront Hoje ele é integrado com o builder então ele consegue trabalhar hoje com o page builder no Venia storefront Qual o problema se você for fazer o seu próprio headless né tipo não quero ver ST front do magent vou fazer o meu headless você vai ter que implementar todos os tipos de componentes com todas as configurações possíveis do page builder o que desculpa parece pouco mas não é né porque por exemplo só por Roll"
+    ],
+    [
+      2392,
+      "que você monta você tem três layouts por Roll você tem três alinhamentos verticais você tem fundo borda arredondada margem PED fundo para desktop fundo para mobile vídeo para desktop vídeo para mobile eh não é uma coisa tão simples assim de se fazer é bem trabalhoso dá para fazer quiser fazer mas eu sei que o Venia ele já já ele já traz integrado funciona funciona bem sim o ven né interessante legal não é tão simples mas tem um caminho tem como fazer legal e e na parte falando ali do PWA também a parte de segurança e de atualização assim do do PWA é muito complexo assim como que funciona essa parte Olha é aí"
+    ],
+    [
+      2439,
+      "que a gente começa a chorar no PWA atualizações tá Principalmente quando você tem uma atualização do tipo Major né que a gente fala de Major upgrade Por às vezes quando você trabalha Major upgrade você vai ter mudanças grandes na própria estrutura do PWA Studio então às vezes tem caso que por exemplo da primeira versão pra terceira versão do PWA Studio A última que saiu eh não sei nem terceira perdi a conta já mas se você for pegar a primeira para hoje não vale a pena você migrar vale a pena você refazer mudou muita coisa e vai ter isso também quando você fala do do backend né então quando você atualiza a plataforma se você tá no monolito a hora que você atualiza o Fronte O back tá junto você"
+    ],
+    [
+      2485,
+      "vai atualizar os dois jos agora quando você atualiza Pode atualizar o backend aí você vê o que aquilo tem impacto no front fala beleza não vou atualizar o front agora e depois você parte para atualização do front ou você ajusta o front para trabalhar com esse backend novo e depois você atualiza o front porque atualizar os dois ao mesmo tempo é um risco muito alto Principalmente quando é um site muito customizado agora cara não meu site é plão Eu trabalho no PWA lá no Venia storefront eu customizei mais layout posição dos objetos beleza muito mais fácil de você atualizar agora quando você tem as suas features customizadas as suas coisas customizadas vai ficando mais complicado você fazer os upgrades principalmente os majors os minors é bem bem mais"
+    ],
+    [
+      2530,
+      "sossegado é interessante seide uma coisa bem importante mas como que funciona a parte de segurança assim se eu não atualizar o meu o meu Vine assim ele tem problemas bastante com segurança ou não assim olha tudo o que você não atualiza você vai ter exploit tá E você tem que pensar que você tá trabalhando com uma das plataformas que é uma das mais famosas do mundo então Os caras vão tentar gerar exploit na plataforma o tempo todo por isso que você sempre tem Security Pets ainda porque os caras tão estressando sempre exploit na plataforma porque é uma plataforma muito famosa então o pessoal vai testar vai como ter muito site eles vão tentar alguma maneira invadir essa plataforma então por isso que a própria dob ela mantém"
+    ],
+    [
+      2576,
+      "Security Patch até para versões anteriores né você consegue trazer o Security por mais que ele não tenha as atualizações de feature ele ainda tem o Security pats para algumas atualizações anteriores então eu diria que comparado com o monolito o PWA Tecnicamente ele pode ter uma brecha um pouquinho maior porque você está expondo uma pi a mais para gerar o conteúdo mas ex Mas ele é muito bem implementado hoje nessa questão de segurança Então você vai trabalhar com P service vai trabalhar com muitas coisas no caminho para manter essa segurança então é uma plataforma segura se você não atualizar como tudo pode gerar"
+    ],
+    [
+      2621,
+      "exploit mas eu não vejo assim algo absurdamente gr de falar cara todos os meus dados vazaram é uma coisa muito difícil de acontecer com a versão atual que eu conheço que ela tá muito estável já principalmente parte de segurança entendi e tu já pegou algum bo Federal assim para compartilhar com a gente alguma coisa trond algum problema que aconteceu em alguma empresa em relação a headless PWA Olha já por exemplo é porque todos os meus projetos de PWA Não fui eu que fiz em PWA eu recebo porque como eu falei eu"
+    ],
+    [
+      2666,
+      "não vendo projeto PWA uhum tá então a gente recebeu o projeto PWA um deles até já saiu de PWA então por exemplo eh teve esse caso do projeto que a gente saiu do PWA a gente tinha alguns problemas de performance mas eu tinha muito problema de velocidade de desenvolvimento essa era a reclamação do cliente cara tudo demora muito aí eu fala mano você PWA velho não tem jeito tudo demora muito não tem você vai fazer uma features tem que passar por 10 passos diferente Eh aí essa foi a primeiro grande problema que eu tive foi um problema mais político né com meu cliente da questão Dee não eu preciso vol mais rápido eu falei você tá no PWA não dá para para ser mais rápido eu preciso de mais jeito mas eu não tenho dinheiro para pagar tanto então a"
+    ],
+    [
+      2713,
+      "gente montou um outro time em paralelo fez o site em monolito para melhorar a velocidade de desenvolvimento um problema grande que eu tive com PWA foi uma aí foi problema de implementação que eu recebi de um projeto que eu quis matar o arquiteto do projeto fez aquilo que ele trocou Quem gera a busca Magento em vez de usar ou Elasticsearch search Ele usou a links até aí para mim não tem problema para mimado Mas qual que foi o problema em vez da Santa pessoa usar o que já tem pronto no Mag criar um search Engine fazer todos os adapters criar o"
+    ],
+    [
+      2758,
+      "indexador deixar redondinho bonitinho lá eles fizeram o frontend do headless conectar direto com a linkx e tinha um sistema de fila feito no RabbitMQ para indexar os produtos dentro da links Nossa isso dava dava umas merdas você não tem ideia parecia preço errado pro cliente parecia produto que não podia tudo que podia dar errado dava nesse troço meu Deus como isso foi contornado foi refeito tem que ser na verdade eu saí da empresa que eu tava antes disso ser mas eu falei cara eu não vou consertar isso se a gente não refizer até porque eles falaram Não mas a links nem é tão bom assim nem tem tanto resultado da"
+    ],
+    [
+      2803,
+      "performance então eu falei cara vamos parar com essa briga vamos pôr um elastic Switch bem feitinho ali que é um Elasticsearch mais bem implementado que é open source você faz regra você faz ordenação manual eu sou meio fão dos cara e o código é lindo não sei se vocês já viram o código do modo Nossa um código bonito velho é nem dá para acreditar que é gratuito O negócio bonito o código dos cara é bem completo É e vamos trabalhar com sech Engine e é isso só que não aprovava o desenvolvimento não ia pra frente eu acabei saindo da Infobase na época antes de terminar o desenvolvimento Então eu não sei como isso finalizou mas era um problema muito grande que todo dia chegava o tick falando produto com preço errado no catálogo sem olhar no magin Tá certo na api do GraphQL Tá certo"
+    ],
+    [
+      2848,
+      "hora que você vê api da link tá errado aí você via deu um processo que travou na fila deu alguma coisa porque foi feito errado desculpa falar mas não seguiram padrão do Magento parecia que era um arquiteto de PHP fazendo alguma coisa pro Magento sem entender o Magento sabe você entender cara tem um search Engine Já tá pronto você vai você vai rodar o catálogo search full text ele vai mandar para você indexação ele faz row row por Chrome você pode fazer manual forçar Tem várias coisas dá para você fazer o próprio Adobe Sensei faz assim com Live Search quando você ativa o Live Search ele ele trabalha algumas coisas em fila também para mandar alguns bets maiores mas a indexação ainda assim funciona É verdade é outra coisa que eu queria perguntar é"
+    ],
+    [
+      2893,
+      "a parte de cche mesmo como que funciona essa parte de cche do Graphic é ou do próprio starfront assim tem alguma uma TC fazer você tem dois níveis de Cash que você vai trabalhar ali tá você tem um que é Cash do front end que é Cash do client do Apollo que ele é bem bonzinho tá uma biblioteca que escolheram boa então ele cachia então você pode colocar lá que aquela end Point você vai cachear e ele cachea no Browser pro cliente não ficar fazendo request o tempo todo e a página renderizar mais rápido exemplo configuração da página logo blocos do footer page Builder essas coisas dá para você cachar ali e ele vai remover o"
+    ],
+    [
+      2940,
+      "Varnish da jogada Ou seja você não tem mais uma cash de proxy reverso né que a cash de proxy reverso é o quê você recebe o request por ele ele vai avaliar olha Quais que são as minhas dimensões de cash no caso do magent é customer group URL stor viw fala tem um cliente chegando na homepage ele é do grupo guest e a da stor vi Def eu tenho cash não tenho ele bate no servidor renderiza tudo volta para ele ele guarda em memória e devolve pro cliente próximo cliente chegou de outro país mesmo grupo mesma loja mesma página ele não bate no servidor ele pega da memória e vomita o HTML de volta literalmente isso não acontece mais então toda a Cash ela vai ser baseada no Heads da linha em"
+    ],
+    [
+      2986,
+      "diante tá então você vai usar as cashes padrões do backend do Magento focadas no RS entendi interessante quer perguntar alguma coisa não a respeito de R Mas é uma pergunta que geralmente a gente faz aqui no nos podcasts aqui que a gente faz é como em meio disso tudo toda essa agitação que é a vida de um programador você lida com a tua ansiedade o que que tu faz ou não te atinge tanto como você lida com isso se você faz algum HOB para sair um pouco ou você como o machado fica o dia todo aqui na"
+    ],
+    [
+      3031,
+      "tela e não e não consegue separar né a vida profissional a vida pessoal é eu tenho filho pequeno então não tenho a escolha de não separar a minha vida tanto que eu já recusei muita vaga de emprego boa porque eu tenho eu falo que os deves tem que pôr limite nas coisas então eu tenho um limite eu não sei que esteja caindo o mundo eu não trabalho das 6 às 9 É o único horário do dia que eu tenho para ficar com o meu filho eu vou buscar ele na escola fico com ele brinco com ele faço janta dou banho nele ponho ele para dormir depois eu posso trabalhar até 2 horas da manhã não me importa mas esse horário para mim é religioso então isso para mim me desestressa muito sabe a gente é muito companheiro a gente faz muita coisa junto Inclusive a gente tá até reformando um bugzinho junto para ele com motorzinho dois temp legal usando tem cinco legal é e já vai seguir"
+    ],
+    [
+      3079,
+      "já eh eu eu gosto às vezes de ficar estudando coisas diferentes também né gosto de ler coisas nerds então Star Wars Eu tenho uns livros dessa grossura assim do Star Wars que eu gosto de ler e né então e gosto muito muito de falar Star Wars eu fico horas falando sou muito [ __ ] sabe universo expandido negócio todo então e Ultimamente eu comecei a fazer luta que eu aconselho para todos os devis é um negócio que para mim foi me que game changer para eu senti mais confiante comigo mesmo também né tô fazendo ggit Foi por causa do meu filho eu tava levando ele depois da escola dois dias da semana para fazer aí os professores"
+    ],
+    [
+      3124,
+      "foram espertos donos da escola viram que tinha um monte de pai sentado ali vendo os filhos abriram uma salinha do Lada PR os pai aí eu fui fazer e é muito legal porque apesar não dá para falar que não é agressivo é luto é agressivo o negócio que é tipo os cara deita em cima de você literalmente Sabe eles te amassam literalmente Só que não é só isso só que o pessoal vê que você não entende tanto eles param no meio do caminho param para te explicar é um companheirismo é é muito legal essa sensação de companheirismo e hoje a gente com Home Office tava me fazendo muita falta isso porque era um negócio que eu tinha muito no escritório antes cara no escritório toda sexta-feira descia comprava cerveja a gente tomava uma cerveja 3 horas da tarde no escritório para terminar o dia de sexta-feira Às vezes a gente saía para fumar cigarro na varanda ficar"
+    ],
+    [
+      3170,
+      "falando besteira tá é bom gente é bom você socializar você falar com outras pessoas e o Home Office meio que tava me afetando um pouco nisso né então isso me ajudou muito nessa parte de eu não não não me considero uma pessoa mais tanto Ansiosa eu consegui controlar isso muito bem já né Principalmente quando você tem filho você não pode ser tão ansioso assim você vira muito mais frio e calculista com as coisas eh mas eu ten outros hobbies então por exemplo adoro coisas manuais eu gosto de mexer algumas coisas na casa faço automação residencial tô tarado por automação residencial com Home Assistant minha automação funciona sem internet tô fazendo reconhecimento facial Tô brincando com resco conhecimento de ocr"
+    ],
+    [
+      3215,
+      "e Bluetooth para abrir o portão sozinho se o meu carro aparecer então sabe coisas nerds eu gosto de variar um pouquinho legal bom eu tenho eu tenho mais duas dúvidas sobre o o headless que é a parte de infra né né Não sei se você tinha contato muito com infra como que funciona Ele usa mais infra é fica mais caro ter um headless por causa de infra ou como funciona isso vai depender muito da sua implementação tá igual hoje por exemplo se você implementar uma Agent sem vern você vai pagar 40 a 60% a mais de infraestrutura uhum tá no monolito porque se você fizer um vern bem feito"
+    ],
+    [
+      3260,
+      "seu site for bem feito ele chega a dar um Cash hit de 70% ou seja 70 % do processamento da sua infra é salva pelo vern esse processamento do vern que você salva você vai salvar ele no PWA também porque apesar de você ter um UPWARD server que é o que vai fazer a conexão entre o frontend e o backend você não tem tanto a dificuldade de ter essa Cash do proxy porém se suas apis do backend não forem bem dimensionadas não estiverem bem feitas e com as caches corretas você vai estressar mais o servidor desse lado então é uma faca de dois gumas quando ela pode ser muito boa ela realmente pode dar um resultado melhor até economizar mais infraestrutura que o"
+    ],
+    [
+      3306,
+      "monolito bem feito se alguma coisa Alguma P dela não tiver bem dimensionada bem feita ela vai acabar te custando mais na infraestrutura interessante e e a outra pergunta era sobre o Deploy se é parecido como agento assim normal ou como funciona é muito parecido tá se você for ver por exemplo o do próprio adob Adobe Cloud né quando a gente trabalha a gente não troca o Deploy inteiro a gente só adiciona um step do Deploy Hum então ele é um step a mais no Deploy o seu Deploy não muda quase nada você vai fazer o Deploy static content que você tem o admin não headless você vai fazer di compire você"
+    ],
+    [
+      3352,
+      "vai fazer upgrade você vai reindexar você vai fazer tudo só que no final você compila um front a mais bem prático então legal pouco isso no CL se você for trabalhar em ambiente seu vai ter que tomar um pouquinho cuidado com ess release e o UPWARD server é um pouquinho trick de trabalhar se você não tiver conado docker ou Ket legal a gente tá quase hora aqui rápido o tempo passou Você tem alguma coisa mais para falar sobre o r quer falar alguma coisa olha basicamente apesar de deixar muita gente brava com isso é clientes muito"
+    ],
+    [
+      3399,
+      "cuidado ao pedir o headless pode sair muito caro essa conta e você pode não gostar do resultado devis é bom você saber de headless é bom mas a gente tem que começar a pensar mais em negócio e menos só em tecnologia tá hoje a diferença de um bom desenvolvedor para um desenvolvedor que ele consegue escalar consegue vagas muito boas que pagam bem e chega a ser considerado um especialista no mercado é você conseguir entender e traduzir o negócio paraa tecnologia então se você não conseguir parar para estudar o que que é um negócio O que que é um catálogo como funciona vai procurar sobre"
+    ],
+    [
+      3445,
+      "logística eu já estudei logística estudei eh imposto estudei finança comprando livro mesmo lendo na internet correndo atrás você não precisa ser um especialista você tem que entender os conceitos de como funciona porque a hora que você fala com o seu cliente você tem que entender para traduzir daquela melhor maneira para tecnologia isso não é só para Magenta para qualquer tecnologia Então a gente tem que se preocupar mais com o negócio e menos com a tecnologia fazer mais forçar mais o MVP pro cliente né sempre fazer meu cliente vamos fazer MVP eles vamos tá de tudo isso escolhe só 20% el não mas só 20% não dá 20% vamos lá vamos sentar aqui vamos montar junto então assim vamos pensar Vamos estudar mais negócio Vamos pensar mais negócio não só na tecnologia vai dar uma diferença absurda"
+    ],
+    [
+      3490,
+      "na carreira de vocês é verdade legal e qual o conselho você daria a si mesmo quando você tava começando lá atrás não tava começando lá atrás Boa pergunta nunca parei para pensar nisso Deixa eu pensar um pouquinho pera aí vai pensar não tem fiz tudo certo Faria do mesmo jeito não é que eu acho o seguinte acho que a gente aprende mais pela falha do que Pelo sucesso então uma coisa que às vezes eu pratico muito com meu filho Apesar de eu avisar ele se ele é cabeç dor eu deixo ele lá errar e fazer isso é uma coisa perigosa sabe porque às vezes eu não sei se eu mudar eu f eu já fiquei pensando muito"
+    ],
+    [
+      3535,
+      "nisso né aquela aquele famoso conceito da viagem no tempo né os nerdes sabem do que eu tô falando né o o loop fechado entre outras coisas então já eu já pensei voltar a vários pontos da minha vida de coisas que aconteceram errado e e pensando cara eu já pensei teve coisa que n deu errado mas se isso não tivesse dado errado eu não tinha conhecido a minha esposa então isso tinha que ter dado errado na minha vida sabe então Eh Eu honestamente não mudaria nada do que eu fiz sabe se eu pudesse talvez dar um conselho é confie mais você mesmo sabe tenha mais confiança e não tenha medo de errar que errar todo mundo vai errar Só não erra quem não faz que isso é isso verdade quer finalizar Mary aí já cara"
+    ],
+    [
+      3581,
+      "só quero agradecer como eu falei tua didática sensacional eu sabia 5% Agora tô por dentro do assunto 100% eu só quero agradecer pela tua participação por ter aceitado participar de mais um episódio aqui do podcast quando quiser a porta tá aberta para qualquer outro assunto que tu quiser e é isso muito obrigada e parabéns novamente pela tua iniciativa Obrigado e você quando precisarem é só chamar quiser fazer outro tamb aí vamos vamos ver outro assunto para nós fazer assim quer finalizar também já finalizar tua parte é é não da da minha parte é isso queria agradecer"
+    ],
+    [
+      3626,
+      "pessoal muito legal est aqui com vocês né Eh fico muito feliz com a parceria então desde do começo o machado sempre me ajudou falou não cara vem aqui no servidor discorgento posta sua aula aqui vem cá vem junto igual quando falou do podcast posso postar lá mas eu falei nem parae perguntar né vai lá e posta então assim muito obrigado uma parceria muito legal Machado Entra lá às vezes responde as coisas no meu servidor pessoal que vem lá também então é uma parceria muito legal não tem essa briguinha de Sabe igual eu postei uma vez sobre convidando o pessoal pro meu servidor no no telegram do magent os cara cortaram falaram Não não pode fazer isso aqui eu falei nossa tá bom então nem queria tá bom É tá bom então nem queria né mas"
+    ],
+    [
+      3671,
+      "muito obrigado gente vocês são vocês são muito gente boa que vocês fazem at na comunidade também muito legal mas beleza pessoal obrigado aí pela participação também aí aceitar o convite muito muito boa a aula que tu deu aqui muito eu também não tenho muita experiência com com Heads assim já deu uma um negócio na cabeça assim para pensar em várias coisas assim é bem interessante que todo mundo que tá que vai assistir vai também ter essa esse feeling assim para pensar em outras formas também não não às vezes não é tudo isso o RL tem que pensar bem antes de de implementar alguma coisa do tipo mas beleza pessoal quem tá assistindo até agora obrigado pela participação de todos tem vai ter links"
+    ],
+    [
+      3718,
+      "no no comentário fixado de todas as coisas que a gente falou aqui de redes sociais e é isso pessoal Obrigadão valeu valeu valeu até pró Obrigado pessoal até a próxima"
+    ]
+  ]
+}
