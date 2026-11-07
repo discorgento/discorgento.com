@@ -40,13 +40,13 @@ export const locales = {
     'privacy.contact.body':
       'Fala com a gente no Discord ou abre uma issue no GitHub. A gente responde por lá.',
     'footer.description':
-      'Comunidade brasileira de tecnologia. Nascemos no Magento e hoje somos muito mais: artigos, podcast e troca de conhecimento.',
+      'Comunidade brasileira de tecnologia. Nascemos no Magento e hoje somos muito mais: podcast, newsletter e troca de conhecimento.',
     'footer.social': 'Redes',
     'footer.since': 'desde 2021 · astro',
     'home.hero.eyebrow': 'podcast · comunidade · tecnologia',
-    'home.metaTitle': 'Podcast e comunidade de tecnologia',
+    'home.metaTitle': 'Podcast e comunidade de Magento e e-commerce',
     'home.hero.subtitle':
-      'Comunidade que nasceu no Magento e hoje fala de tecnologia em geral: PHP, JS, e-commerce, IA e o que vier. Artigos, podcast e troca de conhecimento todo dia.',
+      'Comunidade que nasceu no Magento e hoje fala de tecnologia em geral: PHP, JS, e-commerce, IA e o que vier. Podcast, newsletter e troca de conhecimento todo dia.',
     'home.hero.ctaDiscord': 'Entrar no Discord',
     'home.terminal.aria': 'Terminal interativo com informações do projeto',
     'home.terminal.stack': 'stack',
@@ -102,7 +102,7 @@ export const locales = {
     'home.join.eyebrow': 'comunidade',
     'home.join.title': 'queremos você na nossa comunidade!',
     'home.join.desc':
-      'Entre no Discord e participe da conversa: artigos, podcast e troca de conhecimento todo dia.',
+      'Entre no Discord e participe da conversa: podcast, newsletter e troca de conhecimento todo dia.',
     'home.hosts.eyebrow': 'equipe',
     'home.hosts.title': 'quem faz o discorgento',
     'home.hosts.desc':
@@ -189,13 +189,13 @@ export const locales = {
     'privacy.contact.body':
       'Ping us on Discord or open an issue on GitHub. We answer there.',
     'footer.description':
-      'Brazilian tech community. Born in Magento, today we are much more: articles, podcast and knowledge sharing.',
+      'Brazilian tech community. Born in Magento, today we are much more: podcast, newsletter and knowledge sharing.',
     'footer.social': 'Social',
     'footer.since': 'since 2021 · astro',
     'home.hero.eyebrow': 'podcast · community · tech',
-    'home.metaTitle': 'Podcast and tech community',
+    'home.metaTitle': 'Magento and e-commerce podcast and community',
     'home.hero.subtitle':
-      'A community born in Magento that now talks about tech in general: PHP, JS, e-commerce, AI and whatever comes next. Articles, podcast and daily knowledge sharing.',
+      'A community born in Magento that now talks about tech in general: PHP, JS, e-commerce, AI and whatever comes next. Podcast, newsletter and daily knowledge sharing.',
     'home.hero.ctaDiscord': 'Join the Discord',
     'home.terminal.aria': 'Interactive terminal with project info',
     'home.terminal.stack': 'stack',
@@ -251,7 +251,7 @@ export const locales = {
     'home.join.eyebrow': 'community',
     'home.join.title': 'we want YOU for our community!',
     'home.join.desc':
-      'Join the Discord and be part of the conversation: articles, podcast and daily knowledge sharing.',
+      'Join the Discord and be part of the conversation: podcast, newsletter and daily knowledge sharing.',
     'home.hosts.eyebrow': 'team',
     'home.hosts.title': 'the people behind discorgento',
     'home.hosts.desc':
@@ -338,13 +338,13 @@ export const locales = {
     'privacy.contact.body':
       'Escríbenos en Discord o abre un issue en GitHub. Respondemos por ahí.',
     'footer.description':
-      'Comunidad brasileña de tecnología. Nacimos en Magento y hoy somos mucho más: artículos, podcast e intercambio de conocimiento.',
+      'Comunidad brasileña de tecnología. Nacimos en Magento y hoy somos mucho más: podcast, newsletter e intercambio de conocimiento.',
     'footer.social': 'Redes',
     'footer.since': 'desde 2021 · astro',
     'home.hero.eyebrow': 'podcast · comunidad · tecnología',
-    'home.metaTitle': 'Podcast y comunidad de tecnología',
+    'home.metaTitle': 'Podcast y comunidad de Magento y e-commerce',
     'home.hero.subtitle':
-      'Comunidad que nació en Magento y hoy habla de tecnología en general: PHP, JS, e-commerce, IA y lo que venga. Artículos, podcast e intercambio de conocimiento todos los días.',
+      'Comunidad que nació en Magento y hoy habla de tecnología en general: PHP, JS, e-commerce, IA y lo que venga. Podcast, newsletter e intercambio de conocimiento todos los días.',
     'home.hero.ctaDiscord': 'Entrar al Discord',
     'home.terminal.aria': 'Terminal interactiva con información del proyecto',
     'home.terminal.stack': 'stack',
@@ -400,7 +400,7 @@ export const locales = {
     'home.join.eyebrow': 'comunidad',
     'home.join.title': '¡te queremos en nuestra comunidad!',
     'home.join.desc':
-      'Entra al Discord y participa de la conversación: artículos, podcast e intercambio de conocimiento todos los días.',
+      'Entra al Discord y participa de la conversación: podcast, newsletter e intercambio de conocimiento todos los días.',
     'home.hosts.eyebrow': 'equipo',
     'home.hosts.title': 'quién hace discorgento',
     'home.hosts.desc':
