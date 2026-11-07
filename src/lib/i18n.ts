@@ -12,7 +12,7 @@ export const locales = {
     'nav.privacy': 'Privacidade',
     'consent.title': 'privacidade',
     'consent.message':
-      'A gente quer medir quais páginas o pessoal curte mais pra deixar o site melhor. Pode aceitar ou recusar, sem problema.',
+      'A gente quer medir quais páginas o pessoal curte mais pra deixar o site melhor e já carregar o player do YouTube nas páginas dos episódios. Pode aceitar ou recusar, sem problema.',
     'consent.accept': 'Aceitar',
     'consent.reject': 'Recusar',
     'consent.learnMore': 'saiba mais',
@@ -21,16 +21,16 @@ export const locales = {
     'privacy.title': 'Seus dados, sem enrolação',
     'privacy.desc':
       'A gente mede o uso do site pra entender o que o pessoal curte mais. Sem anúncio e sem vender seus dados. Quem decide é você.',
-    'privacy.updated': 'atualizado em outubro de 2026',
+    'privacy.updated': 'atualizado em novembro de 2026',
     'privacy.measure.title': 'O que a gente mede',
     'privacy.measure.body':
-      'Se você aceitar, o site usa o Google Analytics pra registrar coisas como as páginas visitadas, de onde veio o acesso e o tipo de aparelho e navegador. Serve pra ver o que funciona e o que não funciona, não pra te identificar pessoalmente.',
+      'Se você aceitar, o site usa o Google Analytics pra registrar coisas como as páginas visitadas, de onde veio o acesso e o tipo de aparelho e navegador. Serve pra ver o que funciona e o que não funciona, não pra te identificar pessoalmente. O mesmo aceite faz o player do YouTube já vir carregado nas páginas dos episódios, e o YouTube grava os cookies dele.',
     'privacy.not.title': 'O que a gente não faz',
     'privacy.not.body':
       'Não vendemos nem alugamos seus dados. Não usamos pra anúncios. Não montamos perfil de navegação pra repassar a ninguém.',
     'privacy.choice.title': 'Você decide',
     'privacy.choice.body':
-      'A medição só liga se você aceitar. Se recusar, o site funciona igual e nada é enviado. Dá pra mudar de ideia quando quiser:',
+      'A medição só liga se você aceitar. Se recusar, o site funciona igual e nada é enviado; o vídeo de um episódio só carrega quando você der play. Dá pra mudar de ideia quando quiser:',
     'privacy.choice.button': 'Mudar minhas preferências',
     'privacy.sharing.title': 'Por que o Google',
     'privacy.sharing.body':
@@ -187,7 +187,7 @@ export const locales = {
     'nav.privacy': 'Privacy',
     'consent.title': 'privacy',
     'consent.message':
-      'We want to measure which pages people enjoy most, so we can make the site better. Accept or decline, no problem.',
+      'We want to measure which pages people enjoy most, so we can make the site better, and to load the YouTube player right away on episode pages. Accept or decline, no problem.',
     'consent.accept': 'Accept',
     'consent.reject': 'Decline',
     'consent.learnMore': 'learn more',
@@ -196,16 +196,16 @@ export const locales = {
     'privacy.title': 'Your data, plainly',
     'privacy.desc':
       'We measure how the site is used to see what people enjoy most. No ads and no selling your data. You decide whether to take part.',
-    'privacy.updated': 'updated October 2026',
+    'privacy.updated': 'updated November 2026',
     'privacy.measure.title': 'What we measure',
     'privacy.measure.body':
-      'If you accept, the site uses Google Analytics to record things like which pages were visited, where the visit came from, and the type of device and browser. It is to see what works and what does not, not to identify you personally.',
+      'If you accept, the site uses Google Analytics to record things like which pages were visited, where the visit came from, and the type of device and browser. It is to see what works and what does not, not to identify you personally. The same consent makes the YouTube player load right away on episode pages, and YouTube sets its own cookies.',
     'privacy.not.title': "What we don't do",
     'privacy.not.body':
       "We don't sell or rent your data. We don't use it for ads. We don't build browsing profiles to hand to anyone.",
     'privacy.choice.title': 'You decide',
     'privacy.choice.body':
-      'Measurement only turns on if you accept. If you decline, the site works the same and nothing is sent. You can change your mind anytime:',
+      'Measurement only turns on if you accept. If you decline, the site works the same and nothing is sent; an episode video only loads when you press play. You can change your mind anytime:',
     'privacy.choice.button': 'Change my preferences',
     'privacy.sharing.title': 'Why Google',
     'privacy.sharing.body':
@@ -362,7 +362,7 @@ export const locales = {
     'nav.privacy': 'Privacidad',
     'consent.title': 'privacidad',
     'consent.message':
-      'Queremos medir qué páginas le gustan más a la gente para mejorar el sitio. Puedes aceptar o rechazar sin problema.',
+      'Queremos medir qué páginas le gustan más a la gente para mejorar el sitio y cargar el reproductor de YouTube directamente en las páginas de los episodios. Puedes aceptar o rechazar sin problema.',
     'consent.accept': 'Aceptar',
     'consent.reject': 'Rechazar',
     'consent.learnMore': 'saber más',
@@ -371,16 +371,16 @@ export const locales = {
     'privacy.title': 'Tus datos, sin vueltas',
     'privacy.desc':
       'Medimos el uso del sitio para ver qué le gusta más a la gente. Sin anuncios y sin vender tus datos. Tú decides si participas o no.',
-    'privacy.updated': 'actualizado en octubre de 2026',
+    'privacy.updated': 'actualizado en noviembre de 2026',
     'privacy.measure.title': 'Qué medimos',
     'privacy.measure.body':
-      'Si aceptas, el sitio usa Google Analytics para registrar cosas como las páginas visitadas, de dónde vino el acceso y el tipo de dispositivo y navegador. Es para ver qué funciona y qué no, no para identificarte personalmente.',
+      'Si aceptas, el sitio usa Google Analytics para registrar cosas como las páginas visitadas, de dónde vino el acceso y el tipo de dispositivo y navegador. Es para ver qué funciona y qué no, no para identificarte personalmente. El mismo consentimiento hace que el reproductor de YouTube se cargue directamente en las páginas de los episodios, y YouTube guarda sus propias cookies.',
     'privacy.not.title': 'Lo que no hacemos',
     'privacy.not.body':
       'No vendemos ni alquilamos tus datos. No los usamos para anuncios. No armamos perfiles de navegación para dárselos a nadie.',
     'privacy.choice.title': 'Tú decides',
     'privacy.choice.body':
-      'La medición solo se activa si aceptas. Si rechazas, el sitio funciona igual y no se envía nada. Puedes cambiar de opinión cuando quieras:',
+      'La medición solo se activa si aceptas. Si rechazas, el sitio funciona igual y no se envía nada; el video de un episodio solo se carga cuando le das play. Puedes cambiar de opinión cuando quieras:',
     'privacy.choice.button': 'Cambiar mis preferencias',
     'privacy.sharing.title': 'Por qué Google',
     'privacy.sharing.body':
