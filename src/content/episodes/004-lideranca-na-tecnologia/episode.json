@@ -1,0 +1,128 @@
+{
+  "youtubeId": "UyEFTQA5HWM",
+  "number": 4,
+  "published": "2022-10-24T22:30:13Z",
+  "duration": 10000,
+  "language": "pt-BR",
+  "title": {
+    "pt-BR": "Liderança na tecnologia com Felipe Souza e Alisson Santos",
+    "en": "Tech leadership with Felipe Souza and Alisson Santos",
+    "es": "Liderazgo en tecnología con Felipe Souza y Alisson Santos"
+  },
+  "hosts": ["jonatan-machado", "maria-ferro"],
+  "guests": ["felipe-souza", "alisson-santos"],
+  "chapters": [
+    {
+      "start": 0,
+      "title": {
+        "pt-BR": "Abertura e a trajetória de Felipe Souza",
+        "en": "Intro and Felipe Souza's career path",
+        "es": "Apertura y la trayectoria de Felipe Souza"
+      }
+    },
+    {
+      "start": 335,
+      "title": {
+        "pt-BR": "Da farmácia à liderança: Alisson Santos",
+        "en": "From pharmacy to leadership: Alisson Santos",
+        "es": "De la farmacia al liderazgo: Alisson Santos"
+      }
+    },
+    {
+      "start": 610,
+      "title": {
+        "pt-BR": "A rotina diária de um líder de tecnologia",
+        "en": "A tech leader's daily routine",
+        "es": "La rutina diaria de un líder de tecnología"
+      }
+    },
+    {
+      "start": 1342,
+      "title": {
+        "pt-BR": "O tech lead ainda programa?",
+        "en": "Does the tech lead still write code?",
+        "es": "¿El tech lead todavía programa?"
+      }
+    },
+    {
+      "start": 1664,
+      "title": {
+        "pt-BR": "Liderança compartilhada com o PM",
+        "en": "Sharing leadership with the PM",
+        "es": "Liderazgo compartido con el PM"
+      }
+    },
+    {
+      "start": 1938,
+      "title": {
+        "pt-BR": "Liderança tradicional x exponencial",
+        "en": "Traditional vs exponential leadership",
+        "es": "Liderazgo tradicional vs exponencial"
+      }
+    },
+    {
+      "start": 3419,
+      "title": {
+        "pt-BR": "Como motivar devs desmotivados",
+        "en": "How to motivate unmotivated devs",
+        "es": "Cómo motivar a devs desmotivados"
+      }
+    },
+    {
+      "start": 4336,
+      "title": {
+        "pt-BR": "Senioridade sem liderar: o papel das soft skills",
+        "en": "Seniority without leading: soft skills",
+        "es": "Seniority sin liderar: las soft skills"
+      }
+    },
+    {
+      "start": 5487,
+      "title": {
+        "pt-BR": "Equilibrar código e liderança",
+        "en": "Balancing coding and leadership",
+        "es": "Equilibrar código y liderazgo"
+      }
+    },
+    {
+      "start": 5714,
+      "title": {
+        "pt-BR": "Ansiedade e segurança emocional no time",
+        "en": "Anxiety and emotional safety in the team",
+        "es": "Ansiedad y seguridad emocional en el equipo"
+      }
+    },
+    {
+      "start": 6450,
+      "title": {
+        "pt-BR": "Demissões e code reviews delicados",
+        "en": "Layoffs and sensitive code reviews",
+        "es": "Despidos y code reviews delicados"
+      }
+    },
+    {
+      "start": 7184,
+      "title": {
+        "pt-BR": "Feedback, harmonia artificial e o décimo homem",
+        "en": "Feedback, artificial harmony and the tenth man",
+        "es": "Feedback, armonía artificial y el décimo hombre"
+      }
+    },
+    {
+      "start": 8520,
+      "title": {
+        "pt-BR": "Planos e estudos dos convidados",
+        "en": "The guests' plans and studies",
+        "es": "Planes y estudios de los invitados"
+      }
+    },
+    {
+      "start": 9029,
+      "title": {
+        "pt-BR": "Conselho para o eu do passado",
+        "en": "Advice to their past selves",
+        "es": "Consejo para su yo del pasado"
+      }
+    }
+  ]
+}

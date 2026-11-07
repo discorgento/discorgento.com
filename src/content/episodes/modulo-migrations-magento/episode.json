@@ -1,0 +1,64 @@
+{
+  "youtubeId": "IJQ6BszHJ7c",
+  "number": null,
+  "published": "2022-11-15T14:59:00Z",
+  "duration": 925,
+  "language": "pt-BR",
+  "title": {
+    "pt-BR": "Introdução ao módulo Migrations para Magento 2",
+    "en": "Intro to the Migrations module for Magento 2",
+    "es": "Introducción al módulo Migrations para Magento 2"
+  },
+  "hosts": [],
+  "guests": [],
+  "chapters": [
+    {
+      "start": 0,
+      "title": {
+        "pt-BR": "O anúncio do módulo e o que são migrations",
+        "en": "The module launch and what migrations are",
+        "es": "El anuncio del módulo y qué son las migrations"
+      }
+    },
+    {
+      "start": 94,
+      "title": {
+        "pt-BR": "Data patch nativo vs. classe Migration",
+        "en": "Native data patch vs. the Migration class",
+        "es": "Data patch nativo vs. la clase Migration"
+      }
+    },
+    {
+      "start": 187,
+      "title": {
+        "pt-BR": "Exemplo: trocar a moeda da loja via código",
+        "en": "Example: changing the store currency in code",
+        "es": "Ejemplo: cambiar la moneda de la tienda por código"
+      }
+    },
+    {
+      "start": 419,
+      "title": {
+        "pt-BR": "Exemplo: criar uma página CMS",
+        "en": "Example: creating a CMS page",
+        "es": "Ejemplo: crear una página CMS"
+      }
+    },
+    {
+      "start": 682,
+      "title": {
+        "pt-BR": "Migrations atômicas e ordem de execução",
+        "en": "Atomic migrations and execution order",
+        "es": "Migrations atómicas y orden de ejecución"
+      }
+    },
+    {
+      "start": 870,
+      "title": {
+        "pt-BR": "Outros facades e a wiki do módulo",
+        "en": "Other facades and the module wiki",
+        "es": "Otros facades y la wiki del módulo"
+      }
+    }
+  ]
+}

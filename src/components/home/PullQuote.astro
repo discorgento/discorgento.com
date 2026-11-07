@@ -1,10 +1,10 @@
 ---
+import type { EpisodeCard } from '~/lib/episodes';
 import { useTranslations } from '~/lib/i18n';
-import type { Video } from '~/lib/youtube';
 
 interface Props {
   locale: string;
-  firstVideo: Video | null;
+  firstVideo: EpisodeCard | null;
   epTag: string;
 }
 
@@ -20,7 +20,10 @@ const t = useTranslations(locale);
     <p class="src">{t('home.pullquote.src')}</p>
     {firstVideo && (
       <p class="pick">
-        <a href={firstVideo.url} target="_blank" rel="noopener noreferrer">
+        <a
+          href={firstVideo.href}
+          {...(firstVideo.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+        >
           {epTag} · {firstVideo.title} →
         </a>
       </p>

@@ -22,9 +22,19 @@ interface Props {
   ogType?: string;
   robots?: string;
   jsonLd?: Record<string, unknown>;
+  /** Social card for this page; the site-wide 1200x630 card otherwise. A
+      path (`/img/...`) or an absolute URL. */
+  image?: { src: string; width: number; height: number; alt: string };
 }
 
-const { title, description, ogType = 'website', robots, jsonLd } = Astro.props;
+const {
+  title,
+  description,
+  ogType = 'website',
+  robots,
+  jsonLd,
+  image,
+} = Astro.props;
 const locale = Astro.currentLocale ?? 'pt-BR';
 const t = useTranslations(locale);
 // The home page renders its own masthead; skip the shared Navbar there.
@@ -35,7 +45,10 @@ const pageTitle = title ? `${title} · ${siteTitle}` : siteTitle;
 const pageDescription = description ?? t('home.hero.subtitle');
 const site = Astro.site ?? new URL('https://discorgento.com/');
 const canonical = new URL(Astro.url.pathname, site);
-const ogImage = new URL('/img/og.jpg', site);
+const ogImage = new URL(image?.src ?? '/img/og.jpg', site);
+const ogImageWidth = image?.width ?? 1200;
+const ogImageHeight = image?.height ?? 630;
+const ogImageAlt = image?.alt ?? pageTitle;
 
 // Open Graph uses underscored territory tags, which don't match the BCP-47
 // locale ids ('pt-BR' → 'pt_BR', 'en' → 'en_US', 'es' → 'es_ES').
@@ -167,9 +180,9 @@ const structuredData = {
     <meta property="og:description" content={pageDescription} />
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={ogImage} />
-    <meta property="og:image:alt" content={pageTitle} />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={ogImageAlt} />
+    <meta property="og:image:width" content={String(ogImageWidth)} />
+    <meta property="og:image:height" content={String(ogImageHeight)} />
     <meta property="og:locale" content={ogLocale} />
     {LOCALES.filter((l) => l !== locale).map((l) => (
       <meta property="og:locale:alternate" content={OG_LOCALE[l]} />
@@ -178,7 +191,7 @@ const structuredData = {
     <meta name="twitter:title" content={pageTitle} />
     <meta name="twitter:description" content={pageDescription} />
     <meta name="twitter:image" content={ogImage} />
-    <meta name="twitter:image:alt" content={pageTitle} />
+    <meta name="twitter:image:alt" content={ogImageAlt} />
     <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
     {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
   </head>

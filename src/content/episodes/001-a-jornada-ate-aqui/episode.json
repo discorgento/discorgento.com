@@ -1,0 +1,104 @@
+{
+  "youtubeId": "797tYBDBxzs",
+  "number": 1,
+  "published": "2022-09-19T22:30:16Z",
+  "duration": 3205,
+  "language": "pt-BR",
+  "title": {
+    "pt-BR": "A jornada até aqui: carreiras dos hosts no Magento",
+    "en": "The journey so far: the hosts' careers in Magento",
+    "es": "El camino hasta aquí: las carreras de los hosts en Magento"
+  },
+  "hosts": ["jonatan-machado", "ivan-augusto", "maria-ferro"],
+  "guests": [],
+  "chapters": [
+    {
+      "start": 0,
+      "title": {
+        "pt-BR": "Apresentação do podcast e dos hosts",
+        "en": "Introducing the podcast and the hosts",
+        "es": "Presentación del podcast y de los hosts"
+      }
+    },
+    {
+      "start": 143,
+      "title": {
+        "pt-BR": "Ivan e Machado: anos de Magento",
+        "en": "Ivan and Machado: years of Magento",
+        "es": "Ivan y Machado: años de Magento"
+      }
+    },
+    {
+      "start": 328,
+      "title": {
+        "pt-BR": "Mary: da farmácia de manipulação ao Magento",
+        "en": "Mary: from a compounding pharmacy to Magento",
+        "es": "Mary: de la farmacia de fórmulas a Magento"
+      }
+    },
+    {
+      "start": 420,
+      "title": {
+        "pt-BR": "Ansiedade e como lidar com ela",
+        "en": "Anxiety and how to deal with it",
+        "es": "La ansiedad y cómo manejarla"
+      }
+    },
+    {
+      "start": 1017,
+      "title": {
+        "pt-BR": "Primeiros empregos e síndrome do impostor",
+        "en": "First jobs and impostor syndrome",
+        "es": "Primeros empleos y síndrome del impostor"
+      }
+    },
+    {
+      "start": 1435,
+      "title": {
+        "pt-BR": "Autocobrança e a hora de parar",
+        "en": "Self-pressure and knowing when to stop",
+        "es": "La autoexigencia y saber cuándo parar"
+      }
+    },
+    {
+      "start": 1621,
+      "title": {
+        "pt-BR": "Inglês e trabalhar para empresas de fora",
+        "en": "English and working for foreign companies",
+        "es": "El inglés y trabajar para empresas extranjeras"
+      }
+    },
+    {
+      "start": 2216,
+      "title": {
+        "pt-BR": "Headless, manutenção e Magento x Shopify",
+        "en": "Headless, maintenance and Magento vs Shopify",
+        "es": "Headless, mantenimiento y Magento vs. Shopify"
+      }
+    },
+    {
+      "start": 2675,
+      "title": {
+        "pt-BR": "Planos: inglês, React e Hydrogen",
+        "en": "Plans: English, React and Hydrogen",
+        "es": "Planes: inglés, React e Hydrogen"
+      }
+    },
+    {
+      "start": 2815,
+      "title": {
+        "pt-BR": "Conselhos para o eu do passado",
+        "en": "Advice for their past selves",
+        "es": "Consejos para su yo del pasado"
+      }
+    },
+    {
+      "start": 3089,
+      "title": {
+        "pt-BR": "Encerramento",
+        "en": "Wrap-up",
+        "es": "Cierre"
+      }
+    }
+  ]
+}

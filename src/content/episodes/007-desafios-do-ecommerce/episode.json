@@ -1,0 +1,128 @@
+{
+  "youtubeId": "krtvTEABCKU",
+  "number": 7,
+  "published": "2023-08-01T22:00:06Z",
+  "duration": 5180,
+  "language": "pt-BR",
+  "title": {
+    "pt-BR": "Os desafios do e-commerce com Thiago Marquesini",
+    "en": "The challenges of e-commerce with Thiago Marquesini",
+    "es": "Los desafíos del e-commerce con Thiago Marquesini"
+  },
+  "hosts": ["jonatan-machado", "maria-ferro", "ivan-augusto"],
+  "guests": ["thiago-marquesini"],
+  "chapters": [
+    {
+      "start": 0,
+      "title": {
+        "pt-BR": "Abertura e apresentação do Thiago",
+        "en": "Intro and meet Thiago",
+        "es": "Apertura y presentación de Thiago"
+      }
+    },
+    {
+      "start": 150,
+      "title": {
+        "pt-BR": "Hobbies: rapel, cachoeiras e jiu-jitsu",
+        "en": "Hobbies: rappelling, waterfalls and jiu-jitsu",
+        "es": "Hobbies: rapel, cascadas y jiu-jitsu"
+      }
+    },
+    {
+      "start": 242,
+      "title": {
+        "pt-BR": "Primeiro contato com Magento e Loja Integrada",
+        "en": "First contact with Magento and Loja Integrada",
+        "es": "Primer contacto con Magento y Loja Integrada"
+      }
+    },
+    {
+      "start": 798,
+      "title": {
+        "pt-BR": "Maior desafio: escalabilidade e escopo",
+        "en": "Biggest challenge: scalability and scope",
+        "es": "Mayor desafío: escalabilidad y alcance"
+      }
+    },
+    {
+      "start": 1119,
+      "title": {
+        "pt-BR": "Segurança de dados, LGPD e acessibilidade",
+        "en": "Data security, LGPD and accessibility",
+        "es": "Seguridad de datos, LGPD y accesibilidad"
+      }
+    },
+    {
+      "start": 1392,
+      "title": {
+        "pt-BR": "SEO e levar público para a loja",
+        "en": "SEO and bringing visitors to the store",
+        "es": "SEO y atraer público a la tienda"
+      }
+    },
+    {
+      "start": 1620,
+      "title": {
+        "pt-BR": "Primeiras impressões: XML, plugins e Knockout",
+        "en": "First impressions: XML, plugins and Knockout",
+        "es": "Primeras impresiones: XML, plugins y Knockout"
+      }
+    },
+    {
+      "start": 1939,
+      "title": {
+        "pt-BR": "CodeIgniter, Laravel, Symfony e Phalcon",
+        "en": "CodeIgniter, Laravel, Symfony and Phalcon",
+        "es": "CodeIgniter, Laravel, Symfony y Phalcon"
+      }
+    },
+    {
+      "start": 2166,
+      "title": {
+        "pt-BR": "Magento vs frameworks: escala e custo",
+        "en": "Magento vs frameworks: scale and cost",
+        "es": "Magento vs frameworks: escala y costo"
+      }
+    },
+    {
+      "start": 2677,
+      "title": {
+        "pt-BR": "Do Magento 1 ao 2 e performance com cache",
+        "en": "Magento 1 to 2 and performance with cache",
+        "es": "De Magento 1 a 2 y rendimiento con caché"
+      }
+    },
+    {
+      "start": 2994,
+      "title": {
+        "pt-BR": "Trabalho remoto, rotina e ansiedade",
+        "en": "Remote work, routine and anxiety",
+        "es": "Trabajo remoto, rutina y ansiedad"
+      }
+    },
+    {
+      "start": 3735,
+      "title": {
+        "pt-BR": "Projetos marcantes e código legado",
+        "en": "Memorable projects and legacy code",
+        "es": "Proyectos memorables y código legado"
+      }
+    },
+    {
+      "start": 4149,
+      "title": {
+        "pt-BR": "Antes do e-commerce: Flutter, provas e pasto",
+        "en": "Before e-commerce: Flutter, exams and pasture",
+        "es": "Antes del e-commerce: Flutter, exámenes y pasto"
+      }
+    },
+    {
+      "start": 4657,
+      "title": {
+        "pt-BR": "Conselho ao eu do passado e despedida",
+        "en": "Advice to his younger self and goodbye",
+        "es": "Consejo a su yo del pasado y despedida"
+      }
+    }
+  ]
+}

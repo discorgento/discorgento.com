@@ -1,0 +1,26 @@
+---
+description: "Tech leadership in practice: tech lead vs squad leader, exponential leadership, motivating devs, anxiety, feedback and emotional safety."
+keyPoints:
+  - "Felipe Souza is a tech lead at RD (Raia Drogasil), in a squad that serves the app and the Droga Raia and Drogasil websites, where Magento is a monolith in the middle of a microservices architecture."
+  - "Alisson Santos is a squad leader at WebJump; he joined the company as a QA analyst and has coordinated up to four projects and about 16 people."
+  - "Alisson advocates exponential leadership, which he studied in a K21 course: the leader brings the goal to the team and lets the team choose the path, instead of dictating the solution like the 'hero' of traditional leadership."
+  - "For Alisson, lack of purpose is the main cause of developer demotivation, especially for mid-level devs who already master what the company needs and cannot see the next step."
+  - "Felipe uses GTD to organize his day and keep anxiety in check, holds one-on-ones with his devs every 15 days, and cites the sustainable 40-hour week from Anderson's kanban book."
+  - "Both guests criticize 'artificial harmony': negative feedback is necessary, and the team needs emotional safety to disagree, like the 'tenth man' from the movie World War Z."
+faq:
+  - question: "What is the difference between a tech lead and a squad leader?"
+    answer: "According to Felipe Souza, the tech lead handles the technical side: code review, architecture and the team's technical growth, while the PM owns the product and prioritization. Alisson Santos, as a squad leader at WebJump, works closer to the product and the client: he aligns expectations, runs support, gathers requirements and writes the daily status report."
+  - question: "What is exponential leadership?"
+    answer: "According to Alisson Santos, who took a K21 course on the subject, it means inverting the pyramid: the leader presents the goal and the team decides the path, leaving behind the hero model where a single person makes the decisions. He uses the analogy of Captain Nascimento from the film Elite Squad, who relies on his team's specific roles instead of calling the colonel every time the plan changes. The main focus becomes developing people, with the product as a secondary goal."
+  - question: "Does a tech lead need to write code?"
+    answer: "For Felipe Souza, it depends on the company. At RD, with a multidisciplinary team covering Magento, microservices, a BFF and a React front end, he has to code less to keep up with technical decisions, but he still helps with code review and brings topics such as unit testing, SOLID and design patterns to the squad."
+  - question: "How should a leader handle anxiety in the team?"
+    answer: "Alisson Santos, who shared that he has dealt with anxiety for years, says a leader is not a doctor: the leader's role is to provide safety, show that the environment is safe and guide the person toward professional help, including through HR. Felipe Souza agrees that the person should be referred to a professional, and says that organizing tasks with GTD helps him get worries out of his head."
+  - question: "Can you grow to senior without wanting to lead people?"
+    answer: "According to Felipe Souza, yes: there is the specialist or architect path, and it is up to the company to provide new technical challenges. Alisson Santos adds that developing soft skills is not about creating mini leaders but about systemic vision, being able to teach a junior and staying calm during fires, which the market expects from a senior technical professional."
+---
+In this episode, Jonatan Machado and Mary talk with two leaders about **tech leadership**. Felipe Souza is a tech lead at RD (Raia Drogasil): he spent nine years in IT infrastructure at a college, moved into development with PHP and WordPress, worked with Magento for years, and now runs a multidisciplinary squad serving the app and the Droga Raia and Drogasil websites. Alisson Santos is a squad leader at WebJump, which he joined as a QA analyst after working as a hospital pharmacy attendant and as a support analyst, and he runs the @lidernub Instagram profile with tips for new leaders.
+
+Both describe their routines: Alisson wakes up at 5 a.m., has coordinated four projects with about 16 people, and runs dailies, client meetings and status reports; Felipe organizes his day with GTD and the Jira board, and shares leadership with the squad's PM through well-defined roles. Alisson explains **exponential leadership** with analogies from Elite Squad and a bullet train versus a cheetah, and Mary describes how her team became more autonomous under that model.
+
+The conversation covers motivation and purpose, senior careers without a management role, anxiety and burnout, kanban's sustainable pace, the feedback sandwich, nonviolent communication and the risk of "artificial harmony". Books mentioned include The Miracle Morning, Built to Last and How to Change the World. To close, Alisson talks about taking the PSM I and moving toward product, aiming for a Delivery or Project Manager role, while Felipe weighs Magento certification against microservices and hopes to teach one day.

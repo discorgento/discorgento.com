@@ -1,0 +1,96 @@
+{
+  "youtubeId": "-Nn_dVLfuKs",
+  "number": 6,
+  "published": "2023-02-13T22:00:09Z",
+  "duration": 5767,
+  "language": "pt-BR",
+  "title": {
+    "pt-BR": "Mulheres na tecnologia: trajetórias, ansiedade e carreira",
+    "en": "Women in tech: career paths, anxiety and persistence",
+    "es": "Mujeres en la tecnología: trayectorias, ansiedad y carrera"
+  },
+  "hosts": ["maria-ferro"],
+  "guests": ["rosana-macena", "larissa-lira"],
+  "chapters": [
+    {
+      "start": 0,
+      "title": {
+        "pt-BR": "Apresentações",
+        "en": "Introductions",
+        "es": "Presentaciones"
+      }
+    },
+    {
+      "start": 243,
+      "title": {
+        "pt-BR": "Como cada uma chegou à tecnologia",
+        "en": "How each of them got into tech",
+        "es": "Cómo llegó cada una a la tecnología"
+      }
+    },
+    {
+      "start": 757,
+      "title": {
+        "pt-BR": "Maiores desafios: ansiedade e autossabotagem",
+        "en": "Biggest challenges: anxiety and self-sabotage",
+        "es": "Mayores desafíos: ansiedad y autosabotaje"
+      }
+    },
+    {
+      "start": 1493,
+      "title": {
+        "pt-BR": "Como lidam com a ansiedade",
+        "en": "How they cope with anxiety",
+        "es": "Cómo manejan la ansiedad"
+      }
+    },
+    {
+      "start": 2180,
+      "title": {
+        "pt-BR": "Exercício, videogame e leitura",
+        "en": "Exercise, video games and reading",
+        "es": "Ejercicio, videojuegos y lectura"
+      }
+    },
+    {
+      "start": 2645,
+      "title": {
+        "pt-BR": "Já pensaram em desistir?",
+        "en": "Have they ever thought of quitting?",
+        "es": "¿Pensaron alguna vez en rendirse?"
+      }
+    },
+    {
+      "start": 3838,
+      "title": {
+        "pt-BR": "Planos para o futuro",
+        "en": "Plans for the future",
+        "es": "Planes para el futuro"
+      }
+    },
+    {
+      "start": 4573,
+      "title": {
+        "pt-BR": "Conselhos para quem está começando",
+        "en": "Advice for those just starting out",
+        "es": "Consejos para quien está empezando"
+      }
+    },
+    {
+      "start": 4942,
+      "title": {
+        "pt-BR": "O conselho que dariam a si mesmas",
+        "en": "The advice they would give their past selves",
+        "es": "El consejo que se darían a sí mismas"
+      }
+    },
+    {
+      "start": 5491,
+      "title": {
+        "pt-BR": "Despedidas e contatos",
+        "en": "Goodbyes and contacts",
+        "es": "Despedidas y contactos"
+      }
+    }
+  ]
+}

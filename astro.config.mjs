@@ -2,11 +2,37 @@ import cloudflare from '@astrojs/cloudflare';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 import { defineConfig } from 'astro/config';
+import { episodeIndex, readEpisodeIndex } from './plugins/episode-index.mjs';
 import { thumbCache } from './plugins/thumb-cache.mjs';
+
+const SITE = 'https://discorgento.com';
+
+/**
+ * `<video:video>` entries for the episode watch pages. Google reads them to find
+ * the video on the page (`loc` is the watch page, `player_loc` the embed). The
+ * catalog is read from disk here: this runs in Node, not in workerd.
+ */
+const episodeVideos = new Map(
+  readEpisodeIndex().flatMap((episode) => {
+    const locales = { '': 'pt-BR', 'en/': 'en', 'es/': 'es' };
+    return Object.entries(locales).map(([prefix, locale]) => [
+      `${SITE}/${prefix}podcast/${episode.slug}/`,
+      {
+        thumbnail_loc: `${SITE}/img/episodes/${episode.youtubeId}-1280.jpg`,
+        title: episode.title[locale],
+        description: episode.description[locale],
+        player_loc: `https://www.youtube-nocookie.com/embed/${episode.youtubeId}`,
+        duration: episode.duration,
+        publication_date: episode.published,
+        family_friendly: 'yes',
+      },
+    ]);
+  }),
+);
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://discorgento.com',
+  site: SITE,
   output: 'static',
   adapter: cloudflare({
     // Nothing in this project uses astro:assets, so the adapter's default
@@ -69,6 +95,12 @@ export default defineConfig({
         defaultLocale: 'pt-BR',
         locales: { 'pt-BR': 'pt-BR', en: 'en', es: 'es' },
       },
+      // The `video` field is not in the integration's SitemapItem type, but it
+      // is passed through to the `sitemap` package, which writes it.
+      serialize(item) {
+        const video = episodeVideos.get(item.url);
+        return video ? { ...item, video: [video] } : item;
+      },
     }),
   ],
   // Ship the CSS inside each document instead of as three separate files.
@@ -92,7 +124,7 @@ export default defineConfig({
     inlineStylesheets: 'always',
   },
   vite: {
-    plugins: [tailwindcss(), thumbCache()],
+    plugins: [tailwindcss(), thumbCache(), episodeIndex()],
     // Keep assets as real files. Small inlined assets become `data:` URIs,
     // which the CSP in public/_headers blocks (no font-src), and small script
     // chunks get emitted as inline <script type="module">, which

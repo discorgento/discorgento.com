@@ -1,0 +1,402 @@
+{
+  "source": "youtube-auto-captions",
+  "language": "pt-BR",
+  "segments": [
+    [
+      7,
+      "Fala galera aqui quem tá falando é o Jonatan com mais um podcast o terceiro podcast e eu faço parte de uma comunidade quem não conhece a discorgento é uma comunidade do discord e eu vou deixar os links da comunidade aqui na descrição quem quiser compartilhar ver como funciona e compartilhar alguma algum projeto ou até tiver alguma dúvida sobre algum assunto de tecnologia mas especificamente numa janta mas nesse caso aqui até a gente vai falar um pouco sobre a VTEX eu não sei como que vai ser o nome do"
+    ],
+    [
+      53,
+      "episódio mas talvez VTEX versus Magento por exemplo mas vamos ver como que vai ser a a caminhada do podcast e a gente trouxe aqui dois duas pessoas que conheceram um Magento eu acho que até aqueles iniciaram a carreira Mas eles vão contar nojento e depois migraram para VTEX tu quer fazer tua introdução E aí pessoal tudo certo que a Maria Ferro prazer também os dois o Felipe e o Vitor famoso Couto primeiramente quero agradecer a vocês por ter é aceitado o nosso convite como"
+    ],
+    [
+      100,
+      "achado falou a gente vai falar um pouquinho sobre a plataforma Eu também não sei muita coisa então tem algumas perguntinhas aí algumas dúvidas para vocês e vamos nessa deixar a primeira pergunta aí que não quer calar para o Magento começar aí com a pergunta mais polêmica eu já ia começar com vocês podem se apresentar também mas eu já vou começar com uma pergunta meio polêmica a VTEX É melhor mesmo do que mais gente quem quiser como já falaram mas não me chama de"
+    ],
+    [
+      147,
+      "Couto tem mais ou menos o ano implementando lojas aqui na híbrido e antes trabalhava como a gente também né até por isso surgiu o tema dessa pauta e a resposta é depende eu vou fugir da treta Depende de Em que sentido né que a gente está falando eu acho que para quem sabe para quem nunca teve contato com tecnologia tiver Começando na área meu Texas é melhor assim porque é muito mais fácil de você começar a aprender acabou de aprendizado é muito menor do que é do Magento por exemplo que usa umas técnicas de tecnologia bem esquisita"
+    ],
+    [
+      193,
+      "para frontiene principalmente né usando Nokia palavras então a beteca tem essa diferença na versão aí eu que usa o React então uma tecnologia mais de mercado que tem muito conteúdo sobre não é muito fácil de você aprender já começar a sair fazendo as coisas e falando na tecnologia ali qual tecnologia vocês usam assim lá de back front ou só é back ou só conhece Fronte por exemplo é todo o ecossistema em React embetech também eles têm na verdade eles têm em note e tem dotinete também algumas"
+    ],
+    [
+      241,
+      "coisas lá mas ninguém faz nada só eles mas quando a gente precisa criar algum algum app que geralmente a gente faz um micro serviço precisar de alguma integração externo assim aí a gente consegue criar um app de back-end com node para poder tratar sei lá alguma requisição externa coisa nesse sentido e no Fronte é basicamente o React mesmo mas ela script e para estruturar a página os blocos das coisas eles usam o JSON mesmo a estrutura de JSON nesse ponto até lembro um pouco mais gente que a gente monta as coisas com XML lá passando as variáveis e tal das próprias o tem isso também só que em JSON então assim tem que ser muito mais simples de entender na minha visão também para fazer a integração com as"
+    ],
+    [
+      288,
+      "eis e você Felipe é bom mesmo nessa parte tua de mais de de isso mas de estar envolvido ali com um produto né mas eu puxo até a mesma resposta do Vitor tá Depende da situação até me apresentar eu sou prazer galera sou Felipe Eu sou Polo challer eu trabalhei junto com o Vitor já também trabalhei com machado ali e obrigado aí pela audiência de vocês cara tive até que ser melhor que mais gente É puxando ali a resposta do Vitor"
+    ],
+    [
+      334,
+      "eu diria que depende muito assim da necessidade do cliente porque por exemplo eu virei a gente tá trabalhando em um projeto que ele se encaixaria perfeitamente não a gente assim porque ele quer muitos customizações personalizadas para dentro do da empresa dele e como a gente sabe ali existe uma diferença entre Magento e VTEX eu diria que que Magento é um produto 100% customizado e a VTEX é aquele sazda Então você tem toda a estrutura do back end e servidor na responsabilidade da VTEX onde a gente não tem esse poder de acesso e customizar ali 100% até vocês podem me"
+    ],
+    [
+      380,
+      "corrigir se tiver errado mas pelo pelo contato no dia a dia percebi claramente sobre isso voltando ali no ponto do do cliente ele se encaixaria 100% numa gente mas ele tá fazendo um projeto dele na VTEX e a gente tem milhares de pontos ali que a gente vê pô mas isso aqui numa gente seria 10 vezes mais fácil a gente pega do ponto a e vai para o b na VTEX não porque a gente não tem o acesso ao código fonte a gente tem que seguir algumas letrinhas antes até chegar no naquele ponto final então um Contorno ali o desenvolvimento o tempo também é um pouco maior para"
+    ],
+    [
+      426,
+      "quando você quer fazer alguma coisa personalizada ali então se sua empresa tem bastante processos e precisam seguir ele quando vai para o e-commerce Então esse pau tem que ser muito bem olhado ali então você vai ter muita coisa customizada ou não Mas no geral assim a VTEX é bem bem simples de se entender ela é só um pouquinho meio feia tá eu prefiro medo de uma agente ali mas ele é um pouco mais simples de entender e também dar aquela pegada do do próprio cliente fazer suas custo por exemplo de salvar um aplicativo e já vê lá funcionando né Então essa é a parte Legal e quando a gente vai para uma gente ali a gente tem um Page Builder"
+    ],
+    [
+      472,
+      "aqui dia também essa possibilidade para o cliente ali que também é legal né você Ah não mexer ali já vê refletindo lá no front né então são esses pontos eu diria no depende e explicando da parte mais comercial de produto do dia a dia olhando nesses pontos ali entender Qual é a necessidade do negócio do processo ali que vocês estão seguindo que a empresa segue na verdade né e vê se ela vai encaixar perfeitamente ali quando ela vai para o comércio digital dele é inclusive esse negócio do PIB da até a Mary ia fazer uma pergunta quer fazer agora já ela basicamente isso é segundo Adobe ali prioriza muito as habilidades do cliente né ele ter autonomia para"
+    ],
+    [
+      518,
+      "fazer trocar uma foto botar um título fazer ali um bloco estático da forma que ele quiser então ele dá essa autonomia e a pergunta que vem na cabeça porque eu tô recentemente usando muito isso no meu projeto Total então ia perguntar se tinha alguma coisa assim nesse sentido essa ferramenta visando o cliente ter mais autonomia Então você já falou aí que tem esse PG build é a mesma coisa assim mas já mexer alguma coisa se é a mesma usabilidade ali ou tem alguma diferença é um é um pouquinho diferente Depende de como foi construído né Acho que o Vitor você pode falar um pouquinho melhor a parte ali que se chama Site Editor né"
+    ],
+    [
+      566,
+      "Ele é todo construído tem uma forma de construir onde depende depende da forma que é desenvolvido dá um pouco mais de liberdade para o cliente poder estar estilizando alguns pontos ali e tudo mais né dá essa liberdade ali mas o Page Builder é mais 100% livre assim então eu diria que Adobe ganha nesse ponto ali da VTEX Acho que até o Vitor pode explicar mais né mas é basicamente isso se o cliente quer ter mais autonomia assim para mudar alguns pontos precisa ter um desenvolvimento por trás antes né exatamente no editor do magnés consegue literalmente arrastar os bloquinhos e"
+    ],
+    [
+      612,
+      "montar a página conforme a gente precisando na VTEX não se não existe um template para aquela página você não consegue usar porque você tem que ir lá pelo painel criar uma página nova e associar ela um template aí se esse template os blocos que existem nele forem usarem até que usam uma parada que chama JSON Schema que é para poder fazer gerenciamento dos blocos no frontiene para poder ser editado então se a página tempo isso não tiver esse esquema afetado você nem os blocos ela não consegue alterar então tem bastante limitação nesse ponto tem que cuidar muito nesse sentido também você preparar a estrutura da página para que seja alterava Mas tipo o cliente não consegue ir lá e criar uma página sozinho com os blocos que ele quiser essa Tex template antes para ele poder só alterar as informações ali"
+    ],
+    [
+      657,
+      "coisa bem bem básica assim dá uma certa liberdade mas não tanto quanto de você ir lá arrastar os blocos como você quer eu achei que nunca vi VTEX nunca trabalhei com ela mas eu achei que ela era mais tinha essa liberdade mais de você poder arrastar mesmo mas é o que eu achava bom se eles fossem e falando e falando quando você começou lá ver bem no começo lá como é que você viu assim quando chegou Ah vou começar a sair do Magento lá com um monte de XML aí tu chegou lá no javas"
+    ],
+    [
+      702,
+      "que eu como que tu viu assim tu sentiu bem Como que foi a transição sim também foi bem foi bem tranquilo assim eu me senti realmente muito bem porque estava saindo de uma coisa que era bem sei lá na antiga fábrica eu queria usar mas é a coisa que não é usado em outros projetos escola do Magento né você não encontra no local a gente não ganha nenhum do mundo então foi tipo um certo sei lá tipo Cheguei onde eu queria é isso aí eu tava buscando isso né trabalhar com React e tal ganhamos experiência e deu certo Então nesse ponto Foi bem bom mas no começo eu achei que nem dava para fazer muita coisa customizada porque"
+    ],
+    [
+      747,
+      "ainda era um setor novo na empresa a gente só tinha mexido com os blocos básicos da VTEX que a gente monta com os JSON da vida e vai estruturando as páginas depois a gente foi amadurecendo e foi vendo que não dá para fazer umas coisas bem legais aqui customizadas também E aí de fato dá para trabalhar de verdade com React aprender conceitos não só os blocos eles são básicos aí e falando de de diferença assim na parte de desenvolvimento você o que que você viu assim de muito diferente assim claro que eu acho que tudo é diferente lá mas o que que te pegou assim a esse negócio que é muito diferente assim cara que me pegou muito foi a parte do setup da loja por a VTEX é um software"
+    ],
+    [
+      794,
+      "esa service então todo nele é Ana Cláudia eles funcionam tudo na causa você então não consegue montar um ambiente local desenvolvimento tipo baixar o projeto rodar lá um sei lá em start rodar localmente se você não tiver internet você não trabalha basicamente porque eles dependem de fazer a conexão com o backing da VTEX que tá todo na Cláudia né bem grande quem tá até no ponto deles não serem tão Open Soure eles nunca tiveram essa questão muito da comunidade ali ser mais ativa bem restrita apesar do código fonte Sem contar no github tem lá os apps deles mas é não tem tanta Liberdade nesse sentido de até de customização mesmo então acaba"
+    ],
+    [
+      841,
+      "tendo algumas limitações nesse ponto mas detalhes tem que estar no ar para conseguir mexer mas então é para você subir um projeto ali é na teoria mais rápido do que você pegar uma gente lá e subir um dólar ou instalar tudo da loja né isso nesse ponto sim é uma vantagem porque é muito mais fácil você não precisa ter nada na sua máquina se você tem o editor e o noivo só para instalar os pacotes ponto e aí você consegue usar tudo direto da Cláudia da VTEX mesmo então nesse ponto sim é bem mais fácil de subir um projeto de começar a trabalhar nele e você"
+    ],
+    [
+      887,
+      "mudaria alguma coisa nova Texx a começar pela né que a gente já até falou Com certeza trazer mais coisas relativas de builder de você ter os blocos pontos do que a gente poder ter essa liberdade de arrastar e montar como ele quiser quer mais até uma coisa que a verdade que está para fazer numa versão nova que é o FastStore que vai funcionar em ambiente local então isso eu faria também você acaba tendo uma liberdade maior nesse ponto então é bem melhor que mais que a mulher verdade"
+    ],
+    [
+      935,
+      "isso no painel né a forma que cadastrar um produto ali é um pouquinho não é totalmente diferente do agente o visual o design o visual e a forma primeiro eu toquei um produto daí depois tu vai criar os Sky e ele meio que fica uma página por vez assim sabe é diferente do Mage então onde tu tem um produto lá e depois tu tem uma sessão ali para ver os caos que estão ali dentro né então eu tenho que ir página por página a parte de usabilidade ali do cliente fica um pouquinho meio que desfazado ali é meio ultrapassado esse modelo a experiência né"
+    ],
+    [
+      980,
+      "Nossa mas ele é então quando você falou se eu quiser fazer essa transição eu sofro outro Magento se fosse fazer essa transição para VTEX teria que você falou ali o React que você usa Tem mais alguma O que que você falaria assim para quem quiser se fazer essa transição algum conselho para aprendizagem mesmo antes de entrar algum estudo sim eu acho que principalmente isso mesmo entendeu React né não precisa ser tipo nenhum especializado mas tem um conhecimento de como ele funciona a parte de gerenciamento de estados por exemplo e do TypeScript também né a"
+    ],
+    [
+      1026,
+      "parte de tipagem porque a própria Tex faz as coisas nativascript então é bom a gente seguir o modelo deles porque até porque é muito bom uma vez que você mexer não quer mais deixar de mexer eles usam cess para processador também quer dizer Eles Não Usam mas é muito fácil de integrar então é bem parecido com less que a gente tem numa gente não muda tanto assim tá que tem mais algumas funcionalidades a mais talvez alguma coisa de acho que principalmente para se trabalhar mesmo no dia a dia isso mas a gente costuma também criar alguns scripts do npm para facilitar o dia a dia ali tipo o script que vai já compilar o sase e linkar a loja numa"
+    ],
+    [
+      1071,
+      "coisa só assim Então mas acho que principalmente o React TypeScript e o sas para quem não tiver conhecimento completo processadores assim é interessante também E aí uma informação também que o Magento também dá para usar só que é uma gambiarra que eu não gosto é quem quiser usar tem funciona mas é Inclusive tem umas umas empresas que eu conheci da Ucrânia acho que dá Ucrânia aqui na empresa e ele todo o projeto que ele que a gente pegava deles tinha SAS só que ia instalar lá aí começava da dar erro porque tinha pacotes muito antigo Aí a"
+    ],
+    [
+      1116,
+      "gente tinha que ficar arrumando aqueles pacote porque não era padrão eu não faço ideia porque que eles não usavam padrão entre aspasiano que era o leso né mas era interessante que todo o projeto eles fazem isso parece que eles queriam deixar mais difícil aí tem que ver até onde vale a pena usar porque é um pouco mais moderno e tal né mas coloca toda essa complexidade a mais um projeto também é eu também eu sou mais mas hoje em dia eu não sei se tem tanta tanta disparariedade Eu lembro que uma época tinha que os sais dava para fazer bastante funções que o les não"
+    ],
+    [
+      1161,
+      "podia mas agora também dá para fazer funções no less Então acho que nem tem não tá tão longe os dois também é uma outra coisa também que ainda sobre o que estudar né para quem quiser começar a comer textos eu tiver migrando é a parte de JSON Schema que eu falei é uma biblioteca e ele faz meio que a interface entre o código e a página final Então você já é um esquema que é um objeto ali e aquelas propriedades daquele objeto você consegue usar para renderizar no front end lá desde as páginas e o cliente consegue daí no site editor alterar aquelas propriedades que se acertou que são alterados e é isso interage com o componente indenizado no fim"
+    ],
+    [
+      1206,
+      "é uma coisa boa de saber porque é uma boa prática também que esse tipo de informação seja editável né não é não é igual o esquema do Magento do bequinho para criar atributo mexer no banco de dados para outras coisas também mas a gente usa a gente pode até deixar o link depois de referência dessas coisas no código um pouquinho Ele já falou um pouquinho do que Knockout ali queria saber se é tão quente digo por mim também mas uma"
+    ],
+    [
+      1253,
+      "mexer ele não checkout né a gente tem aquele susto né e tem muitos desenvolvedores que acabam novos mesmo ver aquilo te assusta e até desisti então não sei aí eu vou perguntar para ele agora se é um bicho de sete cabeças também que nem imagina depois que você entende fica um pouco mais fácil melhor mas essa primeira vez assim Eu também tive esse susto também te deu esse susto já tava ou é mais tranquilo aí eu deu em parte sim é porque como posso dizer por exemplo quando você"
+    ],
+    [
+      1300,
+      "precisa criar um componente novo não é só você lá criar uma pastinha criar um componente você tem que criar um app que tenha eles trabalham com esquema de Builders do React deles para você poder criar o seu componente customizado daí e fazer o que você precisar aí beleza até que não é tão complexa depois que você pega o fluxo mas acho que pega Principalmente quando você pensa customizar uma coisa Nativa deles tipo sobre escrever um comportamento de um componente ativo deles porque você não consegue fazer igual numa gente que você dá você cria um plugin por exemplo para para alguma algum método eu tenho que baixar o repositório do componente deles inteiro e Tem coisa que é muito grande para alterar Sei lá uma linha de código que você precisa fazer uma validação diferente e aí você só consegue baixar"
+    ],
+    [
+      1347,
+      "tudo aí aumenta o peso do projeto e um monte de coisa que você nem precisaria então você pode até ficar perdido nesse momento de tipo tá baixei agora que que eu tenho que fazer com isso aqui onde é que eu mexo agora em tempo de você entender como é que tá sendo renderizado que que vai para onde então é para vocês familiarizar com isso quanto tempo tudo demora assim mais ou menos vai ficar mais de boa para começar a pegar coisa custo é sobre escrever da VTEX coisa da VTEX foi pelo menos uns três meses assim porque eu já tinha um conhecimento com React um pouco né de estudos e tal então acabou facilitando mas é"
+    ],
+    [
+      1392,
+      "cerca de 3 4 meses você trabalhando ali você começa a pegar assim dependendo das demandas e falando do da parte do cliente assim é mais para você Felipe assim tipo porque uma coisa que eu sentia numagente eu não sei se tu mexe também com a parte mais de venda também alguma coisa assim mas tu tem contato com o crédito acho que tu vai saber mas o Magento ele é meio que se vendia sozinho tinha muitos clientes que chegava assim ele ficava Nossa imagina faz isso faz isso já tem tudo isso não ele é meio que se vendia sozinho você não precisava nem nem explicar muita coisa que o cliente já queria uma gente até hoje em dia até"
+    ],
+    [
+      1438,
+      "tá tendo até um parado ao contrário assim porque tá ficando mais caro assim as lojas mais gente que os caras estão querendo sair também mas é uma história gigante né mas na parte ali da VTEX assim tem também esse negócio do da VTEX tá bem no mercado e o cliente gostar dela assim ou não tipo o cliente chegar lá e quer uma coisa mas a VTEX não não tem ou talvez não dê para fazer aí tipo ele reclama que vai voltar para uma agenda tem alguma coisa assim cara é pior que é bem assim mesmo a gente como pior tá lidando com essa parte ali mais técnica né mais técnica entre as fazer a ponte ali"
+    ],
+    [
+      1484,
+      "com técnico eu Barro muita tarefa de customização principalmente quando está relacionado ao checkout e a área de usuário que são as duas áreas onde a VTEX tipo bota um cadeado ali mais na parte do check-out do que na área de usuário mas são as duas áreas ali que são mais barrado um ponto que que é importante assim é que quando eu tenho customizações dentro do check out a VTEX meio que cinzenta Da Responsa e da responsabilidade ali então talvez gerar um problema muito grande dentro de checkout aí tu precisava abrir um chamado ali com eles para precisar de ajuda e tal pode pode gerar esse"
+    ],
+    [
+      1531,
+      "desgaste ah tá customizado a gente recomenda não customizar por certos pontos ali para seguir o fluxo de compra certinho e cara meio que tem que ver com agência ali para resolver isso aí então tem esse meio aqui em baixo e eu sempre tô barrando tarefas assim cara não precisa vamos olhar para o nosso carro do produto O que que a gente está buscando ali para o soft 3 meses que às vezes essa tarefa aqui não vai te gerar o valor que tu tá esperando daqui para daqui a três meses sabe aí então meio que a gente ele aceita e tudo mais mas a gente sente um pouco de resistência assim por exemplo nesse projeto que a gente tá que a gente falou ali que a gente está atuando"
+    ],
+    [
+      1576,
+      "uma parte das customizações foi dentro do checkout e dentro da área de usuário Então são as duas áreas ali que a VTEX São fechadas e a gente teve que fazer o processo de customização pode gerar problema cara é software a gente a gente sabe como como as coisas funciona e se tiver alguma atualização ali Pode ser que vai gerar problema do check-out sabe desse cliente e então a gente fica meio desse nessa ponte fino é por isso que eu falei lá do início que o cliente tem que ver muito bem as necessidades os processos dele para ver se aquela para ver se a plataforma vai suportar sabe a VTEX passa vende muita segurança assim de"
+    ],
+    [
+      1621,
+      "estabilidade de quando tiver algum movimentação muito grande no site o servidor aumenta de forma automática ali para o site se manter no ar e das fluidas mas tem sei lá do ruim ele de da parte de customização mesmo legal e tu mas tu sentiu diferença no cliente Magento no cliente VTEX ou é a mesma coisa quente depende depende muito bem aos clientes que por exemplo que a gente atua em evolução de produto a evolução é o produto já tá no ar a gente só vai evoluindo Com pequenas tarefas né para quem não sabe são clientes que que são"
+    ],
+    [
+      1667,
+      "mais simples assim então não precisa de tanta customização é mais tem uma loja no ar e vender assim com algumas melhorias de usabilidade mas tem clientes que por exemplo desse projeto que ele tá numa escala tão grande ele uma proporção tão grande que ele tem processos assim são meio burocrático por exemplo se a gente tem uma empresa gigante que ela não que ela quer colocar um bitibir no ar Então já processos criados para quem vai vender para quem quem que eles vão liberar o acesso lá de usuário então ali já tem um processo aquele usuário talvez não pode não possa editar os seus dados ali então também já tem um processo e esses processos acompanhar dentro do"
+    ],
+    [
+      1712,
+      "e-commerce E aí que vem o que vem ou em base Então depende muito de cliente para cliente do tamanho dele do tamanho dele né então eu tinha clientes muito simples que que usavam mais gente mas que se encaixariam muito bem assim e eu tenho clientes que são VTEX tem muita customização muito processo por trás que se encaixa perfeitamente sabe Então depende muito do da situação atual que o cliente se encontra hoje em dia sabe uma pergunta é Felipe também a betexa se você aconselha assim o teu tempo não sei quanto tempo está nessa plataforma mas para pequenas mais empresas para grande também"
+    ],
+    [
+      1762,
+      "é bem recomendado tá só que volta volta a falar naquele ponto se tiver muito Muitas tipo customizações ou processos ali por trás tem que cuidar bastante mas dentro hoje dos projetos de evoluções a gente atinge empresas de grande porte médio pequeno sabe não tenho também é grande e sei lá vou pegar uma gente porque ela é boa um exemplo bem bem Rosa mas por exemplo eu tinha clientes que eram de porte grande dentro de uma gente mas se encaixa perfeitamente na VTEX assim e vice-verso porque tinha créditos pequenos que se encaixariam dentro de"
+    ],
+    [
+      1809,
+      "uma gente por conta dos requisitos do processo assim né ah não usuário quando ele se cadastrar ele precisa passar por uma provação e tudo mais e se ele for aprovado reprovado tem várias outras etapas ali né então todo um fluxograma que precisa se encaixar ali não quer VTEX não suporta ela até suporta ela tem projetos muito grande no ar por exemplo Avon uma apresentação ali que que a VTEX de um evento da VTEX eles tinham um fluxograma gigantesco assim de condições de processo mas aí cara a gente está falando de uma empresa super gigante assim que que tem que tem uma equipe por trás sabe é diferente de"
+    ],
+    [
+      1856,
+      "por exemplo uma marca local ali que quer colocar uma loja de moda dentro do alho ele não vai ter essa equipe Então cara vamos fazer um negocinho mais simples um processo de de compra que que funcione e tudo mais sabe Mas assim vai sempre vai variado assim do que que o negócio precisa mas é a própria VTEX ela ela também fala isso também tipo ela mesmo fala tipo que pode ser qualquer tamanho qualquer funcionalidade dá para implementar ou ela tem tipo um foco no pequeno no médio só num grande que tipo mais gente eu"
+    ],
+    [
+      1903,
+      "também sei que eles não têm um foco Mas ultimamente Adobe dá para ver dá para ver bem assim que eles estão focando mais no grande no grande no player maior eles estão deixando tá para mim tá bem claro eles não fala eu acho que eles não falaram nem sei na verdade mas para mim tá bem claro que eles querem focar mais no grande Player meio que deixar mais de lado os outros né a VTEX tem alguma coisa assim que ela fala se não souber também não tem problema não não eu não sei dizer mas a VTEX ela abrange todo todos os Portes assim tá até se for um poste muito pequeno tem"
+    ],
+    [
+      1948,
+      "outras plataformas que que acaba atingindo a necessidade mas eu também compartilhe do mesmo sentimento que tu ali que da Adobe focar em grandes players consegue dar atingir tá consegue tá auxiliando tanto através de chamadas ali quando a gente precisa não importa o tamanho do negócio ali sempre o atendimento vai ser o mesmo assim sabe não não vi essa diferenciação A não ser que quando o cliente ele tem que contratar né porque um serviço mais personalizado da VTEX que se chama VTEX pro então ali a VTEX pro era trabalho com alguns serviços né mas aí o cliente tem que contratar daí tu tem um atendimento personalizado"
+    ],
+    [
+      1994,
+      "assim sabe mas é um outro tipo de serviço que a VTEX proporciona até foi um foi um caso que de um projeto que a gente estava atuando que cara até um ponto interessante de comentar aqui que quando se o projeto ele não é desenvolvido da forma que a VTEX recomenda cara é bug atrás de bug a gente tá com projeto que que é basicamente assim a gente resolve um mexe em outra coisa lá na frente e tem que abrir chamada e a gente abrir chamada ali o Vitor identificou que o projeto tá tá fora dos padrões ali a gente pediu um auxílio pra VTEX né Ó eu falei não a gente tá fazendo a gente tá com essa situação a"
+    ],
+    [
+      2040,
+      "gente está fazendo essa aqui aos poucos mas tem algo que vocês recomendam aí ele foi no caso foi um caso que foi para essa VTEX por assim então eles iam deixar um fazer algumas sessões de reuniões ele com deve né com um arquiteto deles aqui dá para melhorar assim assim então fazer um pente fino dentro do projeto e em paralelo a isso conforme a gente for tirando dúvidas sobre como funciona tal coisa a gente tem um ter um tan né que é um contato ali especial para essas retirada de dúvida Então esse é um exemplo de um serviço personalizado ali da VTEX aí quando caso"
+    ],
+    [
+      2087,
+      "precise mas esse esse caso ali Acho que até importante a gente conversar aqui cara Quando um projeto não fica dentro do que a VTEX recomenda é bug Strange bug e é incrível não as coisas dão funciona ou funciona do nada para de funcionar é um bagulho bem bizarro mesmo dá para ver na cara do do Vitor Quer comentar isso cara de dor sofrimento nesse projeto específico que o menos está comentando porque cara perfeito muito fora de qualquer padrão não é em vez de usar um componente bonitinho usando tava escrito e tal estruturado alisando as coisas do React só que tudo com JavaScript puro e é uma gambiarra selecionando o elemento da"
+    ],
+    [
+      2132,
+      "tela para modificar a posição dele em vez de tipo sobre escrever componente então criar um novo a gambiarra para poder mover as coisas que estão na tela ali tipo inclusive para falar nisso o check out da VTEX é feita em Knockout só que a gente não consegue alterar essa questão do Knockout lá mas eles usam também esse daí foi uma coisa que me impressionou velho eu não acreditei quando tu falou que era feito em Knockout também mas então não dá para mexer dá mas não você já mexeu sim tem"
+    ],
+    [
+      2181,
+      "um pelo painel tem um editor do check-out que você consegue adicionar CSS por lá também E aí não tem jeito não check out se você quiser customizar muita coisa você tem que fazer tudo viajar os script E aí não dá nem para colocar um tapscript alguma coisa assim porque pelo editor de código do painel lá então é bem esquisito Mas tipo Tipo se eu quiser fazer uma funcionalidade eu não sei se já tem já também ou é módulo mas uma funcionalidade para ele calcular um produto aí se você comprar outro produto ele ele fica uma barrinha assim enchendo de frete grátis é ou de qualquer outra coisa de vai dar um desconto tem isso já não"
+    ],
+    [
+      2229,
+      "tem tanto que é uma tarefa muito comum que pedem bastante inclusive que dá muito trabalho sempre porque você tem que fazer uma requisição da VTEX para poder pegar por exemplo no caso de frete grátis pegar o pelo id da promoção você pega o valor e aí você consegue exibir isso no check-out só que acaba sendo bastante trabalhoso e é tipo é algo tão comum né poderia ser ativo até Mas então daria para fazer assim só é complicado e o que que não daria para fazer se tem alguma ideia assim alguma coisa que não dá Pode ser na VTEX inteira não só no que não dá é difícil"
+    ],
+    [
+      2274,
+      "dá para fazer tudo eu falei eu acho que só tem coisa que é mais difícil do que outra para fazer por exemplo se precisar de muita customização de de backing principalmente de tratamento de dados ou de alguma coisa até na página da minha conta aí é um pouco mais trabalhoso porque não é tão pode um pouco do que é nativo da VTEX apesar de eles serem documentação para fazer tudo isso também mas é acaba sendo mais trabalhoso nesse sentido mas eu acho que tudo dá não consigo pensar uma coisa que te falar não dá isso aqui só que imagina"
+    ],
+    [
+      2321,
+      "uma coisa que não dá para você fazer você alterar os componentes os apps da VTEX que você quando é o Texas de terceiro que você instala consegue fazer uma um plugin lá que nem mais jantou que alterar o backing lá que eu queria um plugin aí Altera a funcionalidade exata que tu quer né ele não entende você não consegue instalar um app pelo painel você não tem acesso ao código fonte dele então você não consegue alterar Aí você fica preso aquela funcionalidade que eles fazem isso não funcionar Olha porque isso daí limita bastante né no meu ver assim limita muito assim porque tem muita"
+    ],
+    [
+      2367,
+      "coisa que a gente a gente que eu trabalhei ali é que o cara compra o módulo mas ele quer uma paradinha diferente assim pouca coisa assim a gente faz um pluguinho faz uma alteraçãozinha e pronto já já tá lá o que o cliente quer nesse caso aí se o cliente não quiser aquele módulo ele vai ter que mandar fazer né customizado mas falando de vocês assim como que vocês começaram a trajetória de vocês porque a gente já começou na pauleira ali da VTEX Mas conta aí a história de vocês alguma"
+    ],
+    [
+      2414,
+      "coisa cara eu comecei a trabalhar com programação como estagiário para uma agência também que trabalhava com VTEX na época era uma outra versão de VTEX que ainda não era o ayô que ele chamou de cms que era bem pior de se trabalhar porque você não se tudo que você precisa fazer ela dentro do painel você tá conseguindo gerar o código fora mas você tinha que copiar o que você era gerado que era gerado dali e jogar para dentro do pai né cara era bem pior é outra vida mensagem mas acabou não dando certo na empresa lá que eu trabalhava E aí foi"
+    ],
+    [
+      2459,
+      "quando eu sair comecei com uma gente não é comercial de uma empresa lá de turismo aí depois que eu sair dessa agência dessa dessa empresa de turismo aí que eu entrei para híbrido como a gente dois né querido Mas então E aí quando a híbrido abriu a oportunidade para trabalhar com VTEX que eles começaram a implementar e eu apliquei para o time também e que estamos hoje na luta boa e tu quer tu quer migrar para outro lugar ou como é que tá a tua visão é eu acho que é já trabalhei tempo suficiente com e-commerce nesse sentido"
+    ],
+    [
+      2504,
+      "assim principalmente em ambiente de agência então é uma coisa que eu busco não gosto de trabalhar com com o produto da empresa em si um produto que seja criado ali dentro que a gente evolua o produto da empresa em si Então acho que faz muito mais sentido com que eu acredito com o que eu quero de carreira também Então é isso mas Enquanto estivermos por aí agência estaremos fazendo bem feito Eu também eu gosto desse negócio da é que eu trabalhei muito tempo em agência também minha vida inteira lá em agência eu nem sei na verdade como que é ter um produto só"
+    ],
+    [
+      2551,
+      "mas eu pensando assim parece que é interessante mesmo eu trabalhei nas empresas de turismo era um e-commerce Magento mas era assim da empresa né a gente não ficava fazendo vários clientes então acaba sendo um produto ali porque era bastante customizado Então é bom porque você tem muito mais a visão de negócio acaba tendo alguns insights gera algumas ideias até Tipo poderia ter essa funcionalidade aqui né De tanto você já conhece o produto você consegue se preocupar com otimização com um teste também você consegue ter tempo de testar e fazer as coisas com calma e você Felipe Como que foi a tua"
+    ],
+    [
+      2596,
+      "trajetória nesse mundo de e-commerce cara se eu te falar que eu caí de paraquedas lá só para só umadendo né A minha formação é engenharia de produção e a híbrido foi meu primeiro primeiro emprego oficial ali né onde eu tô como com piolho eu digo cair de paraquedas porque eu saí de uma Indústria Sim era estagiário de uma Indústria trabalhava fiz um ano de estágio da engenharia de melhoria contínua então sempre tava aquela pegada de melhorar processo e implementar a cultura assim da da do lin e da melhoria contínua depois eu fui"
+    ],
+    [
+      2642,
+      "estagi por um ano dentro da engenharia de processo aí deu a pandemia ali tudo mais né então eu acabei não sendo efetivado ali na naquele ano e quando eu enviei o currículo era para uma vaga de Dita então não era nem para other aí foi ontem acabei fazendo um processo seletivo ali algumas entrevistas e eu acabei passando então eu já entrei já no meu jeito 2 como basicamente o suporte não sabia de quase nada ali de como funcionava Quais são as operações de yokovic Nada cai bem de paraquedas ali e até um ponto que até recomendo para quem nunca atuou cara é bem devagarzinho mesmo conhecer as"
+    ],
+    [
+      2689,
+      "etapas de um e-commerce se for se for uma da lista de compras é claro né conhecer mais essa parte mas se tu for seguir a carreira de peão ou até de um PM conhecer um pouco mais código da estrutura da tua plataforma que tu ta mexendo que vai te facilitar bastante eu não conhecia nada então os clientes me pediam alguma coisa eu não sabia se era possível mas quando eu entrei me falaram cara não abaixei tudo é possível só leva para os deveres então a gente acabava levando as tarefas ali né E foi onde eu peguei bem passo a passo Quais as informações que de que o deve precisava em algumas tarefas"
+    ],
+    [
+      2734,
+      "quando vinha um bug o que que não era só falar cara eu tô com problema na parede de produto Ah então tem todo um passo a passo para tu entender né então foi foi bem legal assim essa minha transição eu fiquei como como ter uns dois meses e meio que foi quando a empresa fez a transição para metodologia ágil então aí depois a gente separou a gente não trabalhava por Sprint né a gente trabalhava com o modelo de horas então tinha clientes ali que tinha só quatro horas de desenvolvimento no mês e cadeiras pediu umas tarefas muito bizarras não tinha como assim sabe Então essas classes menores ali eles acabava ficando mais como com urgência né Depois que a gente fez essa o estudo ali"
+    ],
+    [
+      2782,
+      "a preparatório ali para para o ágio foi onde a gente ficou com a função do chowder então foi nesse momento que eu me apaixonei Porque por mais que eu caí de paraquedas se encaixa é como se fosse uma uma função nova que não existia antes e se encaixa perfeitamente na minha faculdade por exemplo que tem que melhorar processo né otimizar os processos atuais e trazer sempre a melhoria contínua que é a área que eu mais gosto e quando a gente iniciou a gente tinha o scro Master né então ficava mais com a parte de Pio ali e hoje não hoje a gente não tem mais os cromaster hoje é só o pior o pior que faz essa função do"
+    ],
+    [
+      2828,
+      "suspeito para falar mas ele foi confirmar e cara sensacional que a gente está fazendo dentro da empresa Então dentro das nossas retros ali sempre sai da bacana ali para melhorar o processo a gente criou um uma questão ali que é bem interessante e facilita bastante pros Pior que é o roteiro de desenvolvimento Então eu tenho uma história x os deveres falam literalmente o passo a passo para ser construído aquela história e às vezes né Não dá tempo suficiente para quando a gente fala de agência né Não dá tempo suficiente ali para para terminar aquela história por completo Mas você consegue levar para o cliente pelo menos uma parte do que já foi concluída e você consegue mostrar o macro né porque a"
+    ],
+    [
+      2874,
+      "tarefa fica muito destrinchada e isso ajudou bastante a nossa estimativa ficar mais assertiva então facilita bastante isso foi o processo que a gente implementou na hora que que a tarefa ele já vem com um template pronto assim do que de quais informações deve precisa um processo um ponto interessante que a gente fez foi uma interação no Gather Então cara a gente se sente muito parece que tá trabalhando realmente dentro do escritório né mas é aquele aplicativo ali que que simulam um escritório ali e é muito legal porque literalmente vai na mesa da pessoa ali para conversar e tu tá sei lá Bora ali em São Paulo e a outra pessoa lá em Fortaleza sabe então isso é bem"
+    ],
+    [
+      2919,
+      "legal no nosso caso ali a gente tem uma pessoa que mora em Portugal né então é muito irado e cara é uma é uma área sensacional que eu tô atuando literalmente me apaixonei comecei a puxar estudo os livros né até se a galera que tiver começando ali nessa área se interessar por essa área tem alguns livros que eu que eu recomendo né e é isso basicamente eu caí de paraquedas e tô me desenvolvendo dentro dessa área que é uma área que eu curti bastante assim é até isso que tu falou e ia perguntar o que que tu falaria ou o que que precisa para começar a ser um piou ou seguir nessa área mais é do lado do cliente que que"
+    ],
+    [
+      2965,
+      "precisa para quem tá vendo e quer fazer isso um ponto é tu se cara literalmente se tornar o dono do negócio então tu conhecer tu conhecer os processos daquela empresa por que que o porquê que ele pede tal tarefa entendeu os objetivos dele porque o piolho vai atuar mais no tático tá ele não vai gerenciar o produto ele vai ele vai pegar o objetivo por exemplo um okr de três meses então a empresa que é em três meses está nesse nesse rumo aqui nesse nesse destino e que que o pior vai"
+    ],
+    [
+      3012,
+      "fazer cara ele vai pegar e vai construir o tático daquele ali então ele vai descrever as tarefas e tudo mais então é entender mais do negócio que Total atuando entendeu objetivo que isso Vai facilitar bastante assim a tua vida como peão e um outro ponto que eu falei no início por exemplo Às vezes o cara não vai ser um peão de uma plataforma gente ou de uma VTEX mas ele vai ser de um outro produto da empresa que não é uma plataforma é deles mesmo mas entender um pouco ali de como ele tá estruturado vai te ajuda querer ou não te ajuda bastante porque daí tu às vezes consegue explicar por um para o teu stakeholder que aquela tarefa ali não vai ser possível por isso"
+    ],
+    [
+      3058,
+      "se isso ou ela é possível mas ela vai demorar a x tempo e nesse x tempo tu consegue levar o bom cenário um bom cenário então ali tu já vai ter uma ideia de estimativa então ó no melhor cenário a gente entrega isso aqui na data x mas não pior cenário fica pronto nada até Y sabe e então são esses pontos que eu recomendo a negociação entender do do negócio né do porque para onde que o negócio está caminhando e a parte estratégica de como tu vai entregar aqui a como tu vai chegar no destino final daquele produto Esses são os pontos que eu mais"
+    ],
+    [
+      3103,
+      "recomendo né E tem alguns livros que pregam muito bem isso que eu posso até listar aqui são os livros que eu que eu já li e eu recomendo né eu deixo pronto até tem um tem um tem um link que eu vou ver se eu acho ali que cara ele tem um dia ele é um diagrama assim que mostra os livros que tu quer que tu vai que precisa ler por ordem assim então lá se tu segue um caminho x cara lê esses livros aqui se tu tá nessa etapa tu ler é esse tu tá na descoberta de produto tem tem esses livros aqui tá no produto o produto tá grande mas ele quer escalar mais desses livros aqui eu vou ver se eu acho esse link aqui que vai ser bem legal para quem que é seguir nessa área"
+    ],
+    [
+      3149,
+      "a gente coloca ali na descrição se tem uma pergunta amor você é um pouquinho da área mas é uma pergunta que a gente costuma perguntar assim a gente bem perguntando em todos os podcasts é como vocês lidaram assim com a ansiedade assim é um assunto bem delicado para mim assim eu sempre pergunto assim cada pessoa me passa uma visão diferente é bem bacana assim como Cada um lidou com isso na sua transição a transição dos dois magia para VTEX ou ali o Felipe falou que caiu de paraquedas não era ele não trabalhava com isso mas depois ele caiu ali algo"
+    ],
+    [
+      3196,
+      "novo e sempre assusta como vocês facilitaram com tudo isso vocês passaram assim a carreira de vocês é começar a Vitória pode ser Boa pergunta eu não sei se eu lhe dei direito mas é algo muito difícil mesmo porque a ansiedade vem em diversos momentos com diversas situações da vida para mim essa transição por exemplo usar esse caso da transferência eu tava mais ansioso para começar a trabalhar com tecnologias mais é mais mais modernas e tal não vai falar Porque"
+    ],
+    [
+      3248,
+      "de fato com dificuldade em si mas é bateu também muito insegurança assim que gera ansiedade também quando eu comecei de fato a trabalhar eu falei tá mas aí eu não posso na verdade como é que faz isso aqui com essa tarefa aqui que eu faço agora Então acho que o que me ajuda muito é dar uma distanciada um pouco às vezes até sair do computador andar fazer uma caminhada gosta de fazer caminhada com o meu cachorro quando eu tô muito estressado assim muito ansioso eu pego ele a gente sai para correr um pouco então acho que exercícios físicos ajuda bastante no geral Porque para mim quando eu gosto da caminhada tipo voto bem mais calma assim bem mais tranquilo e já teve um tempo também que eu fiz umas técnicas de respiração assim"
+    ],
+    [
+      3293,
+      "específica né que principalmente o pessoal que faz aquele mais de funes assim acabou que funciona também é meio de momento assim hoje eu não tenho mais esse hábito mas funciona também mas é muito difícil escrever e Mexe dá umas ansiedade assim que ia faltar agora vou deitar aqui nunca mais eu faço nada [Música] bem ruim assim eu não sei que eu acho que eu sinto pouco isso mas eu já senti não tem como não sentir né mas acho que hoje em dia eu consigo lidar melhor com essa parte da ansiedade assim às vezes eu tipo às vezes tu fica pensando o que"
+    ],
+    [
+      3339,
+      "que eu tô pensando que aquilo tá pensando em você e daí mas é hoje em dia sei lá eu não ligo tanto para isso e a Mary ainda não sabe lidar às vezes conheço ela fica fica mal né mas essa parte da caminhada aí até a gente falou no primeiro podcast lá é uma coisa que a gente faz bastante caminhar todo praticamente todo dia a gente sai para caminhar e dá um alívio bem da hora assim cara bem bem interessante mesmo assim é bom mas realmente acho que quanto mais a gente vai vivenciando as coisas menos a gente fica ansioso né eu tinha Muita ansiedade vem para lhe dar falar com as pessoas com por exemplo a gente tem"
+    ],
+    [
+      3384,
+      "quatro pessoas aqui um tempo atrás eu estaria tipo suando frio aqui mas uma coisa que a gente vai passando pela situação e vai aprendendo a lidar né Aos poucos é uma questão da maturidade né Quanto mais você vai aprendendo mais vivência Ali você vai ter uma maturidade que nem eu falo para ele ele me acalma ele tem 15 anos no mundão e só a gente bate um papo me dá um Norte e ia ficar tudo tranquilo ele me passa uma visão tipo tá tudo bem e eu vou tem um ano e meio só de mais gente então tem muita coisa para aprender tem muita água para rolar então só manter a calma"
+    ],
+    [
+      3430,
+      "e cada um tem seu tempo respeitar o processo e é isso e você Felipe como lida com a ansiedade cara eu nunca pensei em lidar com ansiedade assim porque eu sempre era acostumado com muita informação vindo e tudo mais mas Cara infelizmente eu tive uma crise só que eu até lembro bem foi na época que eu tava eu tava lendo esses livros aprendendo mais mas era por gosto mesmo eu gosto muito de ler e daí eu fazia o horário de trabalho ali e no horário de trabalho é muito informação que tu recebe porque tu tem por exemplo tem uma conta uns quatro projetos só de evolução né Depois tem mais os"
+    ],
+    [
+      3477,
+      "projetos projetos mesmo né de projetos e e teve um dia ali simplesmente um dia que cara meu deu uma explosão assim de informação e eu não sabia o que fazer mas o que que o que que tava pegando comigo eu desde novo sou acostumado a gastar o meu corpo tipo vim fazer algum Esporte e sei lá e eu tava sentindo falta Nisso porque eu tava só lendo trabalhando e depois eu tinha faculdade né então eu trabalhava muito mais com a mente e o meu corpo tava tipo ele tava descansando ele tava descansado Mas tipo ele já tava cansado porque a mente com consumia muito sabe e naquele dia ali eu fiquei sem norte eu"
+    ],
+    [
+      3523,
+      "levantei assustado da cadeira não sabia o que fazer e eu fiquei cara tá vindo muita coisa assim eu não consigo controlar daí eu dei umas voltas assim pela casa e meu foi bem bem assustador essa experiência eu nunca nunca mesmo vou ser feliz sério nunca tipo senti que eu ia passar por isso aí o que que eu fiz Eu só mudei minha rotina eu voltei a canção o meu corpo do jeito que eu cansava antes até o outro pode confirmar ali cara mas cara é natação é luta é skate é caminhada também eu gosto de correr bastante então eu dou uma eu dou uma bastante priorizada por cansar o meu corpo assim"
+    ],
+    [
+      3569,
+      "nesses esportes porque até um ponto porque atualmente não vai parar não vai parar de trabalhar e às vezes eu tá eu tava correndo ali tinha um problemão assim gigante e do nada vim a ideia assim de como resolver e era a coisa mais simples do mundo quando vê aquela ideia aí eu falei Caraca falei então eu preciso fazer isso aqui e hoje em dia eu tenho uma rotina muito agitada assim voltada para esporte e eu até parei um pouco a leitura só tô com horário de trabalho e estou voltando no fluxo ali porque eu me formei recente tá os dois meses atrás ele já tava informando é isso dois meses dois meses não três aí então eu dei essa priorizada ele para focar no meu corpo assim"
+    ],
+    [
+      3614,
+      "praticar esporte tudo mais e aliviou 100% assim sabe é um ponto bastante importante que o que o controle Falou cara se afasta daquilo ali que talvez a gente vai vai tá trabalhando ali 24 horas e momento vai aquilo ali vai aparecer muito claro claro assim sabe aí eu tô lidando eu tô ligando dessa forma de praticar bastante esforço Esporte e cansar meu corpo assim que é é o jeito que ela funciona melhor tem outras pessoas que funciona de outro jeito tá não vão conseguir sempre ali o que eu digo mas cara tem que tentar achar o que te deixa melhor assim né No meu caso é realmente cansar o meu corpo e é isso eu lido dessa forma assim sabe"
+    ],
+    [
+      3660,
+      "mas eu tive uma crise Só que eu nunca imaginei que eu ia ter sabe e foi não recomendo para ninguém é horrível mas faz sentido eu acho que eu tô precisando mais mesmo desse essa digitação mais se cansar o corpo porque antigamente também ia fazer jogar futebol vôlei tudo fazer muita coisa e eu acho que quando entrei acho que na tecnologia que faz um ano e meio mais ou menos eu meio que foquei meu Whats que eu foquei aqui no trabalho Me fechei para outras coisas leu tô lendo muito eu amo ler eu li o dia"
+    ],
+    [
+      3705,
+      "inteiro te deixar então eu me afastei de muita coisa leitura tocar meu violão Meu Colé minhas coisas que eu gosto de fazer e com medo de não aprender isso não e martiriza sabe para aprender o mais rápido possível então agora que eu tô abrindo mais os olhos assim a gente vai todo dia caminhar daqui a pouco vou pegar meu violão vou tentar tocar alguma coisa um pouco do computador porque se vocês ver nosso escritório aqui é o nosso quarto também tem uma cama aqui é o nosso escritório tente é 24 horas aqui então parece que não desliga muito então é isso que eu preciso também porque por isso que eu não acho que não tô sabendo lidar muito porque eu fico me cobrando bastante"
+    ],
+    [
+      3750,
+      "nesse sentido e priorizo sempre no trabalho então muito valioso assim a teus conselho e até um pouco que eu notei eu senti mais gosto assim por aprender tipo literalmente bizarro assim a forma como funciona vai ser a minha forma né mas cara que beleza eu fui nadar de manhã daí eu trabalhei aí de noite eu sei lá eu faço um box ali de 5 horas né 5:30 Aí eu volto cara tomo um banho eu tô 100% pronto assim para sei lá para receber novas informações e absorver com mais clareza recebeu até me sinto melhor assim para aprender que é um que é um ponto que até tava falando para os devs"
+    ],
+    [
+      3796,
+      "né o vítors aí cara eu sou muito patrão no VTEX então aí era um dos pontos que eu tava priorizando para para estudar e eu consegui absorver bem mais informações Até porque eu tinha Dias ali que era o dia inteiro ela deve o culto como é que como é que faz isso aqui e tal como é que funciona e hoje já não ia ter outras vezes consigo tá tá explicando ali para o cliente né de uma forma mais simples porque por conta disso né absorveu a informação mais fácil então começa começa a entender como as coisas funcionam assim mas literalmente quando tu se afasta é bem melhor assim tu volta com mais anime assim pra pra poder aprender coisas novas e absorver novas informações"
+    ],
+    [
+      3843,
+      "bem legal essas visão de vocês aí também cada cada convidado que a gente traz aqui a gente toca nesse assunto que é um assunto bem Que dá bastante visão diferente assim porque Cada um pensa de uma forma e é bem interessante cruzar essas informações acaba ajudando também muita gente que tá vendo até eu também já peguei primeiras dicas aí a dele também é muito boa do voltar a fazer mais esporte movimentar mais cansa o corpo né então é muito muito bom até Principalmente nesse contexto que a gente trabalha hoje em dia de trabalho remoto principalmente na área de TI acho que isso acaba se acaba se confundindo"
+    ],
+    [
+      3889,
+      "muito que câmbio de trabalho que que não é né como vocês eram o caso de vocês que o escritório é o quarto meu caso também então é muito difícil de falar Parei de trabalhar mas ainda tô no computador ainda tô recebendo informação da coisa da empresa ainda tô com tudo aqui como é que eu se você não sair não se distanciar o cérebro não vai ter uma pausa então realmente fica mais difícil você até absorver conhecimento mesmo com menos valor é então esse distanciamento do computador e você saber Separar uma coisa da outra é importante também falando do computador até agora tive até uma retro é minha última retro falando de gestão de tempo e a maioria do meu time inteiro ou não almoça ou almoça lá para as 3:00 da tarde ou como eu Senta aqui tô olhando meu outro monitor"
+    ],
+    [
+      3936,
+      "e tô comendo na frente do computador olhando minhas tarefas e minhas coisas para fazer eu não paro vou lá para sala vou como ou do Meia Hora Ou vou ler um livro não a gente fica aqui na frente do computador comendo e acabou de comer continua aqui até 8 horas da noite ou mais como você tá aí ainda recebendo informação aqui também não podcast a gente tá ativo aqui quase o tempo inteiro Se receber da informação isso daí também acaba sendo muito muito prejudicial E pior que é bem difícil de cortar isso eu já tenho minha vida inteira trabalhando com isso não consegui cortar isso ainda faça essas"
+    ],
+    [
+      3982,
+      "coisas eu tento controlar isso mas é bem difícil você conseguir mudar essa parte a gente a gente tem que seguir o Arquimedes quando ele tava lá relaxando na banheira ele conseguiu descobrir lá o mistério lá e gritou eu né saiu peladão lá pela rua mas é bem assim mesmo às vezes a gente está com o bug ali difícil cara sai fora o que tu falou vai vai dar uma caminhada quando eles já tá voltando gritando Eureka já sabe onde é que tá um problema ali tentando debugar o negócio aí vai dormir no outro dia 5 minutinhos tu já achou o"
+    ],
+    [
+      4028,
+      "problema lá era só uma vírgula que falta tem mais uma pergunta aí já vou agradecer novamente tenho mais uma pergunta para vocês a gente também fala sempre no finalzinho dos podcasts essas duas mas uma aqui como vocês é dariam assim eu do passado o conselho quando você estava começando lá atrás alguma coisa que vocês um conselho alguma coisa que você mudaria hoje do"
+    ],
+    [
+      4073,
+      "seu eu do passado não só mudar mas tipo um conceito assim né faz tal coisa que vai ganhar na mega-sena por exemplo [Risadas] cara eu passaria o meu Butter eu falava cara vai aproveitar essa delícia de vida que mil anos é pouco que vai vai lidar com calma cara as coisas vão fluir eu era muito pilhada assim com as coisas principalmente no ano de 2018 ali depois no seguinte ele depois da pandemia veio veio Esse mantra né a"
+    ],
+    [
+      4119,
+      "gente tava conversando com com amigo também um amigo meu a gente tava voltando para casa com outro cara que ele tem uma empresa aqui aqui na cidade e cara O bicho é sensacional assim o otimismo dele te consome e ele tava sempre gritando delícia de vida então eu seguiria desse conselho assim sabe depois que eu tive esse papo com ele eu enxerguei o outro lado assim que cara aquilo ali é só mais uma parte o processo que está construindo o uma virada de chave assim sabe quando que o Felipe Mendes virou o Felipe Mendes sabe então é só uma parte do processo às vezes nem tu nem vai seguir"
+    ],
+    [
+      4165,
+      "com aquilo ali sabe Então esse é o conselho que que eu me daria sim sabe eu bateria na minha cara e falava cara Vai com calma as coisas não é bem assim sabe tudo vai conseguir resolver da noite para o dia e cara eu vejo dessa forma tá até cansado de ouvir essa frase todo dia aquele mesmo da caverna todo dia cara da minha parte acho que eu diria para duas coisas para não querer abraçar o"
+    ],
+    [
+      4211,
+      "mundo e para me cobrar um pouco menos não quero abraçar o mundo no sentido de que quando a gente está começando principalmente na hora de tecnologia tem muito termo muito conceito muita linguagem muita coisa que a gente quanto mais você estuda mais coisa aparece então se você não se organizar não tiver o foco é tão discernimento do que de fato Você precisa estudar ali é muito fácil você se perder estudar querer estudar tudo ao mesmo tempo e no final aprendeu nada né porque você não tem como sempre tem um fox você não consegue aprender de jeito nenhum uma coisa nem outra então acho que eu diria isso para não para tipo ter um foco ali você quer começar com frontiense alguma coisa assim ou se você já começou no estágio isso tudo aquilo que você precisa para fazer"
+    ],
+    [
+      4256,
+      "essa estágio né e de nós cobrar tanto tem mais relação de não ter medo de errar também porque a gente acha que um erro que a gente fizer vai acabar com tudo vai quebrar vai explodir o servidor da empresa inteira mas não calma é só um erro É melhor rápido do que não errar e descobrir que tava errado no final né então quanto mais rápido a gente errar e aprender com isso é melhor mas não ficar pensando só de pai que seu errar aqui vamos jogar nada não tá aprendendo é isso até esse ponto é que eu vejo a Mary muitas vezes que parece que tudo ela quer ela quer pedir tipo uma opinião Tá certo"
+    ],
+    [
+      4302,
+      "tá errado sabe em vez de ela ela ir lá e fazer ela ela faz só que daí ela fica Será que tá certo que eu fiz sabe em vez de tipo ter um pouco mais de confiança assim às vezes ela faz isso bastante Mas acho que isso vem com o tempo né cara só da experiência também não tem muito certo e errado assim tem se funcionou Tá certo né agora tem questão de voz práticas tal aí são outros que vai pegando também é isso que eu sempre falo para ela mas é mas é com tempo mas é mesmo falando várias vezes ela continua é um bom ponto ali que o Vitor falou"
+    ],
+    [
+      4347,
+      "cara não tem certo nem errado existe só um processo de aprendizagem sabe e esse processo de aprendizagem é muito importante tu tá apreciando ele então beleza eu errei por conta disso então na próxima eu vou fazer isso e com essa situação essa experiência que tu já que tu teve tu vai conseguir ensinar uma outra pessoa que tá começando agora sabe que é um ponto ali que o Vitor sempre está me passando ele já errava alguns pontos e aí ele falou cara é assim que funciona e tudo mais e assim que a gente cada vez mais o conforme o dia passa sabe é muito importante esse ponto ali que o Vitor a gente vai"
+    ],
+    [
+      4393,
+      "praticamente chegar no final já tá tomou uma hora e 13 aqui já uma hora e 13 eu queria falar para vocês obrigado né começou a chiar eu queria agradecer vocês e também vê se vocês querem falar alguma coisa pode falar qualquer coisa aí pode falar né cara eu agradeço ali o convite tá foi muito produtivo papo aqui eu espero que eu vi vai absorver muita coisa boa Ali"
+    ],
+    [
+      4438,
+      "vai entender um pouco mais da Visão técnica né E vai entender um pouco mais da visão do dia a dia do produto isso é bem importante então agradeço para mim é uma honra aqui tá conversando com vocês Esse podcast e cara sempre que tiver algum algum outro ali relacionado ao tema pode pode me chamar ali que a gente vai estar participando pode deixar obrigado também quero agradecer pelo convite muito bom tá aqui falando sobre isso é sempre bom né poder causar uma polêmica né ganhamos Mas eu sempre que precisar também estamos aí"
+    ],
+    [
+      4483,
+      "mas já tão convidado já para os próximos aí a gente vai convidando aos pouquinhos algumas pessoas para conversar um pouquinho sobre algumas pessoas sobre tecnologia mas tá mais convidada aí para a gente fazer uma outra vez aí o assunto precisa dessa pessoa VTEX a gente pode ver aí outro assunto para conversar obrigada Então é isso pessoal"
+    ],
+    [
+      4531,
+      "Então é isso pessoal obrigado por quem acompanhou até aqui foi uma longa conversa e muito produtiva Eu gostei muito aí eu vou colocar na descrição todos os links que a gente falou aqui até se quiserem colocar rede social github também eu coloco ali depois mando o link e é isso pessoal até a próxima semana que vem talvez tenha um vamos ver e é isso falou pessoal obrigado valeu gente tchau tchau"
+    ]
+  ]
+}

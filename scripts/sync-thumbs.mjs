@@ -5,8 +5,8 @@
 //
 //   npm run thumbs:sync
 //
-// It reads the same feed the build reads, mirrors src/data/episodes.json (the
-// committed fallback), and writes only what is missing. Existing files are left
+// It reads the same feed the build reads, mirrors the episode catalog
+// (src/content/episodes, the committed fallback), and writes only what is missing. Existing files are left
 // alone, so re-running is cheap and never re-downloads.
 //
 // The site does not depend on this: src/lib/youtube.ts falls back to the remote
@@ -29,6 +29,7 @@ import { existsSync } from 'node:fs';
 import { mkdir, readFile, stat, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import sharp from 'sharp';
+import { readEpisodeIndex } from '../plugins/episode-index.mjs';
 
 const CHANNEL_ID = 'UChJitnyFtNOoCe6cu-rHcow';
 const FEED_URL = `https://www.youtube.com/feeds/videos.xml?channel_id=${CHANNEL_ID}`;
@@ -72,15 +73,10 @@ const feedIds = async () => {
     .filter(isVideoId);
 };
 
-const snapshotIds = async () => {
-  const { default: snap } = await import(
-    resolve(process.cwd(), 'src/data/episodes.json'),
-    {
-      with: { type: 'json' },
-    }
-  );
-  return snap.map((v) => v.id).filter(isVideoId);
-};
+const snapshotIds = async () =>
+  readEpisodeIndex()
+    .map((e) => e.youtubeId)
+    .filter(isVideoId);
 
 const download = async (id, variant, size) => {
   if (!isVideoId(id)) {

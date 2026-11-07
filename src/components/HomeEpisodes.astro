@@ -1,9 +1,10 @@
 ---
 import EpisodeArt from '~/components/EpisodeArt.astro';
 import YouTubeStamp from '~/components/YouTubeStamp.astro';
+import { toCard } from '~/lib/episodes';
 import { useTranslations } from '~/lib/i18n';
 import type { Video } from '~/lib/youtube';
-import { episodeNum, formatEpDate, getLatestVideos } from '~/lib/youtube';
+import { formatEpDate, getLatestVideos } from '~/lib/youtube';
 
 interface Props {
   locale: string;
@@ -28,7 +29,11 @@ interface Props {
 const { locale, videos } = Astro.props;
 const t = useTranslations(locale);
 
-const episodes = videos ?? (await getLatestVideos()).slice(1, 7);
+// Catalogued episodes link to their page on this site (clean localized title);
+// anything newer than the catalog still links out to YouTube.
+const episodes = (videos ?? (await getLatestVideos()).slice(1, 7)).map((v) =>
+  toCard(v, locale),
+);
 
 /* Cards 4-6 are `display:none` on phones (nth-child rule below), but a hidden
    <img> still downloads, so those cards carry this 1x1 transparent GIF as a
@@ -53,7 +58,11 @@ if (videos === undefined) {
   <div class="zine">
     <div class="eps">
       {episodes.map((ep, i) => (
-        <a href={ep.url} target="_blank" rel="noopener noreferrer" class="ep">
+        <a
+          href={ep.href}
+          class="ep"
+          {...(ep.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+        >
         <div class="art-wrap">
           <EpisodeArt
             id={ep.id}
@@ -69,7 +78,7 @@ if (videos === undefined) {
         </div>
         <div class="body">
           <p class="meta">
-            <span class="num">{episodeNum(ep.title) ? `#${episodeNum(ep.title)}` : t('home.featuredEp.eyebrow')}</span>
+            <span class="num">{ep.number ? `#${ep.number}` : t('home.featuredEp.eyebrow')}</span>
             <span class="date">{formatEpDate(ep.published, locale)}</span>
           </p>
           <h3 class="title">{ep.title}</h3>

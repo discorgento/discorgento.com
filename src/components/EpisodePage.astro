@@ -1,0 +1,420 @@
+---
+import { render } from 'astro:content';
+import EpisodeArt from '~/components/EpisodeArt.astro';
+import MainLayout from '~/layouts/MainLayout.astro';
+import { getEpisodes } from '~/lib/episode-content';
+import {
+  asLocale,
+  buildEpisodeJsonLd,
+  clock,
+  episodePath,
+  guestNodeId,
+  homePath,
+  minutes,
+  padNumber,
+  podcastPath,
+  youtubeUrl,
+} from '~/lib/episodes';
+import { intlLocale, useTranslations } from '~/lib/i18n';
+import { LINKS } from '~/lib/links';
+import { getTeam } from '~/lib/team';
+import { formatEpDate, thumb } from '~/lib/youtube';
+
+/**
+ * The watch page of one episode, shared by the three locales (the routes in
+ * src/pages/{,en/,es/}podcast/[slug].astro only pick the locale).
+ *
+ * Google gives a video rich result only on a page whose main purpose is one
+ * video, so the player sits right under the h1. It becomes a real iframe only
+ * with consent or on play (see the note on the player below). Everything below
+ * it is the text that lets the page rank and be quoted: the summary, key
+ * points, chapters, people, Q&A and the transcript.
+ */
+interface Props {
+  slug: string;
+  locale: string;
+}
+
+const { slug, locale } = Astro.props;
+const l = asLocale(locale);
+const t = useTranslations(l);
+const site = Astro.site ?? new URL('https://discorgento.com/');
+
+const episodes = await getEpisodes();
+const position = episodes.findIndex((e) => e.slug === slug);
+const episode = episodes[position];
+if (!episode) throw new Error(`[episodes] no episode with slug "${slug}"`);
+const newer = episodes[position - 1];
+const older = episodes[position + 1];
+
+const { data, notes, transcript } = episode;
+const note = notes[l];
+const { Content } = await render(note);
+
+const title = data.title[l];
+const num = padNumber(data.number);
+const tag = num ? `#${num}` : t('episode.special');
+const published = formatEpDate(data.published, l);
+const publishedIso = data.published.slice(0, 10);
+const spoken =
+  new Intl.DisplayNames([intlLocale(l)], { type: 'language' }).of(
+    data.language,
+  ) ?? data.language;
+const watchUrl = youtubeUrl(data.youtubeId);
+const embedUrl = `https://www.youtube-nocookie.com/embed/${data.youtubeId}?rel=0`;
+
+const hosts = getTeam(l).filter((member) => data.hosts.includes(member.slug));
+const guests = episode.guests.map((g) => ({
+  slug: g.id,
+  name: g.data.name,
+  role: g.data.role?.[l],
+  sameAs: g.data.sameAs,
+}));
+
+const cover = thumb(data.youtubeId, 1280);
+const jsonLd = buildEpisodeJsonLd({
+  site: site.href,
+  locale: l,
+  slug,
+  youtubeId: data.youtubeId,
+  number: data.number,
+  published: data.published,
+  duration: data.duration,
+  language: data.language,
+  title,
+  description: note.data.description,
+  chapters: data.chapters.map((c) => ({ start: c.start, title: c.title[l] })),
+  hosts: hosts.map((h) => ({ id: h.profile, name: h.name, role: h.role })),
+  guests: guests.map((g) => ({
+    id: guestNodeId(site.href, g.slug),
+    name: g.name,
+    role: g.role,
+    sameAs: g.sameAs,
+  })),
+  thumbnails: [cover, thumb(data.youtubeId, 320)].map(
+    (src) => new URL(src, site).href,
+  ),
+  crumbs: { home: t('nav.home'), podcast: t('podcast.title') },
+});
+
+const transcriptLang = transcript.language;
+const transcriptForeign = transcriptLang !== l;
+const linkClass =
+  'text-brand-400 underline underline-offset-4 transition hover:text-brand-300';
+const h2Class =
+  'font-display text-2xl font-black tracking-tight text-on-background';
+---
+
+<MainLayout
+  title={`${title} · ${t('podcast.title')} ${tag}`}
+  description={note.data.description}
+  ogType="video.episode"
+  jsonLd={jsonLd}
+  image={{ src: cover, width: 1280, height: 720, alt: title }}
+>
+  <nav aria-label={t('episode.breadcrumb')} class="pt-8 sm:pt-12">
+    <ol class="flex flex-wrap items-center gap-x-2 gap-y-1 font-mono text-xs uppercase tracking-wider text-muted">
+      <li><a class="transition hover:text-brand-400" href={homePath(l)}>{t('nav.home')}</a></li>
+      <li aria-hidden="true">/</li>
+      <li><a class="transition hover:text-brand-400" href={podcastPath(l)}>{t('podcast.title')}</a></li>
+      <li aria-hidden="true">/</li>
+      <li aria-current="page" class="text-on-background">{tag}</li>
+    </ol>
+  </nav>
+
+  <article>
+    <header class="border-b-2 border-on-background pb-8 pt-6 sm:pb-12 sm:pt-8">
+      <p class="eyebrow mb-3 sm:mb-4">
+        <span class="text-brand-500">●</span> {t('episode.eyebrow')} {tag}
+      </p>
+      <h1 class="text-balance font-display text-3xl font-black tracking-tight text-on-background sm:text-5xl">
+        {title}
+      </h1>
+      <p class="mt-4 max-w-2xl leading-relaxed text-muted">{note.data.description}</p>
+      <dl class="mt-5 flex flex-wrap gap-x-6 gap-y-2 font-mono text-xs uppercase tracking-wider text-muted sm:mt-6">
+        <div class="flex gap-2">
+          <dt>{t('episode.published')}</dt>
+          <dd class="text-on-background"><time datetime={publishedIso}>{published}</time></dd>
+        </div>
+        <div class="flex gap-2">
+          <dt>{t('episode.duration')}</dt>
+          <dd class="text-on-background">{minutes(data.duration)} min</dd>
+        </div>
+        <div class="flex gap-2">
+          <dt>{t('episode.language')}</dt>
+          <dd class="text-on-background">{spoken}</dd>
+        </div>
+      </dl>
+    </header>
+
+    {/* The player follows the visitor's consent. Even the youtube-nocookie
+        embed loads a Google script that sets cookies (NID, _GRECAPTCHA) on
+        page load, which the privacy page promises not to do without consent.
+        So the page ships the cover with a play button, and the script below
+        swaps in the iframe when consent is granted (at load or later) or when
+        the visitor presses play. Without JS the cover is a plain link to the
+        video on YouTube. The video stays declared to Google through the
+        VideoObject JSON-LD and the video sitemap. `?t=` in the page URL (the
+        chapter links, and the Clip urls in the JSON-LD) sets the start. */}
+    <div
+      id="player"
+      class="relative mt-8 aspect-video w-full scroll-mt-6 border-2 border-on-background bg-black sm:mt-12"
+      data-episode-player
+      data-embed={embedUrl}
+      data-title={`${t('episode.playerTitle')}: ${title}`}
+    >
+      <a
+        href={watchUrl}
+        class="group absolute inset-0 block"
+        data-episode-play
+        aria-label={`${t('episode.play')}: ${title}`}
+      >
+        <EpisodeArt
+          id={data.youtubeId}
+          alt=""
+          imgClass="h-full w-full object-cover"
+          sizes="(min-width: 1232px) 1184px, 94vw"
+          width={1280}
+          height={720}
+          fetchpriority="high"
+          tiers={[320, 640, 1024, 1280]}
+        />
+        <span class="absolute inset-0 grid place-items-center bg-black/25 transition group-hover:bg-black/10">
+          <span class="bg-brand-500 px-6 py-3 font-semibold text-background shadow-[5px_5px_0_var(--color-on-background)] transition group-hover:bg-brand-400">
+            ▶ {t('episode.play')}
+          </span>
+        </span>
+      </a>
+    </div>
+    <div class="mt-4 flex flex-wrap gap-2">
+      <a
+        href={watchUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="border border-border px-3 py-1.5 font-mono text-xs uppercase tracking-wider text-muted transition hover:border-brand-500 hover:text-brand-400"
+      >
+        {t('episode.watchYoutube')} ↗
+      </a>
+      <a
+        href={LINKS.spotify}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="border border-border px-3 py-1.5 font-mono text-xs uppercase tracking-wider text-muted transition hover:border-brand-500 hover:text-brand-400"
+      >
+        {t('episode.listenSpotify')} ↗
+      </a>
+    </div>
+
+    <div class="grid gap-10 py-10 sm:py-14 lg:grid-cols-[minmax(0,1fr)_18rem] lg:gap-14">
+      <div class="max-w-2xl space-y-10 sm:space-y-12">
+        <section aria-labelledby="summary">
+          <h2 id="summary" class={h2Class}>{t('episode.summary')}</h2>
+          <div class="mt-4 space-y-4 leading-relaxed text-on-background/85 [&_strong]:font-semibold [&_strong]:text-on-background">
+            <Content />
+          </div>
+        </section>
+
+        <section aria-labelledby="key-points">
+          <h2 id="key-points" class={h2Class}>{t('episode.keyPoints')}</h2>
+          <ul class="mt-4 space-y-3">
+            {note.data.keyPoints.map((point) => (
+              <li class="flex gap-3 leading-relaxed text-on-background/85">
+                <span class="mt-0.5 font-mono text-brand-500" aria-hidden="true">→</span>
+                <span>{point}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <section aria-labelledby="faq">
+          <h2 id="faq" class={h2Class}>{t('episode.faq')}</h2>
+          <div class="mt-4 divide-y divide-border border-y border-border">
+            {note.data.faq.map((item) => (
+              <div class="py-5">
+                <h3 class="font-display text-lg font-semibold tracking-tight text-on-background">
+                  {item.question}
+                </h3>
+                <p class="mt-2 leading-relaxed text-on-background/80">{item.answer}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section aria-labelledby="transcript">
+          <h2 id="transcript" class={h2Class}>{t('episode.transcript')}</h2>
+          <p class="mt-3 font-mono text-xs leading-relaxed text-muted">
+            {t('episode.transcriptAuto')}
+            {transcriptForeign && <> {t('episode.transcriptOriginal')}</>}
+          </p>
+          {/* Collapsed, but in the HTML: crawlers read <details> content, and the
+              timestamps make every paragraph a deep link into the video. */}
+          <details class="group mt-4 border border-border">
+            <summary class="cursor-pointer px-4 py-3 font-mono text-xs uppercase tracking-wider text-muted transition hover:text-brand-400">
+              {t('episode.transcriptToggle')}
+            </summary>
+            <div class="space-y-4 border-t border-border px-4 py-5" lang={transcriptLang}>
+              {transcript.segments.map(([start, text]) => (
+                <p class="text-sm leading-relaxed text-on-background/80">
+                  <a href={`?t=${start}`} data-seek={start} class="mr-2 font-mono text-xs text-brand-400 hover:text-brand-300">
+                    {clock(start)}
+                  </a>
+                  {text}
+                </p>
+              ))}
+            </div>
+          </details>
+        </section>
+      </div>
+
+      <aside class="space-y-10 lg:sticky lg:top-6 lg:self-start">
+        {data.chapters.length > 0 && (
+          <section aria-labelledby="chapters">
+            <h2 id="chapters" class="eyebrow">
+              <span class="text-brand-500">●</span> {t('episode.chapters')}
+            </h2>
+            <ol class="mt-4 border-t border-border">
+              {data.chapters.map((chapter) => (
+                <li class="border-b border-border">
+                  <a
+                    href={`?t=${chapter.start}`}
+                    data-seek={chapter.start}
+                    class="flex gap-3 py-2.5 text-sm transition hover:text-brand-400"
+                  >
+                    <span class="w-14 shrink-0 font-mono text-xs leading-5 text-brand-400">{clock(chapter.start)}</span>
+                    <span class="leading-5 text-on-background/85">{chapter.title[l]}</span>
+                  </a>
+                </li>
+              ))}
+            </ol>
+          </section>
+        )}
+
+        {(hosts.length > 0 || guests.length > 0) && (
+          <section aria-labelledby="people">
+            <h2 id="people" class="eyebrow">
+              <span class="text-brand-500">●</span> {t('episode.people')}
+            </h2>
+            <ul class="mt-4 space-y-4">
+              {guests.map((guest) => (
+                <li>
+                  <p class="font-semibold text-on-background">{guest.name}</p>
+                  <p class="font-mono text-xs uppercase tracking-wider text-muted">
+                    {t('episode.guest')}{guest.role ? ` · ${guest.role}` : ''}
+                  </p>
+                  {guest.sameAs.map((url) => (
+                    <a href={url} target="_blank" rel="noopener noreferrer" class={`text-xs ${linkClass}`}>
+                      {new URL(url).hostname.replace(/^www\./, '')} ↗
+                    </a>
+                  ))}
+                </li>
+              ))}
+              {hosts.map((host) => (
+                <li>
+                  <p class="font-semibold text-on-background">{host.name}</p>
+                  <p class="font-mono text-xs uppercase tracking-wider text-muted">
+                    {t('episode.host')}
+                    {/* Skip a role that only repeats the label ("host · Host"). */}
+                    {host.role.toLowerCase() !== t('episode.host').toLowerCase() &&
+                      ` · ${host.role}`}
+                  </p>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+      </aside>
+    </div>
+  </article>
+
+  <nav aria-label={t('episode.all')} class="grid gap-3 border-t-2 border-on-background py-8 sm:grid-cols-3 sm:py-10">
+    <div>
+      {newer && (
+        <a href={episodePath(newer.slug, l)} class="group block">
+          <span class="font-mono text-xs uppercase tracking-wider text-muted">← {t('episode.newer')}</span>
+          <span class="mt-1 block font-display font-semibold text-on-background transition group-hover:text-brand-400">
+            {newer.data.title[l]}
+          </span>
+        </a>
+      )}
+    </div>
+    <div class="sm:text-center">
+      <a href={podcastPath(l)} class="font-mono text-xs uppercase tracking-wider text-brand-400 transition hover:text-brand-300">
+        {t('episode.all')}
+      </a>
+    </div>
+    <div class="sm:text-right">
+      {older && (
+        <a href={episodePath(older.slug, l)} class="group block">
+          <span class="font-mono text-xs uppercase tracking-wider text-muted">{t('episode.older')} →</span>
+          <span class="mt-1 block font-display font-semibold text-on-background transition group-hover:text-brand-400">
+            {older.data.title[l]}
+          </span>
+        </a>
+      )}
+    </div>
+  </nav>
+</MainLayout>
+
+<script>
+  // The player is a cover until the visitor consents (CookieConsent announces
+  // it on <html data-consent> and with a `dg:consent` event) or presses play.
+  // Chapter and transcript links are plain `?t=<seconds>` links, so they work
+  // (and are crawlable) without JS; with JS they start the player at that
+  // moment instead of reloading, and a page opened at `?t=` starts there.
+  const player = document.querySelector<HTMLElement>('[data-episode-player]');
+  const requested = Number(new URLSearchParams(window.location.search).get('t'));
+  let start = Number.isInteger(requested) && requested > 0 ? requested : 0;
+
+  function embedSrc(seconds: number, autoplay: boolean): string | null {
+    const embed = player?.dataset.embed;
+    if (!embed) return null;
+    const url = new URL(embed);
+    if (seconds > 0) url.searchParams.set('start', String(seconds));
+    if (autoplay) url.searchParams.set('autoplay', '1');
+    return url.href;
+  }
+
+  /** Swap the cover for the iframe, or point the existing iframe elsewhere. */
+  function play(seconds: number, autoplay: boolean) {
+    if (!player || !Number.isInteger(seconds) || seconds < 0) return;
+    const src = embedSrc(seconds, autoplay);
+    if (!src) return;
+    const existing = player.querySelector('iframe');
+    if (existing) {
+      existing.src = src;
+      return;
+    }
+    // Built as a node: `src` is assigned as a value, never parsed as markup.
+    const iframe = document.createElement('iframe');
+    iframe.src = src;
+    iframe.title = player.dataset.title ?? 'YouTube';
+    iframe.className = 'absolute inset-0 h-full w-full border-0';
+    iframe.allow =
+      'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+    iframe.allowFullscreen = true;
+    iframe.referrerPolicy = 'strict-origin-when-cross-origin';
+    player.replaceChildren(iframe);
+  }
+
+  if (document.documentElement.dataset.consent === 'granted') play(start, false);
+  window.addEventListener('dg:consent', (event) => {
+    const granted = (event as CustomEvent<{ granted: boolean }>).detail?.granted;
+    if (granted && !player?.querySelector('iframe')) play(start, false);
+  });
+
+  document.addEventListener('click', (event) => {
+    const target = event.target as Element | null;
+    if (target?.closest('[data-episode-play]')) {
+      event.preventDefault();
+      play(start, true);
+      return;
+    }
+    const link = target?.closest<HTMLElement>('[data-seek]');
+    if (!link) return;
+    event.preventDefault();
+    start = Number(link.dataset.seek);
+    play(start, true);
+    history.replaceState(null, '', `?t=${start}`);
+    player?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+</script>

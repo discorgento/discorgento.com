@@ -1,0 +1,144 @@
+{
+  "youtubeId": "IkP1afuGgWs",
+  "number": 9,
+  "published": "2023-10-10T22:30:07Z",
+  "duration": 3739,
+  "language": "pt-BR",
+  "title": {
+    "pt-BR": "E-commerce headless com Raul Sakai",
+    "en": "Headless e-commerce with Raul Sakai",
+    "es": "E-commerce headless con Raul Sakai"
+  },
+  "hosts": ["jonatan-machado", "maria-ferro"],
+  "guests": ["raul-sakai"],
+  "chapters": [
+    {
+      "start": 0,
+      "title": {
+        "pt-BR": "Introdução",
+        "en": "Introduction",
+        "es": "Introducción"
+      }
+    },
+    {
+      "start": 50,
+      "title": {
+        "pt-BR": "Apresentação do convidado",
+        "en": "Guest introduction",
+        "es": "Presentación del invitado"
+      }
+    },
+    {
+      "start": 103,
+      "title": {
+        "pt-BR": "O que é Headless?",
+        "en": "What is headless?",
+        "es": "¿Qué es headless?"
+      }
+    },
+    {
+      "start": 270,
+      "title": {
+        "pt-BR": "Headless é melhor no sentido pro?",
+        "en": "Is headless better for developers?",
+        "es": "¿Headless es mejor para los devs?"
+      }
+    },
+    {
+      "start": 399,
+      "title": {
+        "pt-BR": "Separar o back com o front",
+        "en": "Splitting the back end from the front end",
+        "es": "Separar el back del front"
+      }
+    },
+    {
+      "start": 505,
+      "title": {
+        "pt-BR": "Fazer o mesmo projeto refazer",
+        "en": "Rebuilding the same project",
+        "es": "Rehacer el mismo proyecto"
+      }
+    },
+    {
+      "start": 740,
+      "title": {
+        "pt-BR": "Módulos do Magento",
+        "en": "Magento modules",
+        "es": "Módulos de Magento"
+      }
+    },
+    {
+      "start": 958,
+      "title": {
+        "pt-BR": "Quando usar ou não usar o Headless",
+        "en": "When to use headless and when not to",
+        "es": "Cuándo usar o no usar headless"
+      }
+    },
+    {
+      "start": 1123,
+      "title": {
+        "pt-BR": "Performance do Headless",
+        "en": "Headless performance",
+        "es": "Rendimiento del headless"
+      }
+    },
+    {
+      "start": 1307,
+      "title": {
+        "pt-BR": "Como começou na tecnologia",
+        "en": "How he got started in tech",
+        "es": "Cómo empezó en la tecnología"
+      }
+    },
+    {
+      "start": 2040,
+      "title": {
+        "pt-BR": "Módulos prontos",
+        "en": "Ready-made modules",
+        "es": "Módulos listos"
+      }
+    },
+    {
+      "start": 2425,
+      "title": {
+        "pt-BR": "Atualizações",
+        "en": "Updates",
+        "es": "Actualizaciones"
+      }
+    },
+    {
+      "start": 2890,
+      "title": {
+        "pt-BR": "Cache",
+        "en": "Caching",
+        "es": "Caché"
+      }
+    },
+    {
+      "start": 3010,
+      "title": {
+        "pt-BR": "O que você faz ou não te atinge?",
+        "en": "Dealing with anxiety",
+        "es": "Cómo lidia con la ansiedad"
+      }
+    },
+    {
+      "start": 3230,
+      "title": {
+        "pt-BR": "Infra",
+        "en": "Infrastructure",
+        "es": "Infraestructura"
+      }
+    },
+    {
+      "start": 3380,
+      "title": {
+        "pt-BR": "Dicas finais",
+        "en": "Final tips",
+        "es": "Consejos finales"
+      }
+    }
+  ]
+}
