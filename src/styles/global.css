@@ -6,7 +6,7 @@
    latin subset against 67 kB here. Keep MainLayout's preload on the same file. */
 @import "@fontsource-variable/fraunces/opsz.css";
 /* Brand wordmark face, see --font-brand below. */
-@import "@fontsource-variable/outfit";
+@import "@fontsource-variable/geist-mono";
 @import "tailwindcss";
 
 /*
@@ -79,13 +79,11 @@
   --font-mono:
     "JetBrains Mono Variable", ui-monospace, SFMono-Regular, Menlo, monospace;
 
-  /* Brand wordmark face, used only on the "discorgento" lockup (masthead and
-     nav), never on running copy. TypoGraphica v3.0 is the intended face, but it
-     is free for personal use only — the dafont build is a demo and the ffonts
-     copy is unlicensed, so neither can be self-hosted here. Outfit is the
-     stand-in: same geometric skeleton, emboldened weight, sharp diagonal
-     terminals. Swap the first family name when a licensed webfont arrives. */
-  --font-brand: "Outfit Variable", var(--font-display);
+  /* Brand wordmark face, used only on the "discorgento" lockup (masthead, nav
+     and footer), never on running copy. Geist Mono 700 (SIL OFL), paired with
+     the terminal-style mark in public/img/logo.svg and the .brand-cursor block.
+     The previous Outfit wordmark and round mark live on as logo-legacy.svg. */
+  --font-brand: "Geist Mono Variable", var(--font-mono);
 
   /* ---- Glow (sparingly: card hover, nav dropdown) ---- */
   --shadow-glow-card:
@@ -236,6 +234,29 @@ body::after {
   text-transform: uppercase;
   letter-spacing: 0.2em;
   color: var(--color-muted);
+}
+
+/* ---- Brand cursor: the orange block that closes the "discorgento" wordmark ----
+   Same glyph as the cursor in the logo mark, so the lockup reads as one prompt.
+   Shared by the masthead, nav and footer lockups; always aria-hidden.
+   Sized in em so it follows each lockup's font-size; sits on the baseline. */
+.brand-cursor {
+  display: inline-block;
+  width: 0.34em;
+  height: 0.14em;
+  margin-left: 0.1em;
+  background: var(--color-brand-500);
+  animation: brand-cursor-blink 1.1s steps(1) infinite;
+}
+@keyframes brand-cursor-blink {
+  50% {
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .brand-cursor {
+    animation: none;
+  }
 }
 
 /* ---- Mobile tap targets (WCAG 2.5.8 / Apple 44px) ----
