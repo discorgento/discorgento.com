@@ -1,6 +1,6 @@
 // Generates the social share card served as og:image.
 //
-// Run it after changing the brand palette, the logo or the wordmark:
+// Runs as a pre-build step of `npm run build`; by hand:
 //
 //   node scripts/gen-og.mjs
 //
@@ -9,75 +9,32 @@
 // ratio every platform crops to), and small enough that a preview does not cost
 // half a megabyte on the reader's connection.
 //
-// The previous og:image was public/img/bg-website-fhd.png: 1920x1080, 581 kB,
-// and a near-flat dark texture with no text or logo in it — sharing a link
-// produced an almost-black rectangle. Most of that weight was PNG failing to
-// compress film grain, so this composites the same texture as a backdrop,
-// darkens it, and lays the mark and wordmark on top.
+// The design lives in scripts/assets/og-card.svg: the same layout as the
+// LinkedIn banners (halftone ground, lockup, "we want YOU for our community!",
+// the domain and the PODCAST · COMUNIDADE · TECNOLOGIA eyebrow). Every glyph in
+// it is already a path. sharp renders SVG with librsvg, which ignores
+// @font-face data URIs and falls back to a system font, so live <text> would
+// ship as DejaVu and differ between this machine and CI. Outlining once keeps
+// the output identical everywhere, at the cost of the copy not being editable
+// as text: to change a word, regenerate the SVG from the brand fonts (Fraunces
+// 600, Geist Mono) rather than hand-editing paths.
 //
-// The texture lives in scripts/assets/, not public/: it is a build input only,
-// and anything under public/ is copied into dist/client and deployed.
+// The SVG lives in scripts/assets/, not public/: it is a build input only, and
+// anything under public/ is copied into dist/client and deployed.
 
 import { readFileSync, renameSync } from 'node:fs';
 import { resolve } from 'node:path';
 import sharp from 'sharp';
 
 const ROOT = process.cwd();
-const TEXTURE = resolve(ROOT, 'scripts/assets/og-texture.png');
-const LOGO = resolve(ROOT, 'public/img/logo.svg');
+const CARD = resolve(ROOT, 'scripts/assets/og-card.svg');
 const OUT = resolve(ROOT, 'public/img/og.jpg');
 
 const W = 1200;
 const H = 630;
 
-// From src/styles/global.css @theme. Kept as literals because this runs outside
-// Vite and cannot read the stylesheet.
-const BG = '#0e0c0a';
-const BRAND = '#ec6737'; // --color-brand-500, official primary
-const INK = '#fde8e0'; // --color-brand-100
-
-const font = (path) =>
-  readFileSync(
-    resolve(ROOT, 'node_modules/@fontsource-variable', path),
-  ).toString('base64');
-
-const BRAND_FONT = font('geist-mono/files/geist-mono-latin-wght-normal.woff2');
-const MONO = font(
-  'jetbrains-mono/files/jetbrains-mono-latin-wght-normal.woff2',
-);
-const logoData = `data:image/svg+xml;base64,${readFileSync(LOGO).toString('base64')}`;
-
-const overlay = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}">
-  <style>
-    @font-face{font-family:Brand;src:url(data:font/woff2;base64,${BRAND_FONT}) format("woff2");font-weight:100 900}
-    @font-face{font-family:Mono;src:url(data:font/woff2;base64,${MONO}) format("woff2");font-weight:100 800}
-  </style>
-  <rect width="${W}" height="${H}" fill="${BG}" opacity="0.55"/>
-  <rect x="0" y="0" width="${W}" height="10" fill="${BRAND}"/>
-  <rect x="0" y="${H - 10}" width="${W}" height="10" fill="${BRAND}"/>
-  <image href="${logoData}" x="96" y="185" width="260" height="260"/>
-  <text x="410" y="300" font-family="Brand" font-weight="700" font-size="96"
-        letter-spacing="-6.7" fill="${INK}">discorgento</text>
-  <rect x="982" y="287" width="33" height="13" fill="${BRAND}"/>
-  <text x="414" y="368" font-family="Mono" font-weight="500" font-size="30"
-        letter-spacing="7" fill="${BRAND}">DISCORGENTO.COM</text>
-  <rect x="410" y="404" width="560" height="3" fill="${BRAND}" opacity="0.45"/>
-  <text x="414" y="462" font-family="Mono" font-weight="400" font-size="26"
-        letter-spacing="2" fill="${INK}" opacity="0.72">MAGENTO · PHP · JAVASCRIPT · E-COMMERCE</text>
-</svg>`;
-
 const main = async () => {
-  const backdrop = await sharp(TEXTURE)
-    .resize(W, H, { fit: 'cover', position: 'centre' })
-    // Grain at full strength is what made the PNG 581 kB. Keep the texture as a
-    // hint, not as the subject.
-    .modulate({ brightness: 0.5, saturation: 0.85 })
-    .modulate({ brightness: 0.92 })
-    .toBuffer();
-
-  await sharp(backdrop)
-    .composite([{ input: Buffer.from(overlay), top: 0, left: 0 }])
-    .flatten({ background: BG })
+  await sharp(readFileSync(CARD))
     .jpeg({
       quality: 88,
       progressive: true,
