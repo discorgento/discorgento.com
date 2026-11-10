@@ -11,21 +11,21 @@
 //   DISCORD_WEBHOOK_URL='https://discord.com/api/webhooks/…' \
 //     node --import ./scripts/tilde-alias.mjs scripts/substack-discord.mjs
 //
-// Its state file (.github/substack-discord-state.json) is its own: the Worker
-// keeps the live state in a Durable Object, so this script does not know what
-// has already been announced automatically. Run it deliberately, not on a timer.
+// Its state is the Worker's: before announcing, it asks the Worker's read-only
+// status endpoint what was announced last, so a manual run does not repeat what
+// the cron already posted. There is no state file in git — the live state is a
+// Durable Object, and this script never writes it (it cannot, and should not:
+// the status endpoint is deliberately read-only). Run it deliberately, not on a
+// timer, and at most once per post.
 //
 // The feed is read with fetchSubstackPosts (~/lib/substack) — the same code the
-// site's LatestEdition island uses. State is written after every successful
-// post, not once at the end: if post 2 of 3 fails, the next run resumes from
-// post 2 instead of re-announcing post 1. A missing state file announces only
-// the newest post — the bootstrap run must not dump the whole feed.
+// site's LatestEdition island uses. When the Worker is unreachable the diff has
+// no anchor, so only the newest post is announced — the bootstrap rule must not
+// dump the whole feed.
 //
 // Exit codes: 0 when there is nothing to announce or the feed is down, 1 when
 // the webhook refuses a post — that is the failure worth seeing.
 
-import { readFile, writeFile } from 'node:fs/promises';
-import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { fetchSubstackPosts } from '~/lib/substack';
 import {
@@ -36,25 +36,29 @@ import {
 // Re-exported for previews that import this module without running it.
 export { buildAnnouncement } from '../workers/announcer-cron/src/announce.js';
 
-const STATE_PATH = resolve(
-  process.cwd(),
-  '.github/substack-discord-state.json',
-);
+// The Worker's read-only status endpoint: the single source of truth for what
+// has already been announced. Override it when the Worker is renamed.
+const STATUS_URL =
+  process.env.ANNOUNCER_STATUS_URL ??
+  'https://discorgento-announcer-cron.jonatanaxe.workers.dev/';
 const WEBHOOK_URL = process.env.DISCORD_WEBHOOK_URL;
 
 const sleep = (ms) => new Promise((done) => setTimeout(done, ms));
 
+/** What the Worker announced last, or null when it cannot be reached. */
 async function readState() {
   try {
-    return JSON.parse(await readFile(STATE_PATH, 'utf8'));
+    const res = await fetch(STATUS_URL, {
+      headers: { accept: 'application/json' },
+      signal: AbortSignal.timeout(10_000),
+    });
+    if (!res.ok) return null;
+    const { lastAnnounced, lastAnnouncedAt } = await res.json();
+    if (!lastAnnounced) return null;
+    return { announced: lastAnnounced, announcedAt: lastAnnouncedAt };
   } catch {
-    return null; // absent or unreadable state: announce from scratch
+    return null; // unreachable: fall back to the bootstrap rule
   }
-}
-
-async function writeState(url) {
-  const state = { announced: url, announcedAt: new Date().toISOString() };
-  await writeFile(STATE_PATH, `${JSON.stringify(state, null, 2)}\n`, 'utf8');
 }
 
 async function postToDiscord(post) {
@@ -119,10 +123,14 @@ async function main() {
       console.error(`[substack-discord] giving up on: ${post.url}`);
       process.exit(1);
     }
-    await writeState(post.url);
     console.log(`[substack-discord] announced: ${post.title}`);
     if (i < fresh.length - 1) await sleep(1000);
   }
+  // The Worker's state is untouched: it will still think the previous post was
+  // the last one, so do not run this twice for the same post.
+  console.log(
+    '[substack-discord] done — the cron will catch up on its own state at the next tick',
+  );
 }
 
 // Run only when executed directly (`node scripts/substack-discord.mjs`).
