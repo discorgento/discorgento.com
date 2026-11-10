@@ -10,10 +10,18 @@ name: Substack → Discord
 
 on:
   schedule:
-    # TEMPORARY dense cadence: the dispatcher ignored every window so far
-    # (18:17, 19:17, 19:36 — zero scheduled runs repo-wide), so we probe it
-    # every 10 minutes until one fires, then revert to a single hourly minute.
-    - cron: "4,14,24,34,44,54 * * * *"
+    # Hourly, at :17 — off the top of the hour, where every cron in the world
+    # runs. Do not "fix" a missing run by densifying this: the cron is not what
+    # decides when the workflow fires, GitHub's schedule dispatcher is, and it
+    # is measurably late here (ouija's weekly job, nominal 09:00 UTC, actually
+    # ran at 15:34, 18:56 and 19:16 — 6 to 10 h behind; this workflow sat for
+    # its first two hours with zero runs on a 10-minute probe). A dense cadence
+    # only produces a burst of duplicates once the dispatcher catches up, which
+    # the concurrency group then queues one after another. If this workflow
+    # still shows no scheduled run after a day, the dispatcher is the problem
+    # and the fix is an external clock calling workflow_dispatch — not another
+    # cron expression.
+    - cron: "17 * * * *"
   workflow_dispatch:
 
 permissions:
