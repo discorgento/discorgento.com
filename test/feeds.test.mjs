@@ -50,11 +50,15 @@ const SUBSTACK_FEED = `<rss><channel>
   <title>discorgento</title>
   <item>
     <title><![CDATA[IA no dia a dia: o que vale (& o que não)]]></title>
+    <description><![CDATA[Subt&#237;tulo do post]]></description>
     <link>https://discorgento.substack.com/p/ia</link>
     <pubDate>Mon, 21 Sep 2026 12:00:00 GMT</pubDate>
+    <dc:creator><![CDATA[jonatanaxe]]></dc:creator>
+    <enclosure url="https://substackcdn.com/image/fetch/cover.png" length="0" type="image/jpeg"/>
   </item>
   <item>
     <title>Escaped &amp; plain</title>
+    <description>Estamos t&#227;o ocupados</description>
     <link>https://discorgento.substack.com/p/plain</link>
     <pubDate>Mon, 14 Sep 2026 12:00:00 GMT</pubDate>
   </item>
@@ -69,6 +73,17 @@ test('parseSubstackFeed reads CDATA and escaped titles', () => {
   assert.equal(posts[0]?.title, 'IA no dia a dia: o que vale (& o que não)');
   assert.equal(posts[0]?.url, 'https://discorgento.substack.com/p/ia');
   assert.equal(posts[1]?.title, 'Escaped & plain');
+});
+
+test('parseSubstackFeed reads teaser, byline and cover', () => {
+  const [first, second] = parseSubstackFeed(SUBSTACK_FEED);
+  assert.equal(first?.description, 'Subtítulo do post');
+  assert.equal(first?.creator, 'jonatanaxe');
+  assert.equal(first?.image, 'https://substackcdn.com/image/fetch/cover.png');
+  // Optional bits default to '' when the feed carries them for no item.
+  assert.equal(second?.description, 'Estamos tão ocupados');
+  assert.equal(second?.creator, '');
+  assert.equal(second?.image, '');
 });
 
 test('numberFromTitle extracts the leading number', () => {

@@ -1,0 +1,57 @@
+name: Substack → Discord
+
+# Announces new Discorgento Substack posts in the community Discord's news
+# channel, through the channel webhook (DISCORD_WEBHOOK_URL repo secret — the
+# repo is public, so the URL must never live in code). The repo being public
+# also makes the scheduled minutes free and unlimited.
+#
+# The state commit this workflow pushes carries [skip ci], so it never
+# re-triggers CI/CD — the site does not change when a post is announced.
+
+on:
+  schedule:
+    # Hourly, offset from the top of the hour: GitHub queues a flood of :00
+    # crons first, so an off-minute schedule fires closer to its time.
+    - cron: "17 * * * *"
+  workflow_dispatch:
+
+permissions:
+  # The announcement state is committed back to the branch that ran.
+  contents: write
+
+# Queue, never overlap: two concurrent runs would race on the state file and
+# could announce the same post twice.
+concurrency:
+  group: substack-discord
+  cancel-in-progress: false
+
+jobs:
+  announce:
+    name: Announce new Substack posts
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+      # No dependencies: the script only uses Node builtins and src/lib,
+      # loaded through the `~/` alias hook. It exits 0 on an unreachable
+      # feed (the next hourly run retries) and 1 on a webhook refusal.
+      - run: node --import ./scripts/tilde-alias.mjs scripts/substack-discord.mjs
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+      # Runs even when the script failed, so already-announced posts stay
+      # marked — without this a mid-list failure would replay them next hour.
+      # The script leaves the state file behind whenever the feed is
+      # readable, so the bare `git add` is safe; `|| true` covers the rare
+      # unreadable-feed run.
+      - name: Commit the announcement state
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .github/substack-discord-state.json || true
+          if ! git diff --cached --quiet; then
+            git commit -m "chore(discord): mark announced Substack posts [skip ci]"
+            git push
+          fi
