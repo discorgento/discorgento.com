@@ -11,8 +11,9 @@ name: Substack → Discord
 on:
   schedule:
     # Hourly, offset from the top of the hour: GitHub queues a flood of :00
-    # crons first, so an off-minute schedule fires closer to its time.
-    - cron: "17 * * * *"
+    # crons first, so an off-minute schedule fires closer to its time. Editing
+    # this file also rebuilds the schedule entry if the dispatcher skips it.
+    - cron: "36 * * * *"
   workflow_dispatch:
 
 permissions:
