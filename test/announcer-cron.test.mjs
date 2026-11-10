@@ -172,6 +172,18 @@ test('selectNewPosts announces nothing when the newest is already announced', ()
   );
 });
 
+test('selectNewPosts announces both when two posts landed between ticks', () => {
+  // Two collaborators publishing before the same tick must not lose one.
+  const fresh = selectNewPosts(POSTS, {
+    announced: POSTS[2].url,
+    announcedAt: '2026-10-26T12:05:00.000Z',
+  });
+  assert.deepEqual(
+    fresh.map((post) => post.title),
+    ['Middle', 'Newest'], // oldest first: chronological order in the channel
+  );
+});
+
 test('selectNewPosts falls back to the clock when the post fell off the feed', () => {
   // The feed window rolled past the announced post, so the url is not there —
   // publish dates are the only remaining signal.
