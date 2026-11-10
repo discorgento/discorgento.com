@@ -1,13 +1,16 @@
 // Fetches the latest posts from the discorgento Substack publication RSS feed.
 // Public feed, no auth. Degrades to [] when it fails.
 //
-// Three callers with different clocks:
+// Two callers with different clocks:
 //   - the LatestEdition server island reads it at request time, so a new post shows
 //     up without a redeploy. That is the point of the island.
-//   - scripts/substack-discord.mjs (run hourly by the substack-discord workflow
-//     in GitHub Actions) reads it to announce new posts on Discord.
-//   - nothing reads it at build time any more; the page ships the island, not the
-//     post, so there is no committed snapshot to keep current.
+//   - scripts/substack-discord.mjs (the manual/emergency announcer) reads it.
+//     The automatic announcer is workers/announcer-cron, which carries its own
+//     smaller copy of this parser (src/feed.js) because it is bundled on its own,
+//     without the `~/` alias; test/announcer-cron.test.mjs pins the two together.
+//
+// Nothing reads it at build time any more: the page ships the island, not the
+// post, so there is no committed snapshot to keep current.
 //
 // Timeout, retries and edge caching live in `~/lib/fetch` (`fetchWithRetry`),
 // shared with youtube.ts and discord.ts so the three cannot drift apart.
@@ -66,7 +69,7 @@ export function parseSubstackFeed(text: string): SubstackPost[] {
 /**
  * Read and parse the feed, or `null` when it is unreachable after retries.
  * Read by the LatestEdition island (request time) and by
- * scripts/substack-discord.mjs (GitHub Actions, hourly).
+ * scripts/substack-discord.mjs (the manual announcer).
  */
 export async function fetchSubstackPosts(): Promise<SubstackPost[] | null> {
   const res = await fetchWithRetry(FEED_URL, {

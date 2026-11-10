@@ -1,91 +1,148 @@
-// Punctual clock for the Substack → Discord announcer.
+// The Substack → Discord announcer, run entirely on Cloudflare.
 //
-// The announcer itself stays a GitHub Actions workflow: the announcement logic
-// (scripts/substack-discord.mjs) and the announced-post state
-// (.github/substack-discord-state.json) stay in the repo, versioned, with the
-// state commit the workflow already pushes. What does NOT work is GitHub's own
-// `schedule` dispatcher: it has no SLA (delays are documented, and queued runs
-// can be dropped under load) and in this org it was measured 6–10 hours behind
-// the nominal minute — ouija's weekly job, nominal 09:00 UTC, actually ran at
-// 15:34, 18:56 and 19:16. For "tell the community the post is live" that is
-// useless: the announcement has to leave close to the hour it was asked for.
+// Why it lives here and not in GitHub Actions: GitHub's `schedule` dispatcher
+// has no SLA (delays are documented, queued runs can be dropped) and in this
+// org it was measured 6–10 hours behind the nominal minute, with zero runs for
+// a fresh workflow. Driving it from a cron Worker needed a PAT, which needed a
+// secret, which needed a repo the PAT could see — three chances to fail before
+// the first announcement. Here there is no credential at all: the Worker reads
+// the public feed and posts through the Discord webhook, which is already a
+// repo secret that CI syncs in.
 //
-// So this Worker holds the timer and calls workflow_dispatch. It runs on a
-// Cloudflare cron trigger, which fires on the minute.
-//
-// This Worker does exactly one thing: POST workflow_dispatch.
+// State (the last announced post) lives in a Durable Object: it survives
+// redeploys, needs no namespace to be created by hand, and is what keeps a post
+// from being announced twice.
 
-const GITHUB_API = 'https://api.github.com';
+import { DurableObject } from 'cloudflare:workers';
+import { discordMessage, selectNewPosts } from './announce.js';
+import { fetchPosts } from './feed.js';
+
+const STATE_NAME = 'substack';
+const WEBHOOK_ATTEMPTS = 3;
+
+export class AnnouncerState extends DurableObject {
+  /** @returns {Promise<{announced: string, announcedAt: string} | null>} */
+  async read() {
+    return (await this.ctx.storage.get('announced')) ?? null;
+  }
+
+  /** @param {{announced: string, announcedAt: string}} state */
+  async write(state) {
+    await this.ctx.storage.put('announced', state);
+  }
+}
+
+const sleep = (ms) => new Promise((done) => setTimeout(done, ms));
 
 /**
- * @typedef {object} Env
- * @property {string} DISPATCH_TOKEN Fine-grained PAT, Actions: write on the repo.
- * @property {string} GITHUB_REPO `owner/repo` of the announcer workflow.
- * @property {string} GITHUB_WORKFLOW Workflow file name or id.
- * @property {string} GITHUB_REF Branch the workflow runs on.
+ * POST the announcement. Same policy as the rest of the repo: a 4xx other than
+ * 429 is final, everything else backs off and retries.
+ * @param {string} webhook
+ * @param {{title: string, url: string, creator: string}} post
  */
+async function postToDiscord(webhook, post) {
+  const body = JSON.stringify(discordMessage(post));
+
+  for (let attempt = 1; attempt <= WEBHOOK_ATTEMPTS; attempt++) {
+    try {
+      const response = await fetch(webhook, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body,
+        signal: AbortSignal.timeout(10_000),
+      });
+      if (response.ok) return true;
+      if (response.status < 500 && response.status !== 429) {
+        throw new Error(
+          `webhook refused with ${response.status}: ${await response.text()}`,
+        );
+      }
+      console.warn(
+        `[announcer] webhook returned ${response.status}, attempt ${attempt}/${WEBHOOK_ATTEMPTS}`,
+      );
+    } catch (error) {
+      // A refusal is not worth retrying; a network error is.
+      if (
+        error instanceof Error &&
+        error.message.startsWith('webhook refused')
+      ) {
+        throw error;
+      }
+      console.warn(
+        `[announcer] webhook failed on attempt ${attempt}/${WEBHOOK_ATTEMPTS}:`,
+        error instanceof Error ? error.message : error,
+      );
+    }
+    if (attempt < WEBHOOK_ATTEMPTS) await sleep(1000 * attempt);
+  }
+
+  return false;
+}
 
 /**
- * Asks GitHub to run the announcer workflow.
+ * One announcing pass. Throws only when something is genuinely wrong (no
+ * webhook configured, or Discord refused) so the cron invocation shows up as
+ * failed in the Worker's logs instead of going quiet.
  * @param {Env} env
- * @returns {Promise<void>}
  */
-async function dispatchAnnouncer(env) {
-  const endpoint = `${GITHUB_API}/repos/${env.GITHUB_REPO}/actions/workflows/${env.GITHUB_WORKFLOW}/dispatches`;
+async function announce(env) {
+  if (!env.DISCORD_WEBHOOK_URL) {
+    throw new Error('DISCORD_WEBHOOK_URL is not set on the Worker');
+  }
 
-  const response = await fetch(endpoint, {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${env.DISPATCH_TOKEN}`,
-      Accept: 'application/vnd.github+json',
-      'X-GitHub-Api-Version': '2022-11-28',
-      'Content-Type': 'application/json',
-      // GitHub rejects requests without a User-Agent.
-      'User-Agent': 'discorgento-announcer-cron',
-    },
-    body: JSON.stringify({ ref: env.GITHUB_REF }),
-  });
+  const posts = await fetchPosts();
+  // Unreachable or empty feed: the next tick retries, nothing to announce.
+  if (!posts?.length) return;
 
-  // 204 No Content is the only success. Anything else has to reach the logs —
-  // a silent failure here means the announcements simply stop.
-  if (response.status !== 204) {
-    throw new Error(
-      `workflow_dispatch failed: ${response.status} ${await response.text()}`,
-    );
+  const state = env.STATE.get(env.STATE.idFromName(STATE_NAME));
+  const fresh = selectNewPosts(posts, await state.read());
+  if (!fresh.length) return;
+
+  for (const post of fresh) {
+    if (!(await postToDiscord(env.DISCORD_WEBHOOK_URL, post))) {
+      throw new Error(`giving up on ${post.url}`);
+    }
+    // Written after every successful post, so a mid-list failure resumes
+    // instead of replaying.
+    await state.write({
+      announced: post.url,
+      announcedAt: new Date().toISOString(),
+    });
+    console.log(`[announcer] announced: ${post.title}`);
   }
 }
 
 export default {
   /**
-   * Cron entry point. The dispatch is awaited (not handed to waitUntil) so a
-   * failure surfaces as a failed invocation in the Cloudflare logs.
+   * Cron entry point. Awaited (not handed to waitUntil) so a failure surfaces
+   * as a failed invocation.
    * @param {ScheduledController} _controller
    * @param {Env} env
    */
   async scheduled(_controller, env) {
-    await dispatchAnnouncer(env);
+    await announce(env);
   },
 
   /**
-   * Manual trigger, for when the cron is not the thing you want to wait for:
-   *   curl -X POST https://<worker>/ -H "Authorization: Bearer $DISPATCH_TOKEN"
-   * The token is the same PAT, so this is not an open endpoint.
-   * @param {Request} request
+   * Read-only status: what was announced last and what the feed holds now.
+   * It never announces, so it needs no token to be safe to call.
+   * @param {Request} _request
    * @param {Env} env
    */
-  async fetch(request, env) {
-    const token = request.headers
-      .get('authorization')
-      ?.replace(/^Bearer\s+/i, '');
-    if (!token || token !== env.DISPATCH_TOKEN) {
-      return new Response('Not found', { status: 404 });
-    }
-
-    await dispatchAnnouncer(env);
+  async fetch(_request, env) {
+    const state = await env.STATE.get(env.STATE.idFromName(STATE_NAME)).read();
+    const posts = await fetchPosts();
     return Response.json({
-      dispatched: true,
-      workflow: env.GITHUB_WORKFLOW,
-      ref: env.GITHUB_REF,
+      lastAnnounced: state?.announced ?? null,
+      lastAnnouncedAt: state?.announcedAt ?? null,
+      feedPosts: posts?.length ?? null,
+      newest: posts?.[0]?.url ?? null,
     });
   },
 };
+
+/**
+ * @typedef {object} Env
+ * @property {string} DISCORD_WEBHOOK_URL Discord channel webhook (secret).
+ * @property {DurableObjectNamespace} STATE Announcement state.
+ */

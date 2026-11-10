@@ -1,29 +1,29 @@
 {
-  // The announcer's clock. GitHub's schedule dispatcher has no SLA (measured
-  // 6–10 h late in this org, and zero runs for a fresh workflow), so this
-  // Worker holds the timer and calls workflow_dispatch on the minute. The
-  // announcement itself stays in .github/workflows/substack-discord.yml +
-  // scripts/substack-discord.mjs.
+  // The Substack → Discord announcer, run entirely on Cloudflare: a cron
+  // trigger reads the public feed and posts through the Discord webhook. No
+  // PAT, no GitHub credential — see src/index.js for why it is not in Actions.
   //
-  // Deployed by .github/workflows/announcer-cron.yml, which also syncs the
-  // ANNOUNCER_DISPATCH_TOKEN repo secret into the Worker as DISPATCH_TOKEN.
+  // Deployed by hand, from the repo root — there is no pipeline for it:
+  //   npx wrangler deploy --config workers/announcer-cron/wrangler.jsonc
+  // and the one secret it needs is set once with:
+  //   npx wrangler secret put DISCORD_WEBHOOK_URL --config workers/announcer-cron/wrangler.jsonc
   "name": "discorgento-announcer-cron",
   "main": "src/index.js",
   "compatibility_date": "2026-09-09",
   // No routes and no assets on purpose: this Worker is invoked by its cron
-  // trigger, never by the site's traffic.
+  // trigger, never by the site's traffic. The fetch handler only reports
+  // status.
   "triggers": {
-    // Every 10 minutes: the announcement leaves within 10 minutes of a post
-    // appearing in the feed. The cron is the only thing deciding this now, so
-    // the cadence is a product decision, not a workaround — raise it to
-    // "17 * * * *" if hourly is enough.
+    // Every 10 minutes: an announcement leaves within 10 minutes of the post
+    // appearing in the feed. Raise it to "17 * * * *" if hourly is enough.
     "crons": ["*/10 * * * *"]
   },
-  "vars": {
-    "GITHUB_REPO": "discorgento/discorgento.com",
-    "GITHUB_WORKFLOW": "substack-discord.yml",
-    "GITHUB_REF": "main"
+  // The last announced post. A Durable Object needs no namespace created by
+  // hand — the migration below registers the class on deploy.
+  "durable_objects": {
+    "bindings": [{ "name": "STATE", "class_name": "AnnouncerState" }]
   },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["AnnouncerState"] }],
   "observability": {
     "enabled": true
   }

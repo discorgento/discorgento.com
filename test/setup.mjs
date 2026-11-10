@@ -28,6 +28,9 @@ const VIRTUAL = {
     'test/fixtures/episode-index.mjs',
     ROOT,
   ).href,
+  // Only exists inside workerd; the announcer cron Worker is imported in tests.
+  'cloudflare:workers': new URL('test/fixtures/cloudflare-workers.mjs', ROOT)
+    .href,
 };
 
 registerHooks({

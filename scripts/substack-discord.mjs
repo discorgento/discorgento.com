@@ -1,38 +1,46 @@
 #!/usr/bin/env node
 // Announces new Discorgento Substack posts in the community Discord's news
-// channel, through the channel webhook. Runs hourly from
-// .github/workflows/substack-discord.yml — the repo is public, so the GitHub
-// Actions minutes are free and unlimited. Manual run, from the repo root:
+// channel, through the channel webhook.
+//
+// The AUTOMATIC path is not this script any more: it is workers/announcer-cron,
+// a Cloudflare cron Worker that reads the same feed and posts the same message
+// (both import the message format from workers/announcer-cron/src/announce.js).
+// This script is the manual/emergency path — useful for a local preview, and for
+// announcing when the Worker is being changed:
 //
 //   DISCORD_WEBHOOK_URL='https://discord.com/api/webhooks/…' \
 //     node --import ./scripts/tilde-alias.mjs scripts/substack-discord.mjs
 //
-// The feed is read with fetchSubstackPosts (~/lib/substack) — the same code
-// the site's LatestEdition island uses. What has already been announced lives
-// in .github/substack-discord-state.json, committed back by the workflow with
-// [skip ci], so the state commit never triggers the site deploy. State is
-// written after every successful post, not once at the end: if post 2 of 3
-// fails, the next run resumes from post 2 instead of re-announcing post 1.
-// A missing state file announces only the newest post — the bootstrap run
-// must not dump the whole feed into the channel.
+// Its state file (.github/substack-discord-state.json) is its own: the Worker
+// keeps the live state in a Durable Object, so this script does not know what
+// has already been announced automatically. Run it deliberately, not on a timer.
 //
-// Exit codes: 0 when there is nothing to announce or the feed is down (the
-// next hourly run retries), 1 when the webhook refuses a post — that is the
-// failure worth seeing in the Actions log.
+// The feed is read with fetchSubstackPosts (~/lib/substack) — the same code the
+// site's LatestEdition island uses. State is written after every successful
+// post, not once at the end: if post 2 of 3 fails, the next run resumes from
+// post 2 instead of re-announcing post 1. A missing state file announces only
+// the newest post — the bootstrap run must not dump the whole feed.
+//
+// Exit codes: 0 when there is nothing to announce or the feed is down, 1 when
+// the webhook refuses a post — that is the failure worth seeing.
 
 import { readFile, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { fetchSubstackPosts } from '~/lib/substack';
+import {
+  discordMessage,
+  selectNewPosts,
+} from '../workers/announcer-cron/src/announce.js';
+
+// Re-exported for previews that import this module without running it.
+export { buildAnnouncement } from '../workers/announcer-cron/src/announce.js';
 
 const STATE_PATH = resolve(
   process.cwd(),
   '.github/substack-discord-state.json',
 );
 const WEBHOOK_URL = process.env.DISCORD_WEBHOOK_URL;
-// The webhook speaks for the community: brand name and brand avatar.
-const AVATAR_URL =
-  'https://discorgento.com/img/logo-avatar-transparent-1024.png';
 
 const sleep = (ms) => new Promise((done) => setTimeout(done, ms));
 
@@ -47,93 +55,6 @@ async function readState() {
 async function writeState(url) {
   const state = { announced: url, announcedAt: new Date().toISOString() };
   await writeFile(STATE_PATH, `${JSON.stringify(state, null, 2)}\n`, 'utf8');
-}
-
-/** The posts left to announce, oldest first (the feed is newest-first). */
-function selectNewPosts(posts, state) {
-  if (!state?.announced) return posts.slice(0, 1); // bootstrap: newest only
-  const index = posts.findIndex((post) => post.url === state.announced);
-  if (index === -1) {
-    // The announced post fell off the feed window; fall back to the clock.
-    const cutoff = Date.parse(state.announcedAt ?? '') || 0;
-    return posts
-      .filter((post) => Date.parse(post.published) > cutoff)
-      .reverse();
-  }
-  return posts.slice(0, index).reverse();
-}
-
-// Credit ping in the community's announcement voice (the same style as the
-// episode announcements: 🎥 YouTube / 🎧 Spotify / special thanks). A plain
-// "@Name" reads naturally but does not ping — a real mention needs the
-// author's Discord user id as `<@id>`; add a map here when the ids are known.
-const AUTHORS_DISCORD_IDS = {
-  // e.g. 'jonatanaxe': '<@123456789012345678>',
-};
-
-// The three fixed lines of the announcement vary per post — same house
-// format, different words every edition. Each slot is picked from a slice of
-// the URL hash: deterministic, so a resumed run never flips the combo
-// halfway, and the slices keep the three lines from moving in lockstep.
-const HEADER_VARIANTS = [
-  '@everyone Nova Edição da Newsletter Disponível! 🚀',
-  '@everyone Saiu edição nova da newsletter! 🚀',
-  '@everyone Tem texto novo no Substack! 🚀',
-  '@everyone A newsletter chegou com tudo! 🚀',
-  '@everyone Edição fresquinha no ar! 🚀',
-];
-
-const LINK_VARIANTS = [
-  '📬 Leia no Substack: {url}',
-  '📬 Ler agora no Substack: {url}',
-  '📬 Confere a edição completa: {url}',
-  '📬 A edição completa tá aqui: {url}',
-  '📬 Bora ler no Substack: {url}',
-];
-
-const CREDIT_VARIANTS = [
-  'Escrito por {who}! Confira agora! 👏🔥😄',
-  'Escrito por {who}! Vem ler! 👏🔥😄',
-  'Autoria de {who}! Bora conferir! 👏🔥😄',
-  'Saiu da mente (e do teclado) de {who}! 👏🔥😄',
-  'Créditos ao {who}! Vale a leitura! 👏🔥😄',
-];
-
-function hashUrl(url) {
-  let hash = 5381;
-  for (const ch of url) hash = ((hash << 5) + hash + ch.charCodeAt(0)) >>> 0;
-  return hash;
-}
-
-/** The announcement text for a post: header, bare link, credit. */
-export function buildAnnouncement(post) {
-  const hash = hashUrl(post.url);
-  const who = post.creator
-    ? (AUTHORS_DISCORD_IDS[post.creator] ?? `@${post.creator}`)
-    : 'time Discorgento';
-  const header = HEADER_VARIANTS[hash % HEADER_VARIANTS.length];
-  // >>> (unsigned shift): >> would go negative once the hash crosses 2^31,
-  // and a negative index picks nothing.
-  const link = LINK_VARIANTS[(hash >>> 6) % LINK_VARIANTS.length].replaceAll(
-    '{url}',
-    post.url,
-  );
-  const credit = CREDIT_VARIANTS[
-    (hash >>> 12) % CREDIT_VARIANTS.length
-  ].replaceAll('{who}', who);
-  return [header, '', link, '', credit].join('\n');
-}
-
-function discordMessage(post) {
-  // The channel's established announcement format — no hand-built embeds:
-  // the bare link lets Discord unfurl Substack's own Open Graph card (title,
-  // subtitle, cover) below the message.
-  return {
-    username: 'Discorgento',
-    avatar_url: AVATAR_URL,
-    allowed_mentions: { parse: ['everyone'] },
-    content: buildAnnouncement(post),
-  };
 }
 
 async function postToDiscord(post) {
