@@ -97,3 +97,27 @@ export function discordMessage(post) {
     content: buildAnnouncement(post),
   };
 }
+
+/**
+ * The outage notice: the feed has been unreachable for a while, so no edition
+ * can be announced. Deliberately does NOT ping anyone — an ops notice is not a
+ * new edition, and `parse: []` keeps it from notifying the channel.
+ * @param {number} failures consecutive missed ticks
+ */
+export function discordAlert(failures) {
+  const minutes = failures * 10; // one tick every 10 minutes
+  const elapsed =
+    minutes >= 60 ? `${Math.round(minutes / 60)} h` : `${minutes} min`;
+  return {
+    username: 'Discorgento',
+    avatar_url: AVATAR_URL,
+    allowed_mentions: { parse: [] },
+    content: [
+      '⚠️ **Aviso do announcer:** o feed do Substack não está respondendo.',
+      `Já são ${failures} verificações seguidas (~${elapsed}) sem conseguir ler as edições.`,
+      'Enquanto isso, uma edição nova não seria anunciada aqui.',
+      'Quando o feed voltar, o anúncio sai sozinho — não precisa fazer nada.',
+      '_(aviso automático, não é um post novo)_',
+    ].join('\n'),
+  };
+}

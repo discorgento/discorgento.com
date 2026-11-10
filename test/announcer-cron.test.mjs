@@ -13,8 +13,16 @@ import {
   discordMessage,
   selectNewPosts,
 } from '../workers/announcer-cron/src/announce.js';
-import { parseFeed } from '../workers/announcer-cron/src/feed.js';
-import worker from '../workers/announcer-cron/src/index.js';
+import {
+  fetchPosts,
+  parseFeed,
+  RETRY,
+} from '../workers/announcer-cron/src/feed.js';
+
+// The retry delay exists for production; the tests should not sleep through it.
+RETRY.delayMs = 0;
+
+import worker, { AnnouncerState } from '../workers/announcer-cron/src/index.js';
 
 const FEED_URL = 'https://discorgento.substack.com/feed';
 const WEBHOOK = 'https://discord.com/api/webhooks/1/token';
@@ -68,37 +76,41 @@ afterEach(() => {
 });
 
 /**
- * A stand-in for the Durable Object namespace: one in-memory state shared by
- * every `get()` for the same name, like the real object.
+ * A stand-in for the Durable Object namespace: every `get()` builds a real
+ * `AnnouncerState` over the same in-memory storage, so the tests exercise the
+ * Worker's own read/write methods instead of a reimplementation of them.
  */
 function fakeState() {
   const storage = new Map();
-  const object = {
-    read: async () => storage.get('announced') ?? null,
-    write: async (state) => {
-      storage.set('announced', state);
+  const ctx = {
+    storage: {
+      get: async (key) => storage.get(key),
+      put: async (key, value) => void storage.set(key, value),
+      delete: async (key) => storage.delete(key),
     },
   };
   return {
     storage,
     namespace: {
       idFromName: (name) => name,
-      get: () => object,
+      get: () => new AnnouncerState(ctx, {}),
     },
   };
 }
 
 /**
  * Stub `fetch`: answers the feed with `feed` (or throws when `feed` is null)
- * and the webhook with `webhookStatus`.
+ * and the webhook with `webhookStatus`. `setFeed` flips the feed mid-test, for
+ * outage-then-recovery.
  */
 function stubFetch({ feed = SUBSTACK_FEED, webhookStatus = 204 } = {}) {
   const calls = [];
+  let current = feed;
   globalThis.fetch = async (url, init = {}) => {
     calls.push({ url, init });
     if (String(url) === FEED_URL) {
-      if (feed === null) throw new Error('network down');
-      return new Response(feed, { status: 200 });
+      if (current === null) throw new Error('network down');
+      return new Response(current, { status: 200 });
     }
     return webhookStatus === 204
       ? new Response(null, { status: 204 })
@@ -106,6 +118,9 @@ function stubFetch({ feed = SUBSTACK_FEED, webhookStatus = 204 } = {}) {
   };
   return {
     calls,
+    setFeed: (value) => {
+      current = value;
+    },
     webhookCalls: () => calls.filter((call) => String(call.url) === WEBHOOK),
   };
 }
@@ -139,6 +154,27 @@ test('parseFeed agrees with the site parser on the shared fields', () => {
 
 test('parseFeed returns nothing for a feed without items', () => {
   assert.deepEqual(parseFeed('<rss><channel></channel></rss>'), []);
+});
+
+test('fetchPosts retries a stalled attempt before giving up', async () => {
+  let attempts = 0;
+  globalThis.fetch = async () => {
+    attempts += 1;
+    // The first tick stalls; the retry gets the feed.
+    if (attempts === 1) throw new Error('timeout');
+    return new Response(SUBSTACK_FEED, { status: 200 });
+  };
+
+  const posts = await fetchPosts();
+
+  assert.equal(attempts, 2);
+  assert.equal(posts?.length, 2);
+});
+
+test('fetchPosts answers null when every attempt fails', async () => {
+  globalThis.fetch = async () => new Response('nope', { status: 503 });
+
+  assert.equal(await fetchPosts(), null);
 });
 
 // --- which posts are new -------------------------------------------------
@@ -258,7 +294,7 @@ test('scheduled does not announce the same post twice', async () => {
   assert.equal(webhookCalls.length, 1);
 });
 
-test('scheduled stays quiet when the feed is unreachable', async () => {
+test('scheduled counts a feed miss without announcing', async () => {
   // The next tick retries; a network blip is not a failed invocation.
   const { calls } = stubFetch({ feed: null });
   const { state, env: bindings } = env();
@@ -266,7 +302,46 @@ test('scheduled stays quiet when the feed is unreachable', async () => {
   await worker.scheduled({}, bindings);
 
   assert.equal(calls.filter((call) => String(call.url) === WEBHOOK).length, 0);
-  assert.equal(state.storage.size, 0);
+  assert.equal(state.storage.get('health').failures, 1);
+  assert.equal(state.storage.get('announced'), undefined);
+});
+
+test('a long outage is announced in the channel, once', async () => {
+  const stub = stubFetch({ feed: null });
+  const { env: bindings } = env();
+
+  // Five misses: still silent, so a short blip does not reach the channel.
+  for (let i = 0; i < 5; i++) await worker.scheduled({}, bindings);
+  assert.equal(stub.webhookCalls().length, 0);
+
+  // The sixth (~1 h) says it, and says it without pinging anyone.
+  await worker.scheduled({}, bindings);
+  assert.equal(stub.webhookCalls().length, 1);
+  const alert = JSON.parse(stub.webhookCalls()[0].init.body);
+  assert.deepEqual(alert.allowed_mentions, { parse: [] });
+  assert.match(alert.content, /feed do Substack não está respondendo/);
+
+  // Ticks 7 and 8 do not repeat it.
+  await worker.scheduled({}, bindings);
+  await worker.scheduled({}, bindings);
+  assert.equal(stub.webhookCalls().length, 1);
+});
+
+test('the outage counter resets when the feed answers again', async () => {
+  const stub = stubFetch({ feed: null });
+  const { state, env: bindings } = env();
+
+  for (let i = 0; i < 3; i++) await worker.scheduled({}, bindings);
+  assert.equal(state.storage.get('health').failures, 3);
+
+  stub.setFeed(SUBSTACK_FEED);
+  await worker.scheduled({}, bindings);
+  assert.deepEqual(state.storage.get('health'), {
+    failures: 0,
+    alertedAt: null,
+  });
+  // ...and the post that landed during the outage is announced now.
+  assert.equal(stub.webhookCalls().length, 1);
 });
 
 test('scheduled throws when Discord refuses the message', async () => {
@@ -288,21 +363,26 @@ test('fetch reports status without announcing', async () => {
   const { calls } = stubFetch();
   const { state, env: bindings } = env();
   const [newest, second] = parseFeed(SUBSTACK_FEED);
-  await state.namespace.get().write({
+  const object = state.namespace.get();
+  await object.write({
     announced: second.url,
     announcedAt: '2026-11-02T12:05:00.000Z',
   });
+  await object.setHealth({ failures: 2, alertedAt: null });
 
-  const response = await worker.fetch(
-    new Request('https://cron.test/'),
-    bindings,
-  );
+  const response = await worker.fetch(new Request('https://cron.test/'), {
+    ...bindings,
+    CF_VERSION_METADATA: { id: 'abc', tag: '', timestamp: '2026-11-10' },
+  });
 
   assert.deepEqual(await response.json(), {
     lastAnnounced: second.url,
     lastAnnouncedAt: '2026-11-02T12:05:00.000Z',
     feedPosts: 2,
     newest: newest.url,
+    feedFailures: 2,
+    outageAlertedAt: null,
+    version: { id: 'abc', tag: '', timestamp: '2026-11-10' },
   });
   assert.equal(calls.filter((call) => String(call.url) === WEBHOOK).length, 0);
 });

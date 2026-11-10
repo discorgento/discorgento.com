@@ -10,6 +10,16 @@
 // quietly disagree about which post is which.
 
 const FEED_URL = 'https://discorgento.substack.com/feed';
+const TIMEOUT_MS = 10_000;
+
+/**
+ * One retry, because Substack occasionally stalls past the timeout on a tick
+ * that the next one would have got. Exported so the tests can zero the delay
+ * instead of sleeping through it; the Worker never changes it.
+ */
+export const RETRY = { attempts: 2, delayMs: 1000 };
+
+const sleep = (ms) => new Promise((done) => setTimeout(done, ms));
 
 const NAMED = {
   amp: '&',
@@ -72,20 +82,29 @@ export function parseFeed(text) {
 }
 
 /**
- * Read the feed, or `null` when it is unreachable or carries no items. A null
- * answer is never fatal: the next cron tick retries.
+ * Read the feed, or `null` when it is unreachable or carries no items. One
+ * retry, because Substack occasionally stalls past the timeout on a tick that
+ * the next one would have got — and a null answer is never fatal: the tick
+ * counts it and the next one tries again.
  */
 export async function fetchPosts() {
-  try {
-    const response = await fetch(FEED_URL, {
-      headers: { 'user-agent': 'discorgento-announcer-cron' },
-      signal: AbortSignal.timeout(10_000),
-    });
-    if (!response.ok) return null;
-    const text = await response.text();
-    if (!text.includes('<item>')) return null;
-    return parseFeed(text);
-  } catch {
-    return null;
+  for (let attempt = 1; attempt <= RETRY.attempts; attempt++) {
+    try {
+      const response = await fetch(FEED_URL, {
+        headers: { 'user-agent': 'discorgento-announcer-cron' },
+        signal: AbortSignal.timeout(TIMEOUT_MS),
+      });
+      if (!response.ok) throw new Error(`feed answered ${response.status}`);
+      const text = await response.text();
+      if (!text.includes('<item>')) throw new Error('feed carried no items');
+      return parseFeed(text);
+    } catch (error) {
+      console.warn(
+        `[announcer] feed attempt ${attempt}/${RETRY.attempts} failed:`,
+        error instanceof Error ? error.message : error,
+      );
+      if (attempt < RETRY.attempts) await sleep(RETRY.delayMs * attempt);
+    }
   }
+  return null;
 }
