@@ -6,6 +6,11 @@
 </h1>
 
 <p align="center">
+  <a href="https://discord.gg/amfwybm3yj"><img src="https://img.shields.io/badge/discord-283%20members-5865F2?logo=discord&logoColor=white" alt="283 members on Discord" /></a>
+  <a href="https://www.youtube.com/@discorgento"><img src="https://img.shields.io/badge/podcast-10%20episodes-FF0000?logo=youtube" alt="Podcast: 10 episodes" /></a>
+  <a href="https://discorgento.substack.com"><img src="https://img.shields.io/badge/newsletter-Substack-FF6719?logo=substack" alt="Newsletter on Substack" /></a>
+</p>
+<p align="center">
   <a href="https://github.com/discorgento/discorgento.com/actions/workflows/deploy.yml"><img src="https://github.com/discorgento/discorgento.com/actions/workflows/deploy.yml/badge.svg" alt="CI/CD status" /></a>
   <a href="https://nodejs.org/en"><img src="https://img.shields.io/badge/node-%E2%89%A5%2022.18-339933?logo=node.js" alt="Node >= 22.18" /></a>
   <a href="https://biomejs.dev"><img src="https://img.shields.io/badge/code%20style-biome-60a5fa?logo=biome" alt="Linted with Biome" /></a>
@@ -15,22 +20,27 @@
 
 The site's product is in Brazilian Portuguese (with `/en` and `/es` editions); everything else here — code, docs, commit messages — is in English.
 
-## The site
+## What's inside
 
-Static-first Astro site with a handful of **server islands** that re-render on every request inside a Cloudflare Worker, so live data (latest YouTube episode, Substack edition, Discord stats) shows up without a redeploy:
+The site is more than a landing page — every piece below lives in this repo:
 
-- **Built with** [Astro 7](https://astro.build) + [Tailwind v4](https://tailwindcss.com), deployed as a Cloudflare Worker via GitHub Actions
-- **Three locales**: `pt-BR` (default, no prefix), `/en/`, `/es/` — every route exists in all three, with hreflang wired
-- **Podcast archive** as a content collection: one folder per episode (`episode.json`, localized notes, timestamped transcript) powers watch pages with chapters, Q&A and JSON-LD (`PodcastEpisode`, `VideoObject`, `BreadcrumbList`)
-- **Self-hosted media**: episode thumbnails are downloaded, resized and re-encoded (AVIF/WebP/JPEG tiers) at build time, so the LCP image never leaves our origin
-- **Strict CSP** with hashed inline scripts/styles, opt-in GA4 consent, and AI crawlers explicitly allowed in `robots.txt`
+- **Podcast watch pages** — one per episode at `/podcast/<slug>/`, rendered from the content catalog: the YouTube player (consent-gated, `?t=` deep links), a human-written summary, key points and Q&A attributed to who said them, chapters, the full timestamped transcript, and the people involved (hosts from `src/lib/team.ts`, guests from `src/content/guests/`)
+- **Episode catalog** — `src/content/episodes/<slug>/` is the single source of truth per episode: `episode.json` (YouTube id, duration, localized titles, chapters), notes in three languages (`pt-BR.md`, `en.md`, `es.md`) and a timestamped `transcript.json` imported from YouTube captions via `scripts/import-transcript.mjs`
+- **Server islands** — the latest YouTube episode, the home episode grid, the `/podcast/` list, the latest Substack edition and the live Discord member counts re-render on every request inside the Cloudflare Worker, so new content shows up without a redeploy (each degrades to a committed snapshot if its upstream fails)
+- **AI-friendly on purpose** — `robots.txt` allows GPTBot, ClaudeBot and friends explicitly, every episode ships `PodcastEpisode`/`VideoObject`/`BreadcrumbList` JSON-LD, and `llms.txt` + `llms-full.txt` are prerendered from the catalog for LLM consumption
+- **Newsletter bridge** — an hourly GitHub Actions workflow ([`substack-discord.yml`](.github/workflows/substack-discord.yml)) watches the Substack feed and announces new posts in the community's Discord news channel: house-voice message with rotating lines, picked deterministically from the post URL, duplicate-proof through a committed state file
+- **Self-hosted media** — episode thumbnails are downloaded, resized and re-encoded to AVIF/WebP/JPEG tiers at build time, so the LCP image never leaves our origin
+
+## The stack
+
+[Astro 7](https://astro.build) + [Tailwind v4](https://tailwindcss.com), static-first with server islands, deployed as a Cloudflare Worker via GitHub Actions. Three locales: `pt-BR` (default, no prefix), `/en/`, `/es/` — every route exists in all three, hreflang wired. Strict CSP with hashed inline scripts/styles and opt-in GA4 consent.
 
 See [AGENTS.md](AGENTS.md) for the full architecture, commands and gotchas — it is the deep dev doc this README only summarizes.
 
 ## Automation
 
 - **CI/CD**: every push runs `astro check`, Biome lint, unit tests and a production build; `main` deploys the build to the `discorgento` Worker and `develop` to the `staging` Worker (what passed the gates is exactly what ships)
-- **Substack → Discord**: an hourly GitHub Actions workflow watches the newsletter feed and announces new posts in the community's Discord news channel — house-voice message, rotating lines, duplicate-proof via a committed state file
+- **Substack → Discord**: the hourly announcer described above — free on a public repo, zero maintenance, one bot commit per new post
 
 ## Quick start
 
