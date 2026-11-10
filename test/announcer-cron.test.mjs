@@ -239,9 +239,12 @@ test('buildAnnouncement is deterministic and carries the link and the byline', (
   const first = buildAnnouncement(POSTS[0]);
   assert.equal(first, buildAnnouncement(POSTS[0]));
   assert.ok(first.includes(POSTS[0].url));
-  assert.ok(first.includes('@jonatanaxe'));
+  // The byline is the plain name: "@name" would look like a mention and notify
+  // nobody, so it is not written at all.
+  assert.ok(first.includes('jonatanaxe'));
+  assert.ok(!first.includes('@jonatanaxe'));
   assert.ok(first.startsWith('@everyone'));
-  // A missing byline still credits the team instead of an empty "@".
+  // A missing byline still credits the team instead of an empty line.
   assert.ok(buildAnnouncement(POSTS[2]).includes('time Discorgento'));
 });
 

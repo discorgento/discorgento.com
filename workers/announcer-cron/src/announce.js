@@ -25,10 +25,13 @@ export function selectNewPosts(posts, state) {
   return posts.slice(0, index).reverse();
 }
 
-// Credit ping in the community's announcement voice (the same style as the
-// episode announcements: 🎥 YouTube / 🎧 Spotify / special thanks). A plain
-// "@Name" reads naturally but does not ping — a real mention needs the
-// author's Discord user id as `<@id>`; add a map here when the ids are known.
+// Credit line in the community's announcement voice (the same style as the
+// episode announcements: 🎥 YouTube / 🎧 Spotify / special thanks).
+//
+// The byline is printed as the plain name on purpose: an "@Name" reads like a
+// mention but does not notify anyone — Discord only pings on `<@id>`, which
+// would mean chasing every author's user id. Add the id here if one is ever
+// worth a real ping; without it the name is credited honestly.
 const AUTHORS_DISCORD_IDS = {
   // e.g. 'jonatanaxe': '<@123456789012345678>',
 };
@@ -71,7 +74,7 @@ function hashUrl(url) {
 export function buildAnnouncement(post) {
   const hash = hashUrl(post.url);
   const who = post.creator
-    ? (AUTHORS_DISCORD_IDS[post.creator] ?? `@${post.creator}`)
+    ? (AUTHORS_DISCORD_IDS[post.creator] ?? post.creator)
     : 'time Discorgento';
   const header = HEADER_VARIANTS[hash % HEADER_VARIANTS.length];
   // >>> (unsigned shift): >> would go negative once the hash crosses 2^31,
