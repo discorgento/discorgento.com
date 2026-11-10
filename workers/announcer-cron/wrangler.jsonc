@@ -1,0 +1,30 @@
+{
+  // The announcer's clock. GitHub's schedule dispatcher has no SLA (measured
+  // 6–10 h late in this org, and zero runs for a fresh workflow), so this
+  // Worker holds the timer and calls workflow_dispatch on the minute. The
+  // announcement itself stays in .github/workflows/substack-discord.yml +
+  // scripts/substack-discord.mjs.
+  //
+  // Deployed by .github/workflows/announcer-cron.yml, which also syncs the
+  // ANNOUNCER_DISPATCH_TOKEN repo secret into the Worker as DISPATCH_TOKEN.
+  "name": "discorgento-announcer-cron",
+  "main": "src/index.js",
+  "compatibility_date": "2026-09-09",
+  // No routes and no assets on purpose: this Worker is invoked by its cron
+  // trigger, never by the site's traffic.
+  "triggers": {
+    // Every 10 minutes: the announcement leaves within 10 minutes of a post
+    // appearing in the feed. The cron is the only thing deciding this now, so
+    // the cadence is a product decision, not a workaround — raise it to
+    // "17 * * * *" if hourly is enough.
+    "crons": ["*/10 * * * *"]
+  },
+  "vars": {
+    "GITHUB_REPO": "discorgento/discorgento.com",
+    "GITHUB_WORKFLOW": "substack-discord.yml",
+    "GITHUB_REF": "main"
+  },
+  "observability": {
+    "enabled": true
+  }
+}
