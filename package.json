@@ -34,7 +34,7 @@
     "@astrojs/cloudflare": "^14.4.4",
     "@astrojs/sitemap": "^3.7.4",
     "@biomejs/biome": "^2.6.5",
-    "@tailwindcss/vite": "^4.3.4",
+    "@tailwindcss/vite": "^4.3.5",
     "sharp": "^0.35.5",
     "tailwindcss": "^4.3.4",
     "typescript": "^6.0.0",
