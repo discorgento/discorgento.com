@@ -36,7 +36,7 @@
     "@biomejs/biome": "^2.6.5",
     "@tailwindcss/vite": "^4.3.4",
     "sharp": "^0.35.5",
-    "tailwindcss": "^4.3.4",
+    "tailwindcss": "^4.3.5",
     "typescript": "^6.0.0",
     "wrangler": "^4.158.0"
   }
