@@ -16,16 +16,24 @@
 // The one failure mode that used to be silent: the feed answering 4xx/5xx for
 // days. The tick "succeeded" with nothing to announce, so nobody found out
 // until the next edition never appeared. After ALERT_AFTER_FAILURES consecutive
-// misses (~1 h) the Worker says so in the channel, once per outage, and resets
+// misses (~6 h) the Worker says so in the channel, once per outage, and resets
 // the counter as soon as the feed answers again.
+//
+// The failure mode that made that alert useless: Substack throttling this
+// Worker's scheduled-egress with 429 while the feed stayed up. A rate limit is
+// not an outage — it is one tick that did not get through, retried ten minutes
+// later — so it is logged and never counted, and cannot page anyone.
 
 import { DurableObject } from 'cloudflare:workers';
 import { discordAlert, discordMessage, selectNewPosts } from './announce.js';
-import { fetchPosts } from './feed.js';
+import { readFeed } from './feed.js';
 
 const STATE_NAME = 'substack';
 const WEBHOOK_ATTEMPTS = 3;
-const ALERT_AFTER_FAILURES = 6; // 6 ticks × 10 min ≈ 1 hour
+// 36 ticks × 10 min ≈ 6 h. One hour was short enough that a routine throttle
+// turned into a page; six hours is long enough that only a feed that is really
+// down reaches the channel.
+const ALERT_AFTER_FAILURES = 36;
 
 export class AnnouncerState extends DurableObject {
   /** @returns {Promise<{announced: string, announcedAt: string} | null>} */
@@ -137,11 +145,23 @@ async function announce(env) {
   }
 
   const state = env.STATE.get(env.STATE.idFromName(STATE_NAME));
-  const posts = await fetchPosts();
+  const feed = await readFeed();
 
-  // Unreachable or empty feed: count it, maybe alert, and let the next tick
-  // retry. Nothing to announce.
-  if (!posts?.length) {
+  // Throttled by Substack: the feed is up, this tick just was not allowed to
+  // read it. Log it, count nothing, and let the next tick try again — paging
+  // the channel here is exactly the noise this used to produce.
+  if (!feed.ok) {
+    if (feed.reason === 'rate-limited') {
+      console.warn('[announcer] feed throttled, next tick retries');
+      return;
+    }
+    // Unreachable: count it, maybe alert, and let the next tick retry.
+    await reportFeedFailure(env, state);
+    return;
+  }
+
+  // Reachable but carrying nothing announceable: the same treatment as a miss.
+  if (!feed.posts.length) {
     await reportFeedFailure(env, state);
     return;
   }
@@ -149,7 +169,7 @@ async function announce(env) {
   // The feed answered: clear the outage, so a later one can alert again.
   await state.setHealth({ failures: 0, alertedAt: null });
 
-  const fresh = selectNewPosts(posts, await state.read());
+  const fresh = selectNewPosts(feed.posts, await state.read());
   if (!fresh.length) return;
 
   for (const post of fresh) {
@@ -180,23 +200,28 @@ export default {
   /**
    * Read-only status: what was announced last, what the feed holds now, how the
    * feed has been behaving and which build is running (so a forgotten
-   * `wrangler deploy` is visible). It never announces, so it needs no token to
-   * be safe to call.
+   * `wrangler deploy` is visible). `feedStatus` tells a throttle (`rate-limited`)
+   * apart from a real outage (`unavailable`) — the cron never alerts on the
+   * former, so this is where a long one is visible. It never announces, so it
+   * needs no token to be safe to call.
    * @param {Request} _request
    * @param {Env} env
    */
   async fetch(_request, env) {
     const state = env.STATE.get(env.STATE.idFromName(STATE_NAME));
-    const [announced, health, posts] = await Promise.all([
+    const [announced, health, feed] = await Promise.all([
       state.read(),
       state.health(),
-      fetchPosts(),
+      // A snapshot: one attempt, so the backoff a real tick needs cannot turn
+      // this endpoint into a 60-second call.
+      readFeed({ attempts: 1 }),
     ]);
     return Response.json({
       lastAnnounced: announced?.announced ?? null,
       lastAnnouncedAt: announced?.announcedAt ?? null,
-      feedPosts: posts?.length ?? null,
-      newest: posts?.[0]?.url ?? null,
+      feedStatus: feed.ok ? 'ok' : feed.reason,
+      feedPosts: feed.ok ? feed.posts.length : null,
+      newest: feed.ok ? (feed.posts[0]?.url ?? null) : null,
       feedFailures: health.failures,
       outageAlertedAt: health.alertedAt,
       version: env.CF_VERSION_METADATA ?? null,

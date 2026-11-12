@@ -14,13 +14,15 @@ import {
   selectNewPosts,
 } from '../workers/announcer-cron/src/announce.js';
 import {
-  fetchPosts,
   parseFeed,
   RETRY,
+  readFeed,
 } from '../workers/announcer-cron/src/feed.js';
 
-// The retry delay exists for production; the tests should not sleep through it.
+// The retry delays exist for production; the tests should not sleep through
+// them.
 RETRY.delayMs = 0;
+RETRY.rateLimitDelayMs = 0;
 
 import worker, { AnnouncerState } from '../workers/announcer-cron/src/index.js';
 
@@ -99,17 +101,31 @@ function fakeState() {
 }
 
 /**
- * Stub `fetch`: answers the feed with `feed` (or throws when `feed` is null)
- * and the webhook with `webhookStatus`. `setFeed` flips the feed mid-test, for
+ * Stub `fetch`: answers the feed with `feed` (or throws when `feed` is null),
+ * or with `feedStatus` when that is not 200 — 429 is the one that matters, since
+ * it is what Substack actually answers this Worker. The webhook answers with
+ * `webhookStatus`. `setFeed`/`setFeedStatus` flip the feed mid-test, for
  * outage-then-recovery.
  */
-function stubFetch({ feed = SUBSTACK_FEED, webhookStatus = 204 } = {}) {
+function stubFetch({
+  feed = SUBSTACK_FEED,
+  feedStatus = 200,
+  webhookStatus = 204,
+} = {}) {
   const calls = [];
   let current = feed;
+  let status = feedStatus;
   globalThis.fetch = async (url, init = {}) => {
     calls.push({ url, init });
     if (String(url) === FEED_URL) {
       if (current === null) throw new Error('network down');
+      if (status === 429) {
+        return new Response('rate limited', {
+          status: 429,
+          headers: { 'retry-after': '0' },
+        });
+      }
+      if (status !== 200) return new Response('nope', { status });
       return new Response(current, { status: 200 });
     }
     return webhookStatus === 204
@@ -120,6 +136,9 @@ function stubFetch({ feed = SUBSTACK_FEED, webhookStatus = 204 } = {}) {
     calls,
     setFeed: (value) => {
       current = value;
+    },
+    setFeedStatus: (value) => {
+      status = value;
     },
     webhookCalls: () => calls.filter((call) => String(call.url) === WEBHOOK),
   };
@@ -156,7 +175,7 @@ test('parseFeed returns nothing for a feed without items', () => {
   assert.deepEqual(parseFeed('<rss><channel></channel></rss>'), []);
 });
 
-test('fetchPosts retries a stalled attempt before giving up', async () => {
+test('readFeed retries a stalled attempt before giving up', async () => {
   let attempts = 0;
   globalThis.fetch = async () => {
     attempts += 1;
@@ -165,16 +184,52 @@ test('fetchPosts retries a stalled attempt before giving up', async () => {
     return new Response(SUBSTACK_FEED, { status: 200 });
   };
 
-  const posts = await fetchPosts();
+  const feed = await readFeed();
 
   assert.equal(attempts, 2);
-  assert.equal(posts?.length, 2);
+  assert.equal(feed.ok, true);
+  assert.equal(feed.posts?.length, 2);
 });
 
-test('fetchPosts answers null when every attempt fails', async () => {
+test('readFeed reports an unreachable feed as unavailable', async () => {
   globalThis.fetch = async () => new Response('nope', { status: 503 });
 
-  assert.equal(await fetchPosts(), null);
+  assert.deepEqual((await readFeed()).reason, 'unavailable');
+});
+
+test('readFeed reads a snapshot with a single attempt', async () => {
+  // The status endpoint must answer, not sit through the backoff a real tick
+  // needs: it asks for one attempt and takes the first answer.
+  let attempts = 0;
+  globalThis.fetch = async () => {
+    attempts += 1;
+    return new Response('rate limited', {
+      status: 429,
+      headers: { 'retry-after': '0' },
+    });
+  };
+
+  const feed = await readFeed({ attempts: 1 });
+
+  assert.equal(attempts, 1);
+  assert.equal(feed.reason, 'rate-limited');
+});
+
+test('readFeed reports a 429 as rate-limited, not as an outage', async () => {
+  // What Substack actually answers this Worker's scheduled egress: the feed is
+  // up, the tick just was not allowed to read it. The two must not be confused,
+  // or a throttle pages the channel about a feed that never went down.
+  globalThis.fetch = async () =>
+    new Response('rate limited', {
+      status: 429,
+      headers: { 'retry-after': '0' },
+    });
+
+  const feed = await readFeed();
+
+  assert.equal(feed.ok, false);
+  assert.equal(feed.reason, 'rate-limited');
+  assert.equal(feed.status, 429);
 });
 
 // --- which posts are new -------------------------------------------------
@@ -313,21 +368,47 @@ test('a long outage is announced in the channel, once', async () => {
   const stub = stubFetch({ feed: null });
   const { env: bindings } = env();
 
-  // Five misses: still silent, so a short blip does not reach the channel.
-  for (let i = 0; i < 5; i++) await worker.scheduled({}, bindings);
+  // 35 misses (~6 h): still silent, so only a feed that is really down reaches
+  // the channel.
+  for (let i = 0; i < 35; i++) await worker.scheduled({}, bindings);
   assert.equal(stub.webhookCalls().length, 0);
 
-  // The sixth (~1 h) says it, and says it without pinging anyone.
+  // The 36th says it, and says it without pinging anyone.
   await worker.scheduled({}, bindings);
   assert.equal(stub.webhookCalls().length, 1);
   const alert = JSON.parse(stub.webhookCalls()[0].init.body);
   assert.deepEqual(alert.allowed_mentions, { parse: [] });
   assert.match(alert.content, /feed do Substack não está respondendo/);
+  assert.match(alert.content, /~6 h/);
 
-  // Ticks 7 and 8 do not repeat it.
+  // Ticks 37 and 38 do not repeat it.
   await worker.scheduled({}, bindings);
   await worker.scheduled({}, bindings);
   assert.equal(stub.webhookCalls().length, 1);
+});
+
+test('a rate limit never reaches the channel, however long it lasts', async () => {
+  // The bug this pins: 429s counted as misses, so a one-hour throttle posted
+  // "o feed do Substack não está respondendo" about a feed that was answering
+  // 200 to everyone else the whole time.
+  const stub = stubFetch({ feedStatus: 429 });
+  const { state, env: bindings } = env();
+
+  for (let i = 0; i < 80; i++) await worker.scheduled({}, bindings);
+
+  assert.equal(stub.webhookCalls().length, 0);
+  assert.equal(state.storage.get('health'), undefined);
+
+  // ...and the edition that landed during the throttle goes out once the feed
+  // answers again.
+  stub.setFeedStatus(200);
+  await worker.scheduled({}, bindings);
+
+  assert.equal(stub.webhookCalls().length, 1);
+  assert.deepEqual(state.storage.get('health'), {
+    failures: 0,
+    alertedAt: null,
+  });
 });
 
 test('the outage counter resets when the feed answers again', async () => {
@@ -381,6 +462,7 @@ test('fetch reports status without announcing', async () => {
   assert.deepEqual(await response.json(), {
     lastAnnounced: second.url,
     lastAnnouncedAt: '2026-11-02T12:05:00.000Z',
+    feedStatus: 'ok',
     feedPosts: 2,
     newest: newest.url,
     feedFailures: 2,
