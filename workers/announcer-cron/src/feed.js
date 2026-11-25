@@ -18,6 +18,11 @@
 // that was answering fine.
 
 const FEED_URL = 'https://discorgento.substack.com/feed';
+// The same publication as JSON. A different URL from the feed, so when the RSS
+// path is throttled for this Worker's egress this one still has a chance: it is
+// only tried after the RSS read has failed, and carries the same four fields.
+const ARCHIVE_URL =
+  'https://discorgento.substack.com/api/v1/archive?sort=new&limit=15';
 const TIMEOUT_MS = 10_000;
 
 /**
@@ -150,14 +155,82 @@ function delayFor(attempt, waitMs) {
  */
 
 /**
- * Read the feed. Never throws — the reason is part of the answer, so the tick
+ * Parse the archive API's JSON into the same shape as `parseFeed`. `published`
+ * is re-rendered as an RFC 2822 date, which is what the feed carries and what
+ * `selectNewPosts` parses.
+ * @param {unknown} json
+ * @returns {Post[]}
+ */
+export function parseArchive(json) {
+  const posts = /** @type {{posts?: unknown}} */ (json)?.posts;
+  if (!Array.isArray(posts)) return [];
+  return posts
+    .map((post) => {
+      const title = typeof post?.title === 'string' ? post.title.trim() : '';
+      const url =
+        typeof post?.canonical_url === 'string' ? post.canonical_url : '';
+      const date = Date.parse(post?.post_date);
+      if (!title || !url || Number.isNaN(date)) return null;
+      // Only public posts, like the feed: a paywalled one has nothing to link.
+      if (post.audience && post.audience !== 'everyone') return null;
+      const creator = Array.isArray(post.publishedBylines)
+        ? (post.publishedBylines[0]?.name ?? '')
+        : '';
+      return { title, url, published: new Date(date).toUTCString(), creator };
+    })
+    .filter((post) => post !== null);
+}
+
+/** One attempt at the JSON archive; `null` on any failure. */
+async function readArchive() {
+  try {
+    const response = await fetch(ARCHIVE_URL, {
+      headers: { ...HEADERS, accept: 'application/json, */*;q=0.5' },
+      signal: AbortSignal.timeout(TIMEOUT_MS),
+    });
+    if (!response.ok) {
+      console.warn(`[announcer] archive answered ${response.status}`);
+      return null;
+    }
+    const posts = parseArchive(await response.json());
+    return posts.length ? posts : null;
+  } catch (error) {
+    console.warn(
+      '[announcer] archive failed:',
+      error instanceof Error ? error.message : error,
+    );
+    return null;
+  }
+}
+
+/**
+ * Read the publication: the RSS feed first, the JSON archive when the feed
+ * cannot be read. The RSS outcome (and its reason) is what a total failure
+ * reports, so a throttle is still told apart from an outage.
+ * @param {{attempts?: number}} [options]
+ * @returns {Promise<FeedResult>}
+ */
+export async function readFeed(options = {}) {
+  const feed = await readRss(options);
+  if (feed.ok) return feed;
+
+  const posts = await readArchive();
+  if (posts) {
+    console.warn(`[announcer] feed ${feed.reason}, read the archive instead`);
+    return { ok: true, posts };
+  }
+  return feed;
+}
+
+/**
+ * Read the RSS feed. Never throws — the reason is part of the answer, so the tick
  * can stay quiet about a rate limit and only raise the alarm about a feed that
  * is genuinely unreachable.
  * @param {{attempts?: number}} [options] `attempts: 1` for a snapshot (the
  *   status endpoint), which must answer instead of sitting through the backoff.
  * @returns {Promise<FeedResult>}
  */
-export async function readFeed({ attempts = RETRY.attempts } = {}) {
+async function readRss({ attempts = RETRY.attempts } = {}) {
   /** @type {FeedResult} */
   let outcome = { ok: false, reason: 'unavailable', error: 'no attempt made' };
 

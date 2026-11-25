@@ -14,6 +14,7 @@ import {
   selectNewPosts,
 } from '../workers/announcer-cron/src/announce.js';
 import {
+  parseArchive,
   parseFeed,
   RETRY,
   readFeed,
@@ -201,8 +202,9 @@ test('readFeed reads a snapshot with a single attempt', async () => {
   // The status endpoint must answer, not sit through the backoff a real tick
   // needs: it asks for one attempt and takes the first answer.
   let attempts = 0;
-  globalThis.fetch = async () => {
-    attempts += 1;
+  globalThis.fetch = async (url) => {
+    // Only the RSS reads count: the archive fallback is a different URL.
+    if (String(url).endsWith('/feed')) attempts += 1;
     return new Response('rate limited', {
       status: 429,
       headers: { 'retry-after': '0' },
@@ -230,6 +232,86 @@ test('readFeed reports a 429 as rate-limited, not as an outage', async () => {
   assert.equal(feed.ok, false);
   assert.equal(feed.reason, 'rate-limited');
   assert.equal(feed.status, 429);
+});
+
+const ARCHIVE_JSON = {
+  posts: [
+    {
+      title: 'Newest edition',
+      canonical_url: 'https://discorgento.substack.com/p/newest',
+      post_date: '2026-11-25T13:36:00.588Z',
+      audience: 'everyone',
+      publishedBylines: [{ name: 'Maria Ferro' }],
+    },
+    {
+      title: 'Subscribers only',
+      canonical_url: 'https://discorgento.substack.com/p/paid',
+      post_date: '2026-11-24T10:00:00.000Z',
+      audience: 'only_paid',
+      publishedBylines: [],
+    },
+    {
+      title: 'Older edition',
+      canonical_url: 'https://discorgento.substack.com/p/older',
+      post_date: '2026-11-19T16:54:28.000Z',
+      audience: 'everyone',
+      publishedBylines: [],
+    },
+  ],
+};
+
+test('parseArchive maps the JSON to the feed shape and skips non-public posts', () => {
+  const posts = parseArchive(ARCHIVE_JSON);
+
+  assert.deepEqual(
+    posts.map((post) => post.url),
+    [
+      'https://discorgento.substack.com/p/newest',
+      'https://discorgento.substack.com/p/older',
+    ],
+  );
+  assert.equal(posts[0]?.creator, 'Maria Ferro');
+  assert.equal(posts[1]?.creator, '');
+  // The date must stay parseable by selectNewPosts.
+  assert.equal(
+    Date.parse(posts[0]?.published ?? ''),
+    Date.parse('2026-11-25T13:36:00Z'),
+  );
+});
+
+test('parseArchive tolerates garbage', () => {
+  assert.deepEqual(parseArchive(null), []);
+  assert.deepEqual(parseArchive({ posts: 'nope' }), []);
+});
+
+test('readFeed falls back to the archive when the feed is throttled', async () => {
+  globalThis.fetch = async (url) =>
+    String(url).endsWith('/feed')
+      ? new Response('rate limited', {
+          status: 429,
+          headers: { 'retry-after': '0' },
+        })
+      : Response.json(ARCHIVE_JSON);
+
+  const feed = await readFeed();
+
+  assert.equal(feed.ok, true);
+  assert.equal(feed.posts?.[0]?.title, 'Newest edition');
+});
+
+test('readFeed keeps the throttle reason when the archive fails too', async () => {
+  globalThis.fetch = async (url) =>
+    String(url).endsWith('/feed')
+      ? new Response('rate limited', {
+          status: 429,
+          headers: { 'retry-after': '0' },
+        })
+      : new Response('nope', { status: 500 });
+
+  const feed = await readFeed();
+
+  assert.equal(feed.ok, false);
+  assert.equal(feed.reason, 'rate-limited');
 });
 
 // --- which posts are new -------------------------------------------------
